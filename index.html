@@ -5531,6 +5531,18 @@ function scheduleSupabaseSync(delay=250){
 // تعديل المخزن. دلوقتي كل دقيقة (ولما ترجع للنافذة) بنسأل السحابة سؤال خفيف: "آخر
 // تحديث امتى؟" — ولو اتغيّر من جهاز تاني بس، بننزل النسخة وندمجها.
 let daftarLastCloudStamp=null;
+// ملف العميل المفتوح مش بيترسم مع باقي الصفحات، فبعد ما بيانات الجهاز التاني توصل بنعيد فتحه
+// على نفس العميل. لو إنت بتكتب في خانة جواه (دفعة مثلاً)، بنستنى لما تخلص عشان كلامك ميتمسحش.
+function refreshOpenProfileAfterCloudPull(){
+  const profile=document.querySelector('#customerProfile');
+  if(!profile||profile.classList.contains('hidden'))return;
+  const name=document.querySelector('#balanceForm')?.dataset.customer;if(!name)return;
+  const busy=profile.contains(document.activeElement)&&/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)
+    ||[...profile.querySelectorAll('#paymentForm [name=amount],#paymentForm [name=note]')].some(i=>String(i.value||'').trim())
+    ||!!profile.querySelector('#returnBox form');
+  if(busy){clearTimeout(window.daftarProfileRefreshTimer);window.daftarProfileRefreshTimer=setTimeout(refreshOpenProfileAfterCloudPull,5000);return;}
+  const y=window.scrollY;showCustomer(encodeURIComponent(name));requestAnimationFrame(()=>window.scrollTo(0,y));
+}
 async function supabasePullIfChanged(){
   if(!supabaseAuthReady||!supabaseCurrentUser||!daftarUnlocked||daftarOfflineFallback)return;
   if(supabaseSyncBusy||!navigator.onLine||daftarStorageBlocked||!daftarStorageReady)return;
@@ -5554,6 +5566,7 @@ async function supabasePullIfChanged(){
     flushLocalSave();
     saveBackgrounds();
     if(typeof render==='function')render();
+    refreshOpenProfileAfterCloudPull();
     syncStatus('☁️ تم تحديث البيانات من الجهاز التاني ✓','#059669');
   }catch(err){console.warn('Cloud pull failed:',err);}
   finally{
@@ -5906,6 +5919,12 @@ window.addEventListener('offline',()=>{if(supabaseCurrentUser)syncStatus('📴 �
 // واي فاي متوصل من غير إنترنت فعلي)، ولو متصلين نشوف لو الجهاز التاني عدّل حاجة.
 setInterval(()=>{if(daftarOfflineFallback)retryOnlineAuthUpgrade();else supabasePullIfChanged();},60000);
 window.addEventListener('focus',()=>{if(daftarOfflineFallback)retryOnlineAuthUpgrade();else supabasePullIfChanged();});
+// والبرنامج ظاهر قدامك: سؤال السحابة الخفيف («آخر تحديث امتى؟») كل 15 ثانية بدل دقيقة، عشان
+// تعديل الجهاز التاني يظهر بسرعة حتى لو الجهازين مفتوحين جنب بعض. ولما ترجع للبرنامج (الآيفون
+// مش دايمًا بيبعت «focus» لما ترجع للتطبيق) بنسأل على طول.
+setInterval(()=>{if(document.visibilityState==='visible'&&!daftarOfflineFallback)supabasePullIfChanged();},15000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){if(daftarOfflineFallback)retryOnlineAuthUpgrade();else supabasePullIfChanged();}});
+window.addEventListener('pageshow',()=>{if(!daftarOfflineFallback)supabasePullIfChanged();});
 console.log('DAFTAR Supabase Account + Offline Sync Loaded');
 // نسخة الموبايل (لما البرنامج يتفتح من لينك https): ملف sw.js بيحفظ البرنامج على الموبايل،
 // فيفتح حتى من غير نت بعد أول مرة. على الكمبيوتر (Electron) مش بيشتغل ومالوش لازمة.
