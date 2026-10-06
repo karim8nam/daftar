@@ -1,6 +1,6 @@
 <!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
 <!-- نسخة الموبايل (آيفون): اسم وأيقونة البرنامج على الشاشة الرئيسية، وبيفتح بملء الشاشة زي التطبيق -->
-<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="دفتر"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#C2185B"><style>
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="دفتر"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#C2185B"><style>
 /* حقول رمز الأمان (6 أرقام): بنستخدم input عادي مقنّع بصريًا بدل type="password"،
    لأن متصفحات Chromium/Electron أحيانًا بتفعّل اقتراح/مدير كلمات المرور على حقول
    type="password" حتى مع autocomplete="off"، وده بياكل أول ضغطات لوحة المفاتيح
@@ -288,7 +288,7 @@ html,body{background:#fff!important}
       </article></div></div></section>
 </main>
 <!-- مكتبة توليد الباركود (QR) لروابط الواتساب والفيسبوك في الطباعة — متضمنة جوه البرنامج عشان تشتغل من غير نت. -->
-<script src="vendor/qrcode.js"></script>
+<script src="qrcode.js"></script>
 <script>
 const initial={products:[],factoryItems:[],invoices:[],quotes:[],orders:[],customerBalances:{},customerPayments:[],ledgerEntries:[],extraPurchases:[],customerReturns:[],deletedIds:{},customerPhones:{},customerReps:{},repRates:{},repPayments:[],factoryLedger:[],factoryOpeningBalance:0,customerDataUpdatedAt:{},printSettings:{}};
 let db=JSON.parse(localStorage.getItem('daftar-v1')||JSON.stringify(initial));
@@ -3471,7 +3471,7 @@ function shareDocumentMarkup(kind,id){
 }
 
 // يحمّل مكتبة html2canvas مرة واحدة فقط عند الحاجة (لتحويل المستند لصورة حقيقية). المكتبة
-// متضمنة جوه البرنامج (vendor/) فبتشتغل حتى والنت ضعيف أو مقطوع؛ لو الملف مش موجود لأي سبب
+// متضمنة جوه البرنامج () فبتشتغل حتى والنت ضعيف أو مقطوع؛ لو الملف مش موجود لأي سبب
 // بنجرب نفس النسخة من الإنترنت.
 let daftarHtml2CanvasPromise=null;
 function loadHtml2Canvas(){
@@ -3484,7 +3484,7 @@ function loadHtml2Canvas(){
     s.onerror=()=>{s.remove();reject(new Error('تعذر تحميل مكتبة توليد الصور (تأكد من الاتصال بالإنترنت).'));};
     document.head.appendChild(s);
   });
-  daftarHtml2CanvasPromise=load('vendor/html2canvas.min.js')
+  daftarHtml2CanvasPromise=load('html2canvas.min.js')
     .catch(()=>load('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js'))
     .catch(err=>{daftarHtml2CanvasPromise=null;throw err;});
   return daftarHtml2CanvasPromise;
@@ -5016,10 +5016,10 @@ render();
 renderCustomerList();
 </script>
 
-<!-- مكتبة Supabase متضمنة جوه البرنامج (vendor/) عشان تشتغل حتى لو البرنامج اتفتح من غير نت،
+<!-- مكتبة Supabase متضمنة جوه البرنامج () عشان تشتغل حتى لو البرنامج اتفتح من غير نت،
      ورقم النسخة ثابت عشان أي تحديث للمكتبة ميغيّرش سلوك البرنامج فجأة. لو الملف المحلي
      مش موجود لأي سبب، بنرجع نحمّلها من الإنترنت بنفس رقم النسخة. -->
-<script src="vendor/supabase.js"></script>
+<script src="supabase.js"></script>
 <script>if(!window.supabase?.createClient)document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2"><\/script>');</script>
 <style id="daftarAuthStyle">
 #daftarAuthOverlay{position:fixed;inset:0;background:rgba(15,23,42,.58);backdrop-filter:blur(5px);z-index:1000000;display:none;align-items:center;justify-content:center;padding:20px;direction:rtl}

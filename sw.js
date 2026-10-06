@@ -1,8 +1,8 @@
 // نسخة الموبايل: بيحفظ ملفات البرنامج على الموبايل عشان يفتح حتى من غير نت بعد أول مرة.
 // البيانات نفسها مش هنا (دي بتتحفظ على الموبايل وبتتزامن مع حسابك على السحابة).
 // الصفحة نفسها: بنجيب أحدث نسخة من النت الأول (عشان التحديثات توصل على طول)، ولو مفيش نت بنفتح المحفوظة.
-const CACHE = 'daftar-web-2.3.0-202610061555';
-const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'vendor/supabase.js', 'vendor/qrcode.js', 'vendor/html2canvas.min.js', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png'];
+const CACHE = 'daftar-web-2.3.0-202610061631';
+const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'supabase.js', 'qrcode.js', 'html2canvas.min.js', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
