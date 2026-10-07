@@ -592,8 +592,7 @@ function customers(){return [...new Set([...db.invoices,...db.orders,...db.custo
 function computeAllCustomerBalances(names){
   const invByC=new Map(),ordByC=new Map(),payByC=new Map(),retByC=new Map();
   for(const x of db.invoices){const k=x.customer;invByC.set(k,(invByC.get(k)||0)+(x.remaining!=null?+x.remaining:+x.total||0));}
-  // الطلبية مش عليه لحد ما تتفوتر؛ بس العربون اللي دفعه فيها بيتحسب له.
-  for(const x of db.orders){if(x.invoiced)continue;const k=x.customer;ordByC.set(k,(ordByC.get(k)||0)-orderUnusedDeposit(x));}
+  // الطلبية مش عليه لحد ما تتفوتر، وعربونها محجوز ليها (بيتخصم من فاتورتها) — فالاتنين برا الرصيد.
   for(const x of db.customerPayments){if(x.invoiceId)continue;const k=x.customer;payByC.set(k,(payByC.get(k)||0)+(+x.amount||0));}
   for(const x of db.customerReturns){const k=x.customer;if(!retByC.has(k))retByC.set(k,[]);retByC.get(k).push(x);}
   const result=new Map();
@@ -880,8 +879,8 @@ function consumeOrderDeposit(name,amount,orderId){const available=orderDepositAv
 // الباقي على الطلبية عند التسليم (قيمتها − العربون) — للعرض بس: الطلبية مش بتدخل في رصيد
 // العميل لحد ما تتعمل بيها فاتورة.
 function orderOutstanding(o){if(o.invoiced)return 0;return Math.max(0,(+o.total||0)-(+o.deposit||0)+(+o.depositUsed||0));}
-// العربون المدفوع في طلبية لسه ما اتفوترتش: فلوس دخلت فعلاً، فبتتحسب للعميل («له») لحد ما
-// الطلبية تتفوتر، وساعتها بتتخصم من الفاتورة نفسها (depositUsed).
+// العربون المدفوع في طلبية لسه ما اتفوترتش: محجوز للطلبية دي — مش بيدخل في رصيد العميل (لا عليه
+// ولا له)، وبيتخصم من فاتورة الطلبية نفسها لما تتعمل (depositUsed). بيظهر لوحده في ملف العميل.
 function orderUnusedDeposit(o){if(o.invoiced)return 0;return Math.max(0,(+o.deposit||0)-(+o.depositUsed||0));}
 // رصيد المرتجعات اللي لسه ما اتستخدمش لعميل، محسوب كإجمالي (مش مرتجع مرتجع)، عشان
 // أي سجل قديم اتسحب منه أكتر من رصيده ميبوّظش الرصيد.
@@ -899,7 +898,7 @@ function sales(){const gross=salesInvoices().reduce((s,x)=>s+(+x.total||0),0);co
 function invoiceItemUnitCost(i){if(+i.factoryPrice)return +i.factoryPrice;const p=db.products.find(x=>String(x.id)===String(i.productId));return p?(+p.cost||+p.factoryPrice||0):0;}
 function invoiceCost(inv){return (inv.items||[]).reduce((s,i)=>s+invoiceItemUnitCost(i)*(+i.quantity||0),0);}
 function returnCost(r){const inv=db.invoices.find(x=>String(x.id)===String(r.invoiceId));const it=inv?.items?.[+r.itemIndex];return it?invoiceItemUnitCost(it)*(+r.quantity||0):0;}
-function customerBalance(name){const opening=+db.customerBalances[name]||0,inv=db.invoices.filter(x=>x.customer===name).reduce((s,x)=>s+(x.remaining!=null?+x.remaining:+x.total||0),0),ord=-db.orders.filter(x=>x.customer===name&&!x.invoiced).reduce((s,x)=>s+orderUnusedDeposit(x),0),pay=db.customerPayments.filter(x=>x.customer===name&&!x.invoiceId).reduce((s,x)=>s+(+x.amount||0),0),rets=db.customerReturns.filter(x=>x.customer===name);let bal=opening+inv+ord-pay;for(const r of rets){const applied=r.appliedToDebt!=null?+r.appliedToDebt:Math.min(+r.netAmount||0,Math.max(0,bal));bal-=applied;}bal-=unusedReturnCreditOf(rets);return bal;}
+function customerBalance(name){const opening=+db.customerBalances[name]||0,inv=db.invoices.filter(x=>x.customer===name).reduce((s,x)=>s+(x.remaining!=null?+x.remaining:+x.total||0),0),ord=0,pay=db.customerPayments.filter(x=>x.customer===name&&!x.invoiceId).reduce((s,x)=>s+(+x.amount||0),0),rets=db.customerReturns.filter(x=>x.customer===name);let bal=opening+inv+ord-pay;for(const r of rets){const applied=r.appliedToDebt!=null?+r.appliedToDebt:Math.min(+r.netAmount||0,Math.max(0,bal));bal-=applied;}bal-=unusedReturnCreditOf(rets);return bal;}
 // ===== رصيد مقدم للعميل (دفع أكتر من المستحق) =====
 // أي مبلغ زيادة عن المستحق (دفعة أكبر من مديونيته، أو عربون أكبر من قيمة الطلبية،
 // أو مدفوع أكبر من قيمة الفاتورة) بيتسجل دفعة مستقلة على حساب العميل — بنفس طريقة
@@ -914,10 +913,8 @@ function addCustomerAdvance(customer,amount,date,note,paymentMethod){
 // الطلبية دي مش بيتحسب (لأن الفاتورة هي اللي هتحل محلها في الحساب).
 function customerCreditForNewWork(name,pendingOrderId){
   if(!name)return 0;
-  let bal=customerBalance(name);
-  // عرابين الطلبيات المفتوحة محجوزة لطلبياتها: بتتخصم من فاتورة الطلبية نفسها (orderDepositUsed)
-  // لما تتفوتر، فمش بنعدّها رصيد متاح لأي فاتورة تانية.
-  for(const o of db.orders)if(o.customer===name&&!o.invoiced)bal+=orderUnusedDeposit(o);
+  // عرابين الطلبيات المفتوحة مش في الرصيد أصلاً (محجوزة لطلبياتها)، فالمتاح لشغل جديد = الرصيد اللي له بس.
+  const bal=customerBalance(name);
   return Math.max(0,-bal);
 }
 function dateParts(date){const m=String(date||'').match(/^(\d{4})-(\d{2})-(\d{2})/);return m?{y:+m[1],m:+m[2],d:+m[3]}:null;}
@@ -2396,8 +2393,8 @@ function runDaftarTests(){
     db.customerReturns=[{id:1,customer:'ب',paid:false,netAmount:100,appliedToDebt:60,creditAmount:40,creditUsed:70},{id:2,customer:'ب',paid:false,netAmount:100,appliedToDebt:0,creditAmount:100,creditUsed:0}];
     db.invoices=[{id:1,customer:'ب',total:60,remaining:60,items:[]}];
     db.orders=[{id:1,customer:'ب',total:70,deposit:70,depositUsed:0,received:false,items:[]}];
-    // الطلبية (70) لسه ما اتفوترتش فمش عليه، وعربونها (اللي اتاخد من رصيد المرتجعات) محسوب له لحد ما تتفوتر.
-    daftarAssertEqual(customerBalance('ب'),-140,'رصيد المرتجعات المتبقي = الإجمالي − المستخدم (والعربون اللي اتاخد منه محسوب للعميل)',results);
+    // الطلبية (70) لسه ما اتفوترتش فمش عليه، وعربونها (اللي اتاخد من رصيد المرتجعات) محجوز ليها ومش في الرصيد.
+    daftarAssertEqual(customerBalance('ب'),-70,'رصيد المرتجعات المتبقي = الإجمالي − المستخدم (والجزء اللي اتحجز كعربون طلبية برا الرصيد)',results);
 
     // 10) عربون الطلبية اللي اتنقل لفاتورة مش بيتحسب مرتين، والطلبية نفسها مش عليه لحد ما تتفوتر
     db=structuredClone(initial);
@@ -2454,7 +2451,7 @@ function runDaftarTests(){
     db.customerReturns=[{id:4,customer:'ط',invoiceId:1,itemIndex:0,productName:'أ',quantity:1,netAmount:500,appliedToDebt:420,paid:false,creditAmount:80,creditUsed:50,date:'2026-01-05'},{id:5,customer:'ط',invoiceId:1,itemIndex:0,productName:'أ',quantity:0,netAmount:0,appliedToDebt:30,paid:true,refundAmount:0,creditAmount:0,date:'2026-01-06'}];
     // الطلبية (400) لسه ما اتسلمتش، فمش داخلة في الكشف — العربون الكاش بتاعها (100) بس اللي ظاهر.
     const st=customerStatementData('ط');
-    daftarAssertEqual([st.balance,st.rows[st.rows.length-1].balance,st.rows.some(r=>r.label==='تسوية'),st.pending.total,customerBalance('ط')],[20,20,false,400,20],'كشف الحساب المطبوع = رصيد البرنامج، من غير الطلبيات اللي لسه ما اتسلمتش',results);
+    daftarAssertEqual([st.balance,st.rows.filter(r=>!r.info).slice(-1)[0].balance,st.rows.some(r=>r.label==='تسوية'),st.pending.total,customerBalance('ط')],[170,170,false,400,170],'كشف الحساب المطبوع = رصيد البرنامج، من غير الطلبيات اللي لسه ما اتسلمتش',results);
 
     // 18) طلبية بعربون اتسلمت في فاتورة: العربون بيظهر مرة واحدة بس، والرصيد = رصيد العميل
     db=structuredClone(initial);
@@ -2473,11 +2470,22 @@ function runDaftarTests(){
     daftarAssertEqual([credit19,customerBalance('ك'),alloc19.paidByDoc.get('invoice:3'),customerStatementData('ك').balance],[-300,-100,200,-100],'دفعة زيادة: الرصيد له 300، وفاتورة جديدة 200 بتتخصم منه ويفضل له 100',results);
 
     // 20) عربون أكبر من قيمة الطلبية: العربون = قيمة الطلبية والزيادة رصيد. الطلبية لسه ما اتفوترتش،
-    // فعربونها (1000) محسوب له في الرصيد، بس محجوز للطلبية ومش متاح لشغل جديد (المتاح = الزيادة 200 بس).
+    // فعربونها (1000) محجوز ليها ومش في الرصيد؛ الرصيد اللي له = الزيادة 200 بس، وهي المتاحة لشغل جديد.
     db=structuredClone(initial);
     db.orders=[{id:10,customer:'ل',date:'2026-03-01',total:1000,deposit:1000,cashDeposit:1000,depositUsed:0,creditUsed:0,received:false,items:[{productName:'أ',quantity:1,salePrice:1000}]}];
     db.customerPayments=[{id:11,customer:'ل',date:'2026-03-01',amount:200,advance:true}];
-    daftarAssertEqual([customerBalance('ل'),customerCreditForNewWork('ل')],[-1200,200],'عربون الطلبية محسوب للعميل لحد ما تتفوتر، والمتاح لشغل جديد الزيادة بس',results);
+    daftarAssertEqual([customerBalance('ل'),customerCreditForNewWork('ل')],[-200,200],'عربون الطلبية محجوز ليها (برا الرصيد)، والزيادة بس رصيد للعميل ومتاحة لشغل جديد',results);
+
+    // 25) حالة «ام محمد محمود»: طلبية 5550 بعربون 3000 + فاتورة صنف 550 مش مدفوعة.
+    // قبل التسليم عليها 550 بس (العربون محجوز للطلبية)، وبعد ما الطلبية تتفوتر عليها 550 + (5550 − 3000) = 3100.
+    db=structuredClone(initial);
+    db.orders=[{id:60,customer:'ق',date:'2026-09-30',total:5550,deposit:3000,cashDeposit:3000,depositUsed:0,creditUsed:0,received:false,items:[{productName:'أ',quantity:15,salePrice:370}]}];
+    db.invoices=[{id:61,customer:'ق',date:'2026-09-30',total:550,deposit:0,cashDeposit:0,remaining:550,items:[{productName:'ب',quantity:1,unitPrice:550}]}];
+    const st25a=customerStatementData('ق'),before25=[customerBalance('ق'),customerCreditForNewWork('ق'),st25a.balance,st25a.rows.some(r=>r.label==='تسوية')];
+    db.orders[0].received=true;db.orders[0].depositUsed=3000;db.orders[0].invoiced=true;db.orders[0].invoiceId=62;
+    db.invoices.push({id:62,customer:'ق',date:'2026-10-10',total:5550,deposit:3000,cashDeposit:0,orderDepositUsed:3000,remaining:2550,items:[{productName:'أ',quantity:15,unitPrice:370}]});
+    const st25b=customerStatementData('ق');
+    daftarAssertEqual([...before25,customerBalance('ق'),st25b.balance,st25b.rows.some(r=>r.label==='تسوية')],[550,0,550,false,3100,3100,false],'عربون الطلبية محجوز: عليها 550 قبل التسليم و3100 بعد فاتورة الطلبية',results);
 
     // 21) فاتورة من طلبية والعميل ليه رصيد: الرصيد بيتحسب من غير باقي الطلبية نفسها
     db=structuredClone(initial);
@@ -2595,13 +2603,13 @@ function customerHistoryTable(name){
   // والباقي اللي هيتحسب عليه عند التسليم — ومش داخلة في الرصيد.
   const openOrders=db.orders.filter(o=>o.customer===name&&!o.invoiced);
   const openDeposits=openOrders.reduce((s,o)=>s+orderUnusedDeposit(o),0),openTotal=openOrders.reduce((s,o)=>s+(+o.total||0),0);
-  const openOrdersHtml=openOrders.length?`<div class="notice open-orders-box"><strong>📦 طلبيات مطلوبة للعميل — هتتحسب عليه عند التسليم (مش داخلة في الرصيد دلوقتي)</strong>${table(['الطلبية','التاريخ','الأصناف','القيمة','العربون المدفوع','هيتحسب عليه عند التسليم','الحالة'],openOrders.map(o=>`<tr><td>#${displayNo('orders',o.id)}</td><td>${esc(o.date)||'—'}</td><td>${historyItemsText(o)}</td><td>${money(o.total||0)}</td><td>${orderUnusedDeposit(o)>0?money(orderUnusedDeposit(o)):'—'}</td><td><strong>${money(orderOutstanding(o))}</strong></td><td>${o.received?'وصلت المخزون':'لسه في المصنع'}</td></tr>`))}<div style="margin-top:6px">الإجمالي: ${money(openTotal)}${openDeposits>0?` — العربون المدفوع ${money(openDeposits)} (محسوب له في الرصيد لحد ما الطلبية تتفوتر)`:''}</div></div>`:'';
+  const openOrdersHtml=openOrders.length?`<div class="notice open-orders-box"><strong>📦 طلبيات مطلوبة للعميل — هتتحسب عليه عند التسليم (مش داخلة في الرصيد دلوقتي)</strong>${table(['الطلبية','التاريخ','الأصناف','القيمة','العربون المدفوع','هيتحسب عليه عند التسليم','الحالة'],openOrders.map(o=>`<tr><td>#${displayNo('orders',o.id)}</td><td>${esc(o.date)||'—'}</td><td>${historyItemsText(o)}</td><td>${money(o.total||0)}</td><td>${orderUnusedDeposit(o)>0?money(orderUnusedDeposit(o)):'—'}</td><td><strong>${money(orderOutstanding(o))}</strong></td><td>${o.received?'وصلت المخزون':'لسه في المصنع'}</td></tr>`))}<div style="margin-top:6px">الإجمالي: ${money(openTotal)}${openDeposits>0?` — العربون المدفوع ${money(openDeposits)} محجوز للطلبيات دي وهيتخصم منها عند الاستلام (مش داخل في الرصيد)`:''}</div></div>`:'';
   const deleteCompletelyBtn=`<button type="button" class="danger" onclick="deleteCustomerCompletely('${encodeURIComponent(name)}')" title="حذف نهائي لكل فواتيره وطلبياته — لعميل تجريبي أو مُدخَل بالغلط فقط">حذف العميل نهائيًا (مع كل الفواتير والطلبيات)</button>`;
   return `<div class="customer-ledger-head"><div><div class="ledger-subtitle">كشف حساب العميل</div><div class="ledger-current">${balanceLabel} <strong>${money(balanceValue)}</strong></div></div><div class="ledger-actions"><button type="button" class="primary settle-account-btn" onclick="openCustomerSettlement('${encodeURIComponent(name)}')" ${current<=0?'disabled':''}>تصفية الحساب</button><button type="button" class="secondary-btn" onclick="document.querySelector('#paymentForm [name=amount]').focus()">دفعة جديدة</button><button type="button" class="primary" onclick="printCustomerStatement('${encodeURIComponent(name)}')">طباعة كشف الحساب</button><button type="button" class="secondary-btn" id="historyResetSizes">إعادة أحجام الجدول</button><button type="button" class="secondary-btn" onclick="openMergeCustomer('${encodeURIComponent(name)}')">تغيير الاسم / دمج مع عميل</button>${deleteCustomerBtn}${deleteCompletelyBtn}</div></div>`+
     openOrdersHtml+
     `<div class="history-tools"><span>أرقام الفواتير والطلبيات والدفعات تبدأ من 1 لكل عميل. الحساب = الفواتير بس؛ الطلبية بتتحسب على العميل لما تتعمل بيها فاتورة. الدفعات المستقلة تُوزّع تلقائيًا على أقدم فاتورة مستحقة أولًا، وأي زيادة بتفضل رصيد للعميل وتتخصم من الشغل الجديد.</span></div>`+
     `<div class="customer-history-table-wrap"><table class="customer-ledger-table"><thead><tr><th>النوع والرقم</th><th>البيان بالكمية</th><th>المطلوب</th><th>المدفوع</th><th>الباقي</th><th>التاريخ</th><th>الطباعة</th></tr></thead><tbody>${rows||`<tr><td colspan="7" class="empty">لا توجد فواتير أو طلبيات أو دفعات مسجلة لهذا العميل حتى الآن.</td></tr>`}</tbody></table></div>`+
-    `<div class="notice history-total"><div class="history-total-grid"><span>إجمالي المطلوب <strong>${money(totalDue)}</strong></span><span>إجمالي المدفوع <strong>${money(totalPaid)}</strong></span><span>إجمالي الباقي <strong>${money(totalRemaining)}</strong></span>${opening>0?`<span>رصيد افتتاحي <strong>${money(opening)}</strong></span>`:''}${unallocated>0&&customerCredit<=0?`<span>دفعات غير موزعة <strong>${money(unallocated)}</strong></span>`:''}${openDeposits>0?`<span>عربون طلبيات لسه ما اتفوترتش (له) <strong>${money(openDeposits)}</strong></span>`:''}<span class="history-grand">${balanceLabel} <strong>${money(balanceValue)}</strong></span></div></div>`;
+    `<div class="notice history-total"><div class="history-total-grid"><span>إجمالي المطلوب <strong>${money(totalDue)}</strong></span><span>إجمالي المدفوع <strong>${money(totalPaid)}</strong></span><span>إجمالي الباقي <strong>${money(totalRemaining)}</strong></span>${opening>0?`<span>رصيد افتتاحي <strong>${money(opening)}</strong></span>`:''}${unallocated>0&&customerCredit<=0?`<span>دفعات غير موزعة <strong>${money(unallocated)}</strong></span>`:''}${openDeposits>0?`<span title="بيتخصم من الطلبية عند الاستلام — مش داخل في الرصيد">عربون محجوز لطلبيات <strong>${money(openDeposits)}</strong></span>`:''}<span class="history-grand">${balanceLabel} <strong>${money(balanceValue)}</strong></span></div></div>`;
 }
 function initCustomerHistoryResizer(){
   const root=document.querySelector('#customerHistory'),tableEl=root?.querySelector('table');if(!tableEl)return;
@@ -3736,7 +3744,16 @@ function customerStatementData(name){
   const ordersById=new Map(db.orders.map(o=>[String(o.id),o]));
   for(const o of db.orders.filter(x=>x.customer===name)){
     const cash=orderCash(o);
-    if(cash>0)ev.push({date:o.date||'',id:+o.id||0,label:'عربون طلبية',details:`طلبية #${displayNo('orders',o.id)}${o.invoiced?` (اتسلمت في عرض سعر #${displayNo('invoices',o.invoiceId)})`:' (لسه ما اتسلمتش)'}`,debit:0,credit:cash});
+    if(o.invoiced){
+      if(cash>0)ev.push({date:o.date||'',id:+o.id||0,label:'عربون طلبية',details:`طلبية #${displayNo('orders',o.id)} (اتسلمت في عرض سعر #${displayNo('invoices',o.invoiceId)})`,debit:0,credit:cash});
+      continue;
+    }
+    // طلبية لسه ما اتفوترتش: عربونها محجوز ليها ومش داخل في الرصيد — سطر للعلم بس. ولو جزء منه
+    // جه من رصيد مرتجعات، سطر المرتجع بيحسبه للعميل، فبنرجّعه هنا (اتحجز للطلبية).
+    const held=orderUnusedDeposit(o);
+    if(held>0)ev.push({date:o.date||'',id:+o.id||0,label:'عربون طلبية (محجوز)',details:`طلبية #${displayNo('orders',o.id)} لسه ما اتسلمتش — العربون ${money(held)} بيتخصم من قيمتها عند الاستلام، ومش داخل في الرصيد`,debit:0,credit:0,info:true,infoAmount:held});
+    const fromRet=Math.min(+o.creditUsed||0,held);
+    if(fromRet>0)ev.push({date:o.date||'',id:(+o.id||0)+1,label:'رصيد مرتجعات اتحجز كعربون',details:`لطلبية #${displayNo('orders',o.id)}`,debit:fromRet,credit:0});
   }
   for(const x of db.invoices.filter(x=>x.customer===name)){
     if(isDebtRecord(x)){ev.push({date:x.date||'',id:+x.id||0,label:'مديونية',details:esc(x.note)||'مديونية على العميل',debit:+x.total||0,credit:0});continue;}
@@ -3777,7 +3794,7 @@ function customerStatementInnerHtml(name){
   return salesDocHeaderHtml('كشف حساب عميل',meta)+
     `<table class="statement-table"><tr><th>التاريخ</th><th>البيان</th><th>التفاصيل</th><th>عليه (مدين)</th><th>له (دائن)</th><th>الرصيد بعد الحركة</th></tr>${s.rows.map(r=>`<tr${r.info?' style="color:#64748b"':''}><td>${esc(r.date)||'—'}</td><td>${esc(r.label)}</td><td>${r.details||'—'}</td><td>${r.debit?money(r.debit):'—'}</td><td>${r.credit?money(r.credit):'—'}</td><td>${r.info?'—':balText(r.balance)}</td></tr>`).join('')||'<tr><td colspan="6">لا توجد حركات.</td></tr>'}</table>`+
     `<div class="total">إجمالي عليه: ${money(s.totalDebit)}<br>إجمالي له: ${money(s.totalCredit)}<br>الرصيد الحالي: ${balText(s.balance)}</div>`+
-    (s.pending.count?`<p class="doc-note">ملحوظة: فيه ${s.pending.count} طلبية مطلوبة لسه ما اتسلمتش بإجمالي ${money(s.pending.total)} — مش داخلة في الكشف، وقيمتها هتتحسب عند التسليم${s.pending.deposits?`، والعربون المدفوع فيها (${money(s.pending.deposits)}) محسوب فوق`:''}.</p>`:'')+
+    (s.pending.count?`<p class="doc-note">ملحوظة: فيه ${s.pending.count} طلبية مطلوبة لسه ما اتسلمتش بإجمالي ${money(s.pending.total)} — مش داخلة في الكشف، وقيمتها هتتحسب عند التسليم${s.pending.deposits?`، والعربون المدفوع فيها (${money(s.pending.deposits)}) محجوز ليها وهيتخصم منها عند الاستلام`:''}.</p>`:'')+
     salesDocContactHtml();
 }
 function printCustomerStatement(enc){
@@ -5070,6 +5087,9 @@ button.danger:disabled{opacity:.5;cursor:not-allowed}
 /* الطلبيات اللي لسه ما اتفوترتش في حساب العميل: صندوق لوحدها فوق الكشف، وسطرها في الكشف باهت (مش داخل في الحساب). */
 .open-orders-box{margin:0 0 12px}.open-orders-box table{margin-top:8px}
 .customer-ledger-table tr.history-order-pending>td{color:var(--muted);font-style:normal}
+/* عمود الأزرار في كشف حساب العميل: لو الأزرار مش واخدة في سطر بتنزل تحت بعض، بدل ما الجدول يعرض ويطلع شريط تمرير */
+#customerProfile .customer-ledger-table td:last-child{white-space:normal!important}
+#customerProfile .customer-ledger-table td:last-child button{max-width:100%}
 /* جدول أصناف الطلبية (فيه خانات تعديل): ميطلعش برا الصفحة — لو ضاق المكان بيتحرك جوه صندوقه. */
 .order-cart-wrap{max-width:100%;overflow-x:auto}.order-cart-wrap table{width:100%}.order-cart-wrap td{vertical-align:middle}
 #orderCart,#invoiceCart,#quoteCart{min-width:0;max-width:100%}
