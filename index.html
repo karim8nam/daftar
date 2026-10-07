@@ -633,6 +633,48 @@ function renderCustomerList(){
 // عدد الأصناف يكبر جدًا (آلاف الأصناف) يبقى ممكن توصل للصنف اللي عايزه بسرعة
 // من غير ما تتمرمغ في قائمة طويلة. بنبني خريطة الطلبيات مرة واحدة بدل ما نعمل
 // .find() على كل الطلبيات لكل صنف (كان بيبقى بطيء جدًا مع آلاف الأصناف والطلبيات).
+// سطر طلبية في «الطلبيات السابقة». withSel: خانة التحديد للترحيل المجمّع (للي لسه ما اترحّلتش بس).
+function orderRowHtml(o,orderNo,withSel){
+  const items=o.items?.length?o.items:[{productName:o.productName,quantity:o.quantity,salePrice:o.salePrice,total:o.total,batchNo:o.batchNo}];
+  const sel=withSel?`<td><input type="checkbox" class="order-sel" value="${esc(String(o.id))}"${window.daftarOrderSel?.has(String(o.id))?' checked':''} onchange="toggleOrderSel(this.value,this.checked)" title="تحديد للترحيل المجمّع"></td>`:'';
+  // كل أوامر الطلبية في قايمة ⋮ (زي المخزون). الطلبيات المترحّلة ليها خانة «الحالة» بس.
+  const status=o.received?`<td><span class="badge badge-status">✓ ${o.invoiced?'اتفوترت':'تم الترحيل'}</span></td>`:'';
+  return `<tr>${sel}<td>#${orderNo.get(String(o.id))}</td><td>${o.date}${!o.received&&o.expectedPickupDate?`<br><small class="pickup-date" title="ميعاد الاستلام الجديد">الاستلام: ${esc(o.expectedPickupDate)}</small>`:''}</td><td>${esc(o.customer)||'المخزون العام'}</td><td>${items.map(i=>`${esc(i.productName)}${i.sku?` <small>(${esc(i.sku)})</small>`:''} × ${i.quantity}`).join('، ')}</td><td>${money(o.total)}</td><td>${money(o.deposit||0)}</td>${status}<td><div class="row-actions">${rowMenuButton(`openOrderMenu('${o.id}',this)`,'أوامر الطلبية')}</div></td></tr>`;
+}
+function rowMenuButton(onclick,label){return `<button type="button" class="secondary-btn row-menu-btn" title="الأوامر" aria-label="${label}" aria-haspopup="menu" onclick="${onclick}">⋮</button>`;}
+function orderMenuActions(o){
+  const acts=[];
+  if(!o.received)acts.push({label:'📦 ترحيل للمخزون',run:()=>receiveOrder(o.id)});
+  if(!o.invoiced)acts.push({label:'✏️ تعديل',run:()=>editOrder(o.id)});
+  acts.push({label:'📄 إرسال الطلبية على واتساب',run:()=>sendOrderWhatsApp(o.id)});
+  if(o.received&&!o.invoiced&&o.customer)acts.push({label:'💬 إرسال رسالة الوصول',run:()=>openArrivalMessages([o.id])});
+  acts.push({label:'📝 تحويل لعرض سعر',run:()=>convertOrderToQuote(o.id)});
+  if(!o.received)acts.push({label:'🗑️ إلغاء/مسح الطلبية',danger:true,run:()=>cancelOrder(o.id)});
+  return acts;
+}
+function openOrderMenu(id,btn){const o=db.orders.find(x=>String(x.id)===String(id));if(o)openRowMenu(btn,orderMenuActions(o));}
+function quoteMenuActions(q){
+  return [
+    {label:'🖨️ طباعة',run:()=>printQuote(q.id)},
+    {label:'💬 إرسال على واتساب',run:()=>sendQuoteWhatsApp(q.id)},
+    {label:'🧾 تحويل لفاتورة',run:()=>convertQuoteToInvoice(q.id)},
+    {label:'🛒 تحويل لطلبية',run:()=>convertQuoteToOrder(q.id)},
+    {label:'🗑️ حذف',danger:true,run:()=>deleteQuote(q.id)}];
+}
+function openInvoiceMenu(id,btn){
+  const x=db.invoices.find(i=>String(i.id)===String(id));if(!x)return;
+  openRowMenu(btn,[
+    {label:'🖨️ طباعة',run:()=>printInvoice(x.id)},
+    {label:'💬 إرسال على واتساب',run:()=>sendInvoiceWhatsApp(x.id)},
+    {label:'🗑️ إلغاء الفاتورة',danger:true,run:()=>cancelInvoice(x.id)}]);
+}
+function openFactoryMenu(id,btn){
+  const x=db.factoryItems.find(i=>String(i.id)===String(id));if(!x)return;
+  openRowMenu(btn,[
+    {label:'✏️ تعديل',run:()=>editFactory(x.id)},
+    {label:'🗑️ حذف',danger:true,run:()=>deleteFactory(x.id)}]);
+}
+function openQuoteMenu(id,btn){const q=(db.quotes||[]).find(x=>String(x.id)===String(id));if(q)openRowMenu(btn,quoteMenuActions(q));}
 function renderProductsTable(){
   const box=document.querySelector('#productsTable');
   if(!box)return;
@@ -644,19 +686,19 @@ function renderProductsTable(){
     const hay=[x.name,x.customerName,x.sku,x.batchNo,x.pebble].map(v=>String(v||'').toLocaleLowerCase('ar-EG'));
     return hay.some(v=>v.includes(q));
   };
-  const list=db.products.filter(matches);
+  // ترتيب بالحروف حسب اسم الصنف، فنفس الصنف بباتشات مختلفة (سيلر، ورنيش، بلاستيك...) بييجي
+  // تحت بعض. وجوه نفس الاسم: المخزون العام الأول، وبعدين الوزن والباتش.
+  const general=x=>!x.customerName||x.customerName==='المخزون العام';
+  const list=db.products.filter(matches).sort((a,b)=>String(a.name||'').trim().localeCompare(String(b.name||'').trim(),'ar',{numeric:true})
+    ||(general(b)-general(a))||String(a.customerName||'').localeCompare(String(b.customerName||''),'ar')
+    ||(+a.packageWeight||0)-(+b.packageWeight||0)||String(a.batchNo||'').localeCompare(String(b.batchNo||''),'ar',{numeric:true}));
   const rowFn=x=>{
     const order=x.orderId?orderById.get(String(x.orderId)):null;
     const customer=x.customerName&&x.customerName!=='المخزون العام';
-    const invoiceBtn=customer&&!x.invoiceId&&!order?.invoiceId?`<button type="button" class="primary" onclick="createInvoiceFromOrder('${x.orderId||''}','${x.id}')">عمل فاتورة بيع</button><button type="button" class="secondary-btn" onclick="moveCustomerItemToGeneral('${x.id}')">نقل للمخزون العام</button>`:(customer&&(x.invoiceId||order?.invoiceId)?'<span class="badge">تم عمل الفاتورة</span>':'');
-    // زرار "مرتجع للمصنع" بيظهر بس للأصناف اللي جاية أصلاً من طلبية مصنع (عندها orderId)،
-    // عشان ده المرجع اللي بيحدد سعر شراء المصنع وبيخصم من حساب المصنع تحديدًا.
-    const returnBtn=productFactoryOrderId(x)?`<button type="button" class="secondary-btn" onclick="returnProductToFactory('${x.id}')">مرتجع للمصنع</button>`:'';
-    // صنف قرب يخلص (أقل من 10) وليه صنف في كتالوج المصنع: زرار يعمل طلبية بنفس بياناته.
-    const reorderBtn=(+x.stock||0)<DAFTAR_REORDER_THRESHOLD&&catalogItemForProduct(x)?`<button type="button" class="primary" onclick="reorderFromInventory('${x.id}')">عمل طلبية</button>`:'';
-    // الأزرار بنفس الحجم وبترتيب ثابت في كل الصفوف، و«حذف» زرار في الآخر (مش لينك صغير في النص).
+    const invoiced=customer&&(x.invoiceId||order?.invoiceId);
     const weightText=+x.packageWeight>0?`${x.packageType?esc(x.packageType)+' ':''}${weight(x.packageWeight)}`:(x.packageType?esc(x.packageType):'—');
-    return `<tr><td>${esc(x.name)}</td><td>${esc(x.customerName)||'المخزون العام'}</td><td>${esc(x.sku)||'—'}</td><td>${weightText}</td><td>${esc(x.batchNo)||'—'}</td><td>${esc(x.pebble)||'—'}</td><td>${money(x.price)}</td><td>${x.stock}</td><td><div class="row-actions">${invoiceBtn}${reorderBtn}<button type="button" class="secondary-btn" onclick="editInventoryBatch('${x.id}')">تعديل</button>${returnBtn}<button type="button" class="danger" onclick="deleteInventoryItem('${x.id}')">حذف</button></div></td></tr>`;
+    // كل أوامر الصنف (فاتورة، طلبية، تعديل، مرتجع، حذف) في قايمة واحدة بزرار ⋮ عشان السطر يفضل نضيف.
+    return `<tr><td>${esc(x.name)}</td><td>${esc(x.customerName)||'المخزون العام'}</td><td>${esc(x.sku)||'—'}</td><td>${weightText}</td><td>${esc(x.batchNo)||'—'}</td><td>${esc(x.pebble)||'—'}</td><td>${money(x.price)}</td><td>${x.stock}</td><td><div class="row-actions">${invoiced?'<span class="badge">تم عمل الفاتورة</span>':''}<button type="button" class="secondary-btn row-menu-btn" title="الأوامر" aria-label="أوامر الصنف" aria-haspopup="menu" onclick="openProductMenu('${x.id}',this)">⋮</button></div></td></tr>`;
   };
   const dupGroups=q?[]:duplicateInventoryGroups();
   const dupNotice=dupGroups.length?`<div class="notice tone-danger" style="margin-bottom:10px">⚠️ فيه ${dupGroups.length} صنف متسجّل في أكتر من سطر بنفس البيانات بالظبط: ${dupGroups.map(g=>`«${esc(g[0].name)}»${g[0].batchNo?` باتش ${esc(g[0].batchNo)}`:''} (${g.length} أسطر)`).join('، ')} <button type="button" class="secondary-btn" onclick="mergeDuplicateInventory()">دمج الأسطر المتكررة</button></div>`:'';
@@ -665,6 +707,59 @@ function renderProductsTable(){
     ?countLine+pagedTable('products',['الصنف','صاحب الطلبية','الكود','الوزن','الباتش','الحصوة','البيع','المتاح',''],list,rowFn,q)
     :countLine+`<div class="empty">${q?'لا يوجد صنف مطابق للبحث.':'لا توجد أصناف في المخزون حتى الآن.'}</div>`;
 }
+
+// أوامر صنف المخزون (بنفس شروط الأزرار القديمة): بتتحسب وقت فتح القايمة عشان تبقى على آخر بيانات.
+function productMenuActions(x){
+  const order=x.orderId?db.orders.find(o=>String(o.id)===String(x.orderId)):null;
+  const customer=x.customerName&&x.customerName!=='المخزون العام';
+  const acts=[];
+  if(customer&&!x.invoiceId&&!order?.invoiceId){
+    acts.push({label:'🧾 عمل فاتورة بيع',run:()=>createInvoiceFromOrder(x.orderId||'',x.id)});
+    acts.push({label:'📦 نقل للمخزون العام',run:()=>moveCustomerItemToGeneral(x.id)});
+    // إعادة إرسال رسالة «الطلبية وصلت» للعميل (نفس قايمة الإرسال اللي بتظهر بعد الترحيل).
+    if(order?.customer)acts.push({label:'💬 إرسال رسالة الوصول',run:()=>openArrivalMessages([order.id])});
+  }
+  // صنف قرب يخلص (أقل من 10) وليه صنف في كتالوج المصنع: طلبية بنفس بياناته.
+  if((+x.stock||0)<DAFTAR_REORDER_THRESHOLD&&catalogItemForProduct(x))acts.push({label:'🛒 عمل طلبية',run:()=>reorderFromInventory(x.id)});
+  acts.push({label:'✏️ تعديل',run:()=>editInventoryBatch(x.id)});
+  // «مرتجع للمصنع» بس للأصناف اللي جاية من طلبية مصنع (هي اللي بتحدد سعر الشراء وحساب المصنع).
+  if(productFactoryOrderId(x))acts.push({label:'↩️ مرتجع للمصنع',run:()=>returnProductToFactory(x.id)});
+  acts.push({label:'🗑️ حذف',danger:true,run:()=>deleteInventoryItem(x.id)});
+  return acts;
+}
+function openProductMenu(id,btn){
+  const x=db.products.find(p=>String(p.id)===String(id));if(!x)return;
+  openRowMenu(btn,productMenuActions(x));
+}
+// قايمة صغيرة بتفتح تحت زرار ⋮ (فوق باقي الصفحة، فمبتتقصّش جوه الجدول). بتتقفل بالضغط برّه،
+// أو Esc، أو لما الصفحة تتحرك.
+function closeRowMenu(){const m=document.getElementById('daftarRowMenu');if(m){m._opener?.setAttribute('aria-expanded','false');m.remove();}}
+function openRowMenu(btn,actions){
+  const wasOpen=document.getElementById('daftarRowMenu')?._opener===btn;
+  closeRowMenu();if(wasOpen)return;
+  const menu=document.createElement('div');menu.id='daftarRowMenu';menu.className='row-menu';menu.setAttribute('role','menu');menu._opener=btn;
+  for(const a of actions){
+    const b=document.createElement('button');b.type='button';b.setAttribute('role','menuitem');b.textContent=a.label;if(a.danger)b.className='row-menu-danger';
+    b.onclick=()=>{closeRowMenu();a.run();};
+    menu.appendChild(b);
+  }
+  document.body.appendChild(menu);btn.setAttribute('aria-expanded','true');
+  const r=btn.getBoundingClientRect(),mw=menu.offsetWidth,mh=menu.offsetHeight;
+  let left=r.left,top=r.bottom+4;
+  if(left+mw>innerWidth-8)left=innerWidth-8-mw;
+  if(left<8)left=8;
+  if(top+mh>innerHeight-8)top=Math.max(8,r.top-4-mh);
+  menu.style.left=left+'px';menu.style.top=top+'px';
+  menu.querySelector('button')?.focus();
+}
+document.addEventListener('mousedown',e=>{const m=document.getElementById('daftarRowMenu');if(m&&!m.contains(e.target)&&e.target!==m._opener&&!m._opener?.contains(e.target))closeRowMenu();});
+document.addEventListener('keydown',e=>{
+  const m=document.getElementById('daftarRowMenu');if(!m)return;
+  if(e.key==='Escape'){const o=m._opener;closeRowMenu();o?.focus();return;}
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();const items=[...m.querySelectorAll('button')],i=items.indexOf(document.activeElement);items[(i+(e.key==='ArrowDown'?1:-1)+items.length)%items.length]?.focus();}
+});
+window.addEventListener('scroll',closeRowMenu,true);
+window.addEventListener('resize',closeRowMenu);
 
 // حساب المصنع: حساب منفصل تمامًا عن "المشتريات" و"المشتريات الإضافية" — بيتابع
 // بس "أنا مديون للمصنع بكام كمورد"، بغض النظر عن أسعار البيع للعملاء. بيزيد
@@ -1205,7 +1300,7 @@ function renderNow(){
  }
  if(pageVisible('factory')){
    // سعر شراء المصنع مش بيظهر في الجدول (بيظهر بس في فورم التعديل).
-   document.querySelector('#factoryTable').innerHTML=pagedTable('factory',['الصنف','النوع','سعر البيع','الوزن',''],db.factoryItems,x=>`<tr><td>${esc(x.name)}${isTonPriced(x)?' <span class="badge">بالطن</span>':''}</td><td>${esc(x.packageType)||'—'}</td><td>${isTonPriced(x)?`${money(x.tonSalePrice)} / طن<br><small>العبوة ${weight(x.packageWeight)}: ${money(x.salePrice)}</small>`:money(x.salePrice)}</td><td>${weight(x.packageWeight)}${catalogWeightOptions(x).length>1?`<br><small>${catalogWeightOptions(x).join(' / ')} كجم</small>`:''}</td><td><button class="primary" onclick="editFactory('${x.id}')">تعديل</button> <button class="danger" onclick="deleteFactory('${x.id}')">حذف</button></td></tr>`,'');
+   document.querySelector('#factoryTable').innerHTML=pagedTable('factory',['الصنف','النوع','سعر البيع','الوزن',''],db.factoryItems,x=>`<tr><td>${esc(x.name)}${isTonPriced(x)?' <span class="badge">بالطن</span>':''}</td><td>${esc(x.packageType)||'—'}</td><td>${isTonPriced(x)?`${money(x.tonSalePrice)} / طن<br><small>العبوة ${weight(x.packageWeight)}: ${money(x.salePrice)}</small>`:money(x.salePrice)}</td><td>${weight(x.packageWeight)}${catalogWeightOptions(x).length>1?`<br><small>${catalogWeightOptions(x).join(' / ')} كجم</small>`:''}</td><td><div class="row-actions">${rowMenuButton(`openFactoryMenu('${x.id}',this)`,'أوامر صنف الكتالوج')}</div></td></tr>`,'');
  }
  if(pageVisible('products'))renderProductsTable();
  if(pageVisible('orders')){
@@ -1220,14 +1315,22 @@ function renderNow(){
    const notReceivedCount=orderList.filter(o=>!o.received).length;
    setTimeout(updateOrderBulkBar,0);
    const bulkBar=notReceivedCount?`<div class="order-bulk-bar"><label><input type="checkbox" id="orderSelAll" onchange="toggleAllOrderSel(this.checked)"> تحديد كل الطلبيات اللي لسه ما اترحّلتش في الصفحة دي</label><div class="order-bulk-actions"><button type="button" class="secondary-btn" id="bulkDelayBtn" onclick="bulkDelayMessages()" disabled title="رسالة اعتذار عن التأخير بميعاد استلام جديد للعملاء المحددين">رسالة ميعاد الاستلام (0)</button><button type="button" class="primary" id="bulkReceiveBtn" onclick="bulkReceiveOrders()" disabled>ترحيل المحدد للمخزون (0)</button></div></div>`:'';
-   document.querySelector('#ordersTable').innerHTML=bulkBar+(oq?`<div class="customer-list-count">عدد النتائج: <strong>${orderList.length}</strong></div>`:'')+pagedTable('orders',['','رقم','التاريخ','العميل','الأصناف','إجمالي الطلبية','العربون','واتساب','الحالة'],orderList.slice().reverse(),o=>{const items=o.items?.length?o.items:[{productName:o.productName,quantity:o.quantity,salePrice:o.salePrice,total:o.total,batchNo:o.batchNo}];return `<tr><td>${o.received?'':`<input type="checkbox" class="order-sel" value="${esc(String(o.id))}"${window.daftarOrderSel?.has(String(o.id))?' checked':''} onchange="toggleOrderSel(this.value,this.checked)" title="تحديد للترحيل المجمّع">`}</td><td>#${orderNo.get(String(o.id))}</td><td>${o.date}${!o.received&&o.expectedPickupDate?`<br><small class="pickup-date" title="ميعاد الاستلام الجديد">الاستلام: ${esc(o.expectedPickupDate)}</small>`:''}</td><td>${esc(o.customer)||'المخزون العام'}</td><td>${items.map(i=>`${esc(i.productName)}${i.sku?` <small>(${esc(i.sku)})</small>`:''} × ${i.quantity}`).join('، ')}</td><td>${money(o.total)}</td><td>${money(o.deposit||0)}</td><td><div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="primary" onclick="sendOrderWhatsApp('${o.id}')">واتساب</button><button type="button" class="secondary-btn" style="white-space:nowrap" title="تحويل الطلبية لعرض سعر" onclick="convertOrderToQuote('${o.id}')">عرض سعر</button></div></td><td>${o.received?`<span class="badge badge-status">✓ ${o.invoiced?'اتفوترت':'تم الترحيل'}</span>${o.invoiced?'':` <button type="button" class="secondary-btn" onclick="editOrder('${o.id}')">تعديل</button>`}`:`<div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="primary" onclick="receiveOrder('${o.id}')">ترحيل للمخزون</button><button type="button" class="secondary-btn" onclick="editOrder('${o.id}')">تعديل</button><button type="button" class="danger" onclick="cancelOrder('${o.id}')">إلغاء/مسح الطلبية</button></div>`}</td></tr>`;},oq);
+   // الطلبيات اللي لسه ما اترحّلتش في الجدول الأول، واللي اترحّلت في قايمة تحتها مقفولة بسهم
+   // (بتتفتح لوحدها لو البحث لقى فيها نتايج). حالة الفتح بتفضل زي ما هي مع إعادة الرسم.
+   const pendingList=orderList.filter(o=>!o.received).reverse(),receivedList=orderList.filter(o=>o.received).reverse();
+   const orderHead=['رقم','التاريخ','العميل','الأصناف','إجمالي الطلبية','العربون'];
+   const receivedOpen=window.daftarReceivedOrdersOpen||(!!oq&&receivedList.length>0);
+   document.querySelector('#ordersTable').innerHTML=bulkBar+(oq?`<div class="customer-list-count">عدد النتائج: <strong>${orderList.length}</strong></div>`:'')
+     +`<h3 class="orders-group-title">⏳ لسه ما اترحّلتش <span class="badge">${pendingList.length}</span></h3>`
+     +(pendingList.length?pagedTable('orders',['',...orderHead,''],pendingList,o=>orderRowHtml(o,orderNo,true),oq):`<div class="empty">${oq?'مفيش طلبية لسه ما اترحّلتش مطابقة للبحث.':'مفيش طلبيات لسه ما اترحّلتش.'}</div>`)
+     +(receivedList.length?`<details class="orders-received"${receivedOpen?' open':''} ontoggle="window.daftarReceivedOrdersOpen=this.open"><summary>✓ الطلبيات اللي اترحّلت للمخزون <span class="badge">${receivedList.length}</span></summary>${pagedTable('ordersReceived',[...orderHead,'الحالة',''],receivedList,o=>orderRowHtml(o,orderNo,false),oq)}</details>`:'');
  }
  if(pageVisible('invoices')){
    const invNo=buildDisplayNoMap('invoices');
    const iq=(document.querySelector('#invoiceSearch')?.value||'').trim().toLocaleLowerCase('ar-EG');
    const invMatches=x=>{if(!iq)return true;if(String(invNo.get(String(x.id))).includes(iq))return true;return String(x.customer||'').toLocaleLowerCase('ar-EG').includes(iq);};
    const invList=salesInvoices().filter(invMatches);
-   document.querySelector('#invoicesTable').innerHTML=(iq?`<div class="customer-list-count">عدد النتائج: <strong>${invList.length}</strong></div>`:'')+pagedTable('invoices',['رقم','التاريخ','العميل','الأصناف','الإجمالي','المدفوع','المتبقي','واتساب',''],invList.slice().reverse(),x=>{const rem=Math.max(0,+x.remaining||0),paid=Math.max(0,(+x.total||0)-rem);return `<tr><td>#${invNo.get(String(x.id))}</td><td>${x.date}</td><td>${esc(x.customer)}</td><td>${x.items.map(i=>esc(i.productName)+' × '+i.quantity).join('، ')}${transportNote(x)}</td><td>${money(x.total)}</td><td>${money(paid)}</td><td>${money(rem)}</td><td><button type="button" class="primary" onclick="sendInvoiceWhatsApp('${x.id}')">واتساب</button></td><td><button class="primary" onclick="printInvoice('${x.id}')">طباعة</button> <button type="button" class="danger" onclick="cancelInvoice('${x.id}')">إلغاء الفاتورة</button></td></tr>`;},iq);
+   document.querySelector('#invoicesTable').innerHTML=(iq?`<div class="customer-list-count">عدد النتائج: <strong>${invList.length}</strong></div>`:'')+pagedTable('invoices',['رقم','التاريخ','العميل','الأصناف','الإجمالي','المدفوع','المتبقي',''],invList.slice().reverse(),x=>{const rem=Math.max(0,+x.remaining||0),paid=Math.max(0,(+x.total||0)-rem);return `<tr><td>#${invNo.get(String(x.id))}</td><td>${x.date}</td><td>${esc(x.customer)}</td><td>${x.items.map(i=>esc(i.productName)+' × '+i.quantity).join('، ')}${transportNote(x)}</td><td>${money(x.total)}</td><td>${money(paid)}</td><td>${money(rem)}</td><td><div class="row-actions">${rowMenuButton(`openInvoiceMenu('${x.id}',this)`,'أوامر الفاتورة')}</div></td></tr>`;},iq);
    // فاتورة المبيعات بتبيع من مصدر واحد بس (المخزون db.products)، بعكس عروض
    // الأسعار اللي بتضيف بادئة "inv:"/"fac:" للتفرقة بين مصدرين. القيمة هنا
    // لازم تكون رقم الصنف الخام زي ما بيقرأه addInvoiceItem و refreshInvoiceCreditBox
@@ -1251,7 +1354,7 @@ function renderNow(){
    const qq=(document.querySelector('#quoteSearch')?.value||'').trim().toLocaleLowerCase('ar-EG');
    const quoteMatches=x=>{if(!qq)return true;if(String(quoteNo.get(String(x.id))).includes(qq))return true;return String(x.customer||'').toLocaleLowerCase('ar-EG').includes(qq);};
    const quoteList=(db.quotes||[]).filter(quoteMatches);
-   document.querySelector('#quotesTable').innerHTML=(qq?`<div class="customer-list-count">عدد النتائج: <strong>${quoteList.length}</strong></div>`:'')+pagedTable('quotes',['رقم','التاريخ','العميل','الأصناف','الإجمالي','واتساب',''],quoteList.slice().reverse(),x=>`<tr><td>#${quoteNo.get(String(x.id))}</td><td>${x.date}</td><td>${esc(x.customer)}</td><td>${x.items.map(i=>esc(i.productName)+' × '+quoteQtyText(i)).join('، ')}${transportNote(x)}</td><td>${money(x.total)}</td><td><button type="button" class="primary" onclick="sendQuoteWhatsApp('${x.id}')">واتساب</button></td><td>${x.convertedTo?`<span class="badge">${quoteConvertedLabel(x)}</span><br>`:''}<button class="primary" onclick="printQuote('${x.id}')">طباعة</button> <button type="button" class="secondary-btn" onclick="convertQuoteToInvoice('${x.id}')">تحويل لفاتورة</button> <button type="button" class="secondary-btn" onclick="convertQuoteToOrder('${x.id}')">تحويل لطلبية</button> <button class="danger" onclick="deleteQuote('${x.id}')">حذف</button></td></tr>`,qq);
+   document.querySelector('#quotesTable').innerHTML=(qq?`<div class="customer-list-count">عدد النتائج: <strong>${quoteList.length}</strong></div>`:'')+pagedTable('quotes',['رقم','التاريخ','العميل','الأصناف','الإجمالي','الحالة',''],quoteList.slice().reverse(),x=>`<tr><td>#${quoteNo.get(String(x.id))}</td><td>${x.date}</td><td>${esc(x.customer)}</td><td>${x.items.map(i=>esc(i.productName)+' × '+quoteQtyText(i)).join('، ')}${transportNote(x)}</td><td>${money(x.total)}</td><td>${x.convertedTo?`<span class="badge">${quoteConvertedLabel(x)}</span>`:'—'}</td><td><div class="row-actions">${rowMenuButton(`openQuoteMenu('${x.id}',this)`,'أوامر عرض السعر')}</div></td></tr>`,qq);
  }
  if(pageVisible('customers')){renderCustomerList();renderRepsPanel();}
  }finally{daftarRendering=false;}
@@ -5207,6 +5310,22 @@ button.danger:disabled{opacity:.5;cursor:not-allowed}
 .cloud-snapshot-actions select{flex:1 1 240px;max-width:420px;min-width:0}
 .cloud-snapshot-actions button{flex:none;white-space:nowrap}
 #cloudSnapshotsStatus:empty{display:none}
+/* زرار ⋮ في سطر المخزون والقايمة اللي بتفتح منه */
+.row-menu-btn{min-width:40px;padding-inline:10px!important;font-size:18px;line-height:1;font-weight:700}
+.row-menu{position:fixed;z-index:9500;min-width:200px;max-width:calc(100vw - 16px);display:flex;flex-direction:column;padding:6px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);direction:rtl}
+.row-menu button{all:unset;box-sizing:border-box;display:block;width:100%;padding:10px 12px;border-radius:8px;cursor:pointer;font:inherit;font-size:14px;text-align:right;white-space:nowrap;color:var(--ink)}
+.row-menu button:hover,.row-menu button:focus-visible{background:var(--soft);outline:none}
+.row-menu button:focus-visible{box-shadow:inset 0 0 0 2px var(--blue)}
+.row-menu button.row-menu-danger{color:var(--danger)}
+/* الطلبيات السابقة: اللي لسه ما اترحّلتش فوق، واللي اترحّلت في قايمة مقفولة بسهم */
+.orders-group-title{display:flex;align-items:center;gap:8px;margin:14px 0 8px;font-size:16px}
+details.orders-received{margin-top:18px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+details.orders-received>summary{cursor:pointer;padding:12px 2px;font-weight:700;font-size:15px;list-style:none;display:flex;align-items:center;gap:8px;user-select:none}
+details.orders-received>summary::-webkit-details-marker{display:none}
+details.orders-received>summary::before{content:'◀';font-size:11px;color:var(--muted);transition:transform .15s}
+details.orders-received[open]>summary::before{transform:rotate(-90deg)}
+details.orders-received>summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:12px}
+details.orders-received>:not(summary){margin-bottom:12px}
 #arrivalMsgPanel .form-actions,#delayMsgPanel .form-actions{display:flex;gap:10px;flex-wrap:wrap}
 /* ===== المرحلة 2: ترتيب الصفحات ===== */
 /* "جديدة / السابقة": زرارين كبار فوق الصفحة، الظاهر منهم ملوّن. */
