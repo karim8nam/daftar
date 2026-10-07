@@ -241,6 +241,11 @@ html,body{background:#fff!important}
         <p class="notice">قبل الاستعادة سيقوم البرنامج تلقائيًا بتنزيل نسخة من البيانات الحالية، ثم يستبدلها بالنسخة المختارة.</p>
         <input id="backupFile" type="file" accept="application/json,.json">
         <button type="button" class="primary" id="importBackup" style="margin-top:10px">استعادة النسخة</button>
+      </article><article class="panel" id="cloudSnapshotsPanel" style="margin-bottom:0;grid-column:1/-1">
+        <h2>☁️ نسخ السحابة اليومية</h2>
+        <p class="notice">كل يوم مع أول مزامنة، بيتحفظ على حسابك في السحابة نسخة كاملة من البيانات (من غير الصور)، وبيفضل آخر 30 يوم. لو حصل مسح أو تعديل غلط، تقدر ترجع لأي يوم منهم من هنا — حتى لو الجهاز نفسه باظ. الاستعادة بترجّع كل اللي كان موجود في اليوم ده، ومش بتمسح الحاجات اللي اتضافت بعده.</p>
+        <div class="cloud-snapshot-actions"><select id="cloudSnapshotSelect"><option value="">— اضغط «عرض النسخ» الأول —</option></select><button type="button" class="secondary-btn" id="cloudSnapshotsLoad">عرض النسخ</button><button type="button" class="primary" id="cloudSnapshotRestore">استعادة النسخة المختارة</button></div>
+        <div id="cloudSnapshotsStatus" class="notice" style="margin-top:10px"></div>
       </article></div></div><div data-view="print"><article class="panel" id="printSettingsPanel"><h2>بيانات الفاتورة وعرض السعر</h2><p class="notice">البيانات دي بتتكتب في الفاتورة وعرض السعر (في الطباعة وصورة الواتساب): الشعار واسم الشركة فوق على الشمال، واسمك ورقمك وباركود الواتساب والفيسبوك تحت. خلّي الخلفية نفسها الشعار بس بشكل خفيف.</p><form id="printSettingsForm" class="form"><label>اسم الشركة<input name="companyName"></label><label>الاسم تحت (مع الرقم)<input name="ownerName"></label><label>رقم الموبايل / الواتساب<input name="phone" dir="ltr"></label><label>لينك صفحة الفيسبوك<input name="facebookUrl" dir="ltr" placeholder="https://www.facebook.com/..."></label><label>وضوح شعار الخلفية % (15 = خفيف ورا الكلام)<input name="bgOpacity" type="number" min="0" max="100" step="5"></label><label style="grid-column:1/-1">نص شروط الدفع (بيظهر في عرض السعر تحت الإجمالي)<textarea name="quoteTerms" rows="2" style="font:inherit;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--input);color:var(--ink);resize:vertical"></textarea></label><button class="primary">حفظ البيانات</button></form><div class="form" style="margin-top:14px;align-items:center"><label>شعار الشركة (يفضّل PNG بخلفية شفافة)<input id="companyLogoInput" type="file" accept="image/*"></label><div id="companyLogoPreview" style="min-height:48px"></div><button type="button" class="danger" id="clearCompanyLogo">إزالة الشعار</button></div><div class="form" style="margin-top:14px;align-items:center"><label>صورة باركود الواتساب (اختياري — لو مش موجودة البرنامج بيعمل باركود من الرقم)<input id="whatsappQrInput" type="file" accept="image/*"></label><div id="whatsappQrPreview" style="min-height:48px"></div><button type="button" class="danger" id="clearWhatsappQr">إزالة الصورة</button></div><div id="printSettingsStatus" class="notice" style="margin-top:12px"></div></article><article class="panel" id="arrivalMsgPanel"><h2>رسالة واتساب «الطلبية وصلت»</h2><p class="notice">دي الرسالة اللي بتتفتح في واتساب للعميل لما ترحّل طلبيته للمخزون (لوحدها أو من «رسائل الوصول»). اكتبها بالشكل اللي يعجبك، والكلمات اللي بين { } بتتبدّل ببيانات كل عميل وطلبيته — اضغط على أي واحدة تحت عشان تتحط مكان المؤشر.</p><div class="arrival-tokens" id="arrivalTokens"></div><div class="arrival-msg-grid"><label>نص الرسالة<textarea id="arrivalMsgInput" rows="13"></textarea></label><div><div class="arrival-preview-title">شكل الرسالة عند العميل <small id="arrivalPreviewWho"></small></div><div id="arrivalMsgPreview" class="arrival-preview"></div></div></div><div class="form-actions" style="margin-top:12px"><button type="button" class="primary" id="arrivalMsgSave">حفظ نص الرسالة</button><button type="button" class="secondary-btn" id="arrivalMsgReset">رجوع للنص الأصلي</button></div></article><article class="panel" id="delayMsgPanel"><h2>رسالة واتساب «اعتذار عن التأخير وميعاد الاستلام الجديد»</h2><p class="notice">دي الرسالة اللي بتتبعت للعملاء اللي تحددهم من «الطلبيات السابقة» بزرار «رسالة ميعاد الاستلام». {الميعاد_الجديد} بيتبدّل بالميعاد اللي هتختاره ساعتها (باليوم والتاريخ)، وباقي الكلمات زي رسالة الوصول.</p><div class="arrival-tokens" id="delayTokens"></div><div class="arrival-msg-grid"><label>نص الرسالة<textarea id="delayMsgInput" rows="14"></textarea></label><div><div class="arrival-preview-title">شكل الرسالة عند العميل <small id="delayPreviewWho"></small></div><div id="delayMsgPreview" class="arrival-preview"></div></div></div><div class="form-actions" style="margin-top:12px"><button type="button" class="primary" id="delayMsgSave">حفظ نص الرسالة</button><button type="button" class="secondary-btn" id="delayMsgReset">رجوع للنص الأصلي</button></div></article><article class="panel" id="printBackgroundsPanel"><h2>خلفيات الطباعة</h2><form id="backgroundForm" class="form"><label>خلفية الفاتورة<input name="background" type="file" accept="image/*"></label><button class="primary">حفظ خلفية الفاتورة</button><button type="button" class="danger" id="clearBackground">إزالة الخلفية</button></form><form id="receiptBackgroundForm" class="form"><label>خلفية إيصال الدفع<input name="background" type="file" accept="image/*"></label><button class="primary">حفظ خلفية الإيصال</button><button type="button" class="danger" id="clearReceiptBackground">إزالة الخلفية</button></form><form id="statementBackgroundForm" class="form"><label>خلفية كشف حساب العميل (A4)<input name="background" type="file" accept="image/*"></label><button class="primary">حفظ خلفية كشف الحساب</button><button type="button" class="danger" id="clearStatementBackground">إزالة الخلفية</button></form><form id="quoteBackgroundForm" class="form"><label>خلفية عرض السعر<input name="background" type="file" accept="image/*"></label><button class="primary">حفظ خلفية عرض السعر</button><button type="button" class="danger" id="clearQuoteBackground">إزالة الخلفية</button></form><p class="notice">الخلفيات تُحفظ على هذا الجهاز. عند الطباعة فعّل خيار <strong>طباعة الخلفيات</strong> من إعدادات الطابعة.</p></article></div><div data-view="security"><div class="two settings-grid"><article class="panel" style="margin-bottom:0">
         <h2>كود حماية البرنامج (الرمز الخارجي)</h2>
         <p class="notice">هذا هو الكود المطلوب لفتح البرنامج نفسه على هذا الجهاز. لازم تعرف الكود الحالي عشان تغيّره.</p>
@@ -401,7 +406,7 @@ async function saveBackgrounds(){
     return true;
   }catch(err){console.error('BG save failed:',err);if(typeof daftarToast==='function')daftarToast('تعذر حفظ الخلفية. المتصفح قد لا يدعم التخزين الكبير.','error');return false;}
 }
-loadBackgrounds(); // يبدأ التحميل فورًا في الخلفية، من غير ما يعطّل ظهور الصفحة
+const daftarBgLoadPromise=loadBackgrounds().catch(err=>console.warn('BG load failed:',err)); // يبدأ التحميل فورًا في الخلفية، من غير ما يعطّل ظهور الصفحة
 for(const p of db.factoryItems){p.factoryPrice??=p.price||0;p.salePrice??=p.price||0;p.batchNo??=p.manufacturer??'';p.pebble??=p.notes??'';delete p.manufacturer;delete p.notes;p.packageWeight??=0;}
 for(const p of db.products){p.customerName??='المخزون العام';p.baseName??=p.name;p.factoryPrice??=0;p.manufacturer??='';p.batchNo??='';p.pebble??='';p.packageWeight??=0;p.cost??=p.factoryPrice;}
 for(const x of db.ledgerEntries){x.unitPrice??=(+x.total||0)/(+x.quantity||1);x.sellPrice??=0;x.batchNo??='';x.inStock??=false;}
@@ -5043,29 +5048,35 @@ document.querySelector('#importBackup').onclick=async()=>{
   const reader=new FileReader();
   reader.onload=async()=>{
     try{
-      const parsed=JSON.parse(reader.result),data=parsed&&parsed.data;
-      if(!data||typeof data!=='object'||!Array.isArray(data.products)||!Array.isArray(data.factoryItems)||!Array.isArray(data.invoices)||!Array.isArray(data.orders))throw new Error('invalid');
-      db=data;
-      db.customerBalances??={};db.customerPayments??=[];db.ledgerEntries??=[];db.extraPurchases??=[];db.customerReturns??=[];db.quotes??=[];db.deletedIds??={};
-      // نسحب الخلفيات من ملف النسخة الاحتياطية (لو موجودة) لمكانها المنفصل، وما نسيبهاش جوه db.
-      for(const k of DAFTAR_IMAGE_KEYS){if(db[k]){daftarBg[k]=db[k];delete db[k];}}
-      // الاستعادة قرار صريح من المستخدم إن البيانات دي المفروض ترجع فعليًا — حتى
-      // لو كانت اتمسحت قبل كده بـ"مسح جميع البيانات" (اللي بيسجّل tombstone دائم
-      // لكل عنصر) وسُجّل المسح ده على السحابة. من غير الخطوة دي، أول مزامنة سحابية
-      // بعد الاستعادة كانت بتشوف الـ tombstones القديمة وتمسح البيانات المسترجعة
-      // تاني فورًا (تظهر رسالة "تمت الاستعادة" بس البيانات فعليًا بترجع وتتمسح تاني
-      // خلال ثوانٍ). بنحط وقت تعديل حالي على كل سجل مسترجَع عشان يبقى أحدث فعليًا
-      // من أي tombstone قديم، ونلغي أي تحميل سحابي قديم لسه شغال (زي مسح البيانات بالظبط).
-      const restoreTime=new Date().toISOString();
-      for(const key of DAFTAR_LIST_KEYS)for(const item of (db[key]||[]))if(item&&typeof item==='object')item.updatedAt=restoreTime;
-      daftarCloudGeneration++;
-      daftarSyncDirty=true;
-      await saveBackgrounds();
-      save();scheduleRender();input.value='';daftarAlert('تمت استعادة النسخة الاحتياطية بنجاح.');
+      const parsed=JSON.parse(reader.result);
+      await applyRestoredData(parsed&&parsed.data);
+      input.value='';daftarAlert('تمت استعادة النسخة الاحتياطية بنجاح.');
     }catch(err){daftarAlert('ملف النسخة الاحتياطية غير صالح أو تالف، ولم يتم تغيير البيانات الحالية.');}
   };
   reader.readAsText(file,'utf-8');
 };
+// بيحط نسخة احتياطية (من ملف أو من نسخ السحابة اليومية) مكان البيانات الحالية. لو النسخة مش سليمة
+// بيرمي خطأ من غير ما يغيّر أي حاجة.
+async function applyRestoredData(data){
+  if(!data||typeof data!=='object'||!Array.isArray(data.products)||!Array.isArray(data.factoryItems)||!Array.isArray(data.invoices)||!Array.isArray(data.orders))throw new Error('invalid');
+  db=data;
+  db.customerBalances??={};db.customerPayments??=[];db.ledgerEntries??=[];db.extraPurchases??=[];db.customerReturns??=[];db.quotes??=[];db.deletedIds??={};
+  // نسحب الخلفيات من ملف النسخة الاحتياطية (لو موجودة) لمكانها المنفصل، وما نسيبهاش جوه db.
+  for(const k of DAFTAR_IMAGE_KEYS){if(db[k]){daftarBg[k]=db[k];delete db[k];}}
+  // الاستعادة قرار صريح من المستخدم إن البيانات دي المفروض ترجع فعليًا — حتى
+  // لو كانت اتمسحت قبل كده بـ"مسح جميع البيانات" (اللي بيسجّل tombstone دائم
+  // لكل عنصر) وسُجّل المسح ده على السحابة. من غير الخطوة دي، أول مزامنة سحابية
+  // بعد الاستعادة كانت بتشوف الـ tombstones القديمة وتمسح البيانات المسترجعة
+  // تاني فورًا (تظهر رسالة "تمت الاستعادة" بس البيانات فعليًا بترجع وتتمسح تاني
+  // خلال ثوانٍ). بنحط وقت تعديل حالي على كل سجل مسترجَع عشان يبقى أحدث فعليًا
+  // من أي tombstone قديم، ونلغي أي تحميل سحابي قديم لسه شغال (زي مسح البيانات بالظبط).
+  const restoreTime=new Date().toISOString();
+  for(const key of DAFTAR_LIST_KEYS)for(const item of (db[key]||[]))if(item&&typeof item==='object')item.updatedAt=restoreTime;
+  daftarCloudGeneration++;
+  daftarSyncDirty=true;
+  await saveBackgrounds();
+  save();scheduleRender();
+}
 document.querySelectorAll('input[type=date]').forEach(x=>x.value=today());
 document.querySelector('#customerSearch')?.addEventListener('input',renderCustomerList);
 document.querySelector('#productSearch')?.addEventListener('input',renderProductsTable);
@@ -5171,6 +5182,11 @@ button.danger:disabled{opacity:.5;cursor:not-allowed}
 /* الإعدادات: الكروت جوه كل قسم بنفس الارتفاع والمسافات. */
 .settings-grid{margin-top:4px}
 .settings-grid>article.panel{margin-bottom:0}
+.cloud-snapshot-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.cloud-snapshot-actions select{flex:1 1 240px;max-width:420px;min-width:0}
+.cloud-snapshot-actions button{flex:none;white-space:nowrap}
+#cloudSnapshotsStatus:empty{display:none}
+#arrivalMsgPanel .form-actions,#delayMsgPanel .form-actions{display:flex;gap:10px;flex-wrap:wrap}
 /* ===== المرحلة 2: ترتيب الصفحات ===== */
 /* "جديدة / السابقة": زرارين كبار فوق الصفحة، الظاهر منهم ملوّن. */
 .page-views{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
@@ -5584,7 +5600,74 @@ function fetchWithTimeout(url,options={},timeoutMs=12000){
   const timer=setTimeout(()=>controller.abort(),timeoutMs);
   return fetch(url,{...options,signal:controller.signal}).finally(()=>clearTimeout(timer));
 }
-async function supabaseGet(){const token=await getSupabaseAccessToken();if(!token)throw new Error('NO_AUTH_SESSION');const r=await fetchWithTimeout(SUPABASE_SYNC_URL+'?select=*&user_id=eq.'+encodeURIComponent(supabaseCurrentUser.id)+'&order=updated_at.desc&limit=1',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json'}});if(!r.ok)throw new Error('Supabase GET failed: '+r.status+' '+await r.text());return await r.json()}
+// ===== الصور (اللوجو والخلفيات وكود الواتساب) في السحابة =====
+// الصور حجمها أكبر من كل بيانات البرنامج بكتير، وكانت بتترفع وتنزل مع كل مزامنة (كل تعديل).
+// دلوقتي ليها خانة لوحدها في جدول السحابة (images) بتترفع بس لما صورة تتغير على الجهاز،
+// وبتنزل بس لما تتغير على جهاز تاني (images_updated_at). لو الخانة دي لسه مش متضافة في
+// Supabase، البرنامج بيرجع للطريقة القديمة (الصور جوه data) من غير ما حاجة تبوظ.
+// ولو الجهاز التاني لسه على نسخة قديمة وبيحط الصور جوه data، بنقرا منها برضو.
+let daftarImagesColumn=null; // null: لسه منعرفش — true: الخانة موجودة — false: جدول قديم
+function supabaseMissingColumn(status,text,col){return (status===400||status===404)&&new RegExp(col).test(text)&&/42703|PGRST204|does not exist|Could not find/i.test(text)}
+const daftarImageHashMemo={};
+function daftarImageHash(k){
+  const s=daftarBg[k]||'';const m=daftarImageHashMemo[k];
+  if(m&&m.s===s)return m.h;
+  const out=daftarStringHash(s);daftarImageHashMemo[k]={s,h:out};return out;
+}
+function daftarImagesSig(){return DAFTAR_IMAGE_KEYS.map(daftarImageHash).join('|')}
+function daftarImageSyncKey(){return 'daftar-image-sync-v1-'+(supabaseCurrentUser?.id||'')}
+function daftarImageSyncState(){try{return JSON.parse(localStorage.getItem(daftarImageSyncKey())||'{}')||{}}catch(e){return {}}}
+function setDaftarImageSyncState(st){try{localStorage.setItem(daftarImageSyncKey(),JSON.stringify(st))}catch(e){}}
+async function supabaseGet(){
+  const token=await getSupabaseAccessToken();if(!token)throw new Error('NO_AUTH_SESSION');
+  const base=SUPABASE_SYNC_URL+'?user_id=eq.'+encodeURIComponent(supabaseCurrentUser.id)+'&order=updated_at.desc&limit=1&select=';
+  const headers={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json'};
+  if(daftarImagesColumn!==false){
+    const r=await fetchWithTimeout(base+'user_id,updated_at,device_id,data,images_updated_at',{headers});
+    if(r.ok){daftarImagesColumn=true;return await r.json();}
+    const text=await r.text();
+    if(!supabaseMissingColumn(r.status,text,'images_updated_at'))throw new Error('Supabase GET failed: '+r.status+' '+text);
+    daftarImagesColumn=false;
+  }
+  const r=await fetchWithTimeout(base+'*',{headers});if(!r.ok)throw new Error('Supabase GET failed: '+r.status+' '+await r.text());return await r.json();
+}
+function daftarStringHash(s){let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193);}return s.length+':'+(h>>>0).toString(36)}
+// بيجيب صور السحابة لو اتغيرت من جهاز تاني ويحطها على الجهاز ده. بيرجّع true لو صورة اتغيرت.
+// حالة المزامنة (sig) = بصمة الصور اللي في خانة images على السحابة؛ لو صور الجهاز مختلفة عنها
+// يبقى فيه تغيير لسه ما اترفعش. ولو إنت غيّرت صورة على الجهاز ده ولسه ما اترفعتش، صورتك بتكسب.
+async function applyCloudImages(row){
+  if(!row||!supabaseCurrentUser)return false;
+  await daftarBgLoadPromise;if(!daftarBgReady)return false;
+  const st=daftarImageSyncState();
+  const localChanged=!!st.sig&&st.sig!==daftarImagesSig();
+  const legacy=row.data||{};
+  let changed=false;
+  const adopt=(cloud,exact)=>{
+    for(const k of DAFTAR_IMAGE_KEYS){
+      const v=typeof cloud[k]==='string'?cloud[k]:'';
+      if((v||exact)&&v!==(daftarBg[k]||'')){daftarBg[k]=v;changed=true;}
+    }
+  };
+  if(DAFTAR_IMAGE_KEYS.some(k=>legacy[k])){
+    // آخر حفظ كان من جهاز على نسخة قديمة: الصور جوه data (زي الأول: بناخد الموجود بس).
+    // خانة images نفسها متغيرتش، فحالة المزامنة زي ما هي — ولو الصور اختلفت عنها هتترفع.
+    if(!localChanged)adopt(legacy,false);
+  }else if(daftarImagesColumn&&row.images_updated_at&&row.images_updated_at!==st.stamp){
+    const token=await getSupabaseAccessToken();if(!token)throw new Error('NO_AUTH_SESSION');
+    const r=await fetchWithTimeout(SUPABASE_SYNC_URL+'?select=images,images_updated_at&user_id=eq.'+encodeURIComponent(supabaseCurrentUser.id)+'&order=updated_at.desc&limit=1',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+token}},30000);
+    if(!r.ok)throw new Error('Supabase images GET failed: '+r.status+' '+await r.text());
+    const got=(await r.json())?.[0]||{};
+    const cloud=got.images&&typeof got.images==='object'?got.images:{};
+    // أول مرة الجهاز يشوف خانة الصور بناخد الموجود بس؛ بعد كده بتتنقل زي ما هي (حتى المسح)
+    if(!localChanged)adopt(cloud,!!st.sig);
+    const cloudSig=DAFTAR_IMAGE_KEYS.map(k=>{const v=typeof cloud[k]==='string'?cloud[k]:'';return v===(daftarBg[k]||'')?daftarImageHash(k):daftarStringHash(v)}).join('|');
+    setDaftarImageSyncState({sig:cloudSig,stamp:got.images_updated_at||row.images_updated_at});
+  }
+  if(changed)await saveBackgrounds();
+  // لو صور الجهاز مختلفة عن اللي في خانة الصور على السحابة، نرفعها
+  if(daftarImagesColumn&&daftarImagesSig()!==daftarImageSyncState().sig){daftarSyncDirty=true;scheduleSupabaseSync(1500);}
+  return changed;
+}
 
 function scheduleSupabaseSync(delay=250){
   clearTimeout(window.daftarSupabaseRetryTimer);
@@ -5625,7 +5708,9 @@ async function supabasePullIfChanged(){
     const loadGeneration=daftarCloudGeneration;
     const row=(await supabaseGet())?.[0];
     if(!row?.data||loadGeneration!==daftarCloudGeneration)return;
-    for(const k of DAFTAR_IMAGE_KEYS){if(row.data[k])daftarBg[k]=row.data[k];}
+    if(daftarImagesColumn===false){for(const k of DAFTAR_IMAGE_KEYS){if(row.data[k])daftarBg[k]=row.data[k];}}
+    else await applyCloudImages(row);
+    if(loadGeneration!==daftarCloudGeneration)return;
     if(typeof stampChangedItems==='function')stampChangedItems(); // أي تعديل حصل أثناء السحب ياخد وقته الحقيقي قبل الدمج
     db=mergeDb(db,normalizeDb(row.data));
     primeItemSignatures();
@@ -5673,12 +5758,25 @@ async function supabaseSave(){
       flushLocalSave();
       if(typeof render==='function')render();
     }
+    // صور الجهاز التاني لو اتغيرت (من غير ما نرفع صورنا فوقها قبل ما نشوفها)
+    if(cloudRow&&daftarImagesColumn!==false&&await applyCloudImages(cloudRow)&&typeof render==='function')render();
     const syncRevision=daftarDataRevision;
     const syncTime=new Date().toISOString();
-    const payload={user_id:supabaseCurrentUser.id,state:{},device_id:daftarDeviceId,data:{...db,...Object.fromEntries(DAFTAR_IMAGE_KEYS.map(k=>[k,daftarBg[k]||'']))},updated_at:syncTime};
-    const r=await fetchWithTimeout(SUPABASE_SYNC_URL+'?on_conflict=user_id',{method:'POST',headers,body:JSON.stringify(payload)});
+    const payload={user_id:supabaseCurrentUser.id,state:{},device_id:daftarDeviceId,data:{...db},updated_at:syncTime};
+    let imagesSig=null;
+    if(daftarImagesColumn){
+      // الصور بتترفع بس لو اتغيرت على الجهاز ده من آخر مرة اتزامنت
+      for(const k of DAFTAR_IMAGE_KEYS)delete payload.data[k];
+      if(daftarBgReady){const sig=daftarImagesSig();if(sig!==daftarImageSyncState().sig){payload.images=Object.fromEntries(DAFTAR_IMAGE_KEYS.map(k=>[k,daftarBg[k]||'']));payload.images_updated_at=syncTime;imagesSig=sig;}}
+    }else{
+      Object.assign(payload.data,Object.fromEntries(DAFTAR_IMAGE_KEYS.map(k=>[k,daftarBg[k]||''])));
+    }
+    const r=await fetchWithTimeout(SUPABASE_SYNC_URL+'?on_conflict=user_id&select=updated_at'+(daftarImagesColumn?',images_updated_at':''),{method:'POST',headers,body:JSON.stringify(payload)},payload.images?30000:12000);
     if(!r.ok)throw new Error('Supabase POST failed: '+r.status+' '+await r.text());
-    try{const saved=await r.json();daftarLastCloudStamp=(Array.isArray(saved)?saved[0]?.updated_at:saved?.updated_at)||syncTime;}catch(_){daftarLastCloudStamp=syncTime;}
+    let saved=null;try{saved=await r.json();saved=Array.isArray(saved)?saved[0]:saved;}catch(_){}
+    daftarLastCloudStamp=saved?.updated_at||syncTime;
+    if(imagesSig)setDaftarImageSyncState({sig:imagesSig,stamp:saved?.images_updated_at||syncTime});
+    maybeSaveCloudSnapshot();
     if(daftarDataRevision===syncRevision){
       daftarSyncDirty=false;
       daftarPendingSync=false;
@@ -5717,8 +5815,9 @@ async function loadCloudOrLocal(){
       const cloudRaw=rows[0].data||{};
       const cloud=normalizeDb(cloudRaw);
       // الخلفيات بتتفصل لمكانها المنفصل بدل ما تفضل جوه db.
-      for(const k of DAFTAR_IMAGE_KEYS){if(cloudRaw[k])daftarBg[k]=cloudRaw[k];}
-      await saveBackgrounds();
+      if(daftarImagesColumn===false){for(const k of DAFTAR_IMAGE_KEYS){if(cloudRaw[k])daftarBg[k]=cloudRaw[k];}await saveBackgrounds();}
+      else{try{await applyCloudImages(rows[0]);}catch(err){console.warn('Cloud images load failed:',err);}}
+      if(loadGeneration!==daftarCloudGeneration)return;
       // دمج بدل استبدال: أي بيانات محلية اتضافت أوفلاين ولسه ما اتزامنتش متضيعش.
       if(typeof stampChangedItems==='function')stampChangedItems();
       db=mergeDb(db,cloud);
@@ -5734,6 +5833,79 @@ async function loadCloudOrLocal(){
     syncStatus('☁️ تمت مزامنة الحساب ✓','#059669');
   }catch(err){console.warn('Cloud load failed:',err);syncStatus('📴 تعذر الوصول للسحابة — تعمل على آخر نسخة محلية','#d97706')}
 }
+
+// ===== نسخ السحابة اليومية (جدول daftar_backups) =====
+// مع أول مزامنة ناجحة كل يوم بنحفظ نسخة كاملة من البيانات (من غير الصور) في جدول لوحده على
+// السحابة، وبنمسح الأقدم من 30 يوم. لو حصل مسح أو تعديل غلط واتزامن على كل الأجهزة، تقدر
+// ترجع لنسخة يوم قبلها من الإعدادات. لو الجدول لسه مش متعمل في Supabase البرنامج بيكمّل عادي.
+const SUPABASE_BACKUPS_URL=SUPABASE_URL+'/rest/v1/daftar_backups';
+let daftarSnapshotsTable=null; // false: الجدول مش موجود
+let daftarSnapshotBusy=false;
+function localDayKey(d=new Date()){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function cloudSnapshotDoneKey(){return 'daftar-cloud-snapshot-day-v1-'+(supabaseCurrentUser?.id||'')}
+function supabaseMissingTable(status,text){return status===404||/PGRST205|42P01|Could not find the table|does not exist/i.test(text)}
+async function maybeSaveCloudSnapshot(){
+  if(daftarSnapshotsTable===false||daftarSnapshotBusy||!supabaseCurrentUser)return;
+  const day=localDayKey();
+  try{if(localStorage.getItem(cloudSnapshotDoneKey())===day)return;}catch(e){}
+  daftarSnapshotBusy=true;
+  try{
+    const headers={...await supabaseHeaders(),'Prefer':'resolution=ignore-duplicates,return=minimal'};
+    const data={...db};for(const k of DAFTAR_IMAGE_KEYS)delete data[k];
+    const r=await fetchWithTimeout(SUPABASE_BACKUPS_URL+'?on_conflict=user_id,day',{method:'POST',headers,body:JSON.stringify({user_id:supabaseCurrentUser.id,day,device_id:daftarDeviceId,data})},30000);
+    if(!r.ok){const t=await r.text();if(supabaseMissingTable(r.status,t)){daftarSnapshotsTable=false;return;}throw new Error('Snapshot POST failed: '+r.status+' '+t);}
+    daftarSnapshotsTable=true;
+    try{localStorage.setItem(cloudSnapshotDoneKey(),day)}catch(e){}
+    const old=new Date();old.setDate(old.getDate()-30);
+    await fetchWithTimeout(SUPABASE_BACKUPS_URL+'?user_id=eq.'+encodeURIComponent(supabaseCurrentUser.id)+'&day=lt.'+localDayKey(old),{method:'DELETE',headers:{...headers,'Prefer':'return=minimal'}}).catch(()=>{});
+  }catch(err){console.warn('Cloud snapshot failed:',err);}
+  finally{daftarSnapshotBusy=false;}
+}
+function cloudSnapshotLabel(day,createdAt){
+  const d=new Date(day+'T12:00:00');
+  let s=isNaN(d)?day:d.toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const t=new Date(createdAt||'');if(!isNaN(t))s+=' — الساعة '+t.toLocaleTimeString('ar-EG',{hour:'numeric',minute:'2-digit'});
+  return s;
+}
+async function cloudSnapshotsRequest(query){
+  if(!supabaseCurrentUser||daftarOfflineFallback||!navigator.onLine)throw new Error('OFFLINE');
+  const token=await getSupabaseAccessToken();if(!token)throw new Error('OFFLINE');
+  const r=await fetchWithTimeout(SUPABASE_BACKUPS_URL+'?user_id=eq.'+encodeURIComponent(supabaseCurrentUser.id)+'&'+query,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+token}},30000);
+  if(!r.ok){const t=await r.text();if(supabaseMissingTable(r.status,t)){daftarSnapshotsTable=false;throw new Error('NO_TABLE');}throw new Error(r.status+' '+t);}
+  return await r.json();
+}
+function cloudSnapshotErrorText(err){
+  if(err?.message==='OFFLINE')return 'لازم تكون مسجّل دخول على حسابك ومتصل بالإنترنت.';
+  if(err?.message==='NO_TABLE')return 'الخاصية دي محتاجة جدول daftar_backups في Supabase — اعمل كود الـ SQL الخاص بالحماية مرة واحدة.';
+  return 'تعذر الوصول للسحابة دلوقتي، جرّب تاني بعد شوية.';
+}
+document.querySelector('#cloudSnapshotsLoad').onclick=async()=>{
+  const status=document.querySelector('#cloudSnapshotsStatus'),sel=document.querySelector('#cloudSnapshotSelect');
+  status.textContent='☁️ جاري تحميل النسخ...';
+  try{
+    const rows=await cloudSnapshotsRequest('select=day,created_at&order=day.desc&limit=60');
+    sel.replaceChildren();
+    if(!rows.length){const o=document.createElement('option');o.value='';o.textContent='— لسه مفيش نسخ —';sel.append(o);status.textContent='لسه مفيش نسخ على السحابة. أول نسخة بتتعمل مع أول مزامنة النهارده.';return;}
+    for(const row of rows){const o=document.createElement('option');o.value=row.day;o.textContent=cloudSnapshotLabel(row.day,row.created_at);sel.append(o);}
+    status.textContent=`فيه ${rows.length} نسخة على السحابة. اختار اليوم واضغط «استعادة النسخة المختارة».`;
+  }catch(err){status.textContent=cloudSnapshotErrorText(err);}
+};
+document.querySelector('#cloudSnapshotRestore').onclick=async()=>{
+  const status=document.querySelector('#cloudSnapshotsStatus'),sel=document.querySelector('#cloudSnapshotSelect');
+  const day=sel.value;
+  if(!day)return daftarAlert('اضغط «عرض النسخ» واختار اليوم اللي عايز ترجعله الأول.');
+  const label=sel.selectedOptions[0]?.textContent||day;
+  if(!await daftarConfirm(`استعادة نسخة يوم ${label}؟\nكل اللي كان موجود في اليوم ده هيرجع زي ما كان، والحاجات اللي اتضافت بعده هتفضل موجودة. قبل الاستعادة هيتنزل ملف فيه البيانات الحالية احتياطي.`))return;
+  status.textContent='☁️ جاري تحميل النسخة...';
+  try{
+    const rows=await cloudSnapshotsRequest('select=data&day=eq.'+encodeURIComponent(day)+'&limit=1');
+    if(!rows[0]?.data)throw new Error('EMPTY');
+    downloadBackup(db,'before-cloud-restore-'+backupStamp());
+    await applyRestoredData(rows[0].data);
+    status.textContent='✓ تمت استعادة نسخة يوم '+label;
+    daftarAlert('تمت استعادة نسخة السحابة بنجاح.');
+  }catch(err){status.textContent=err?.message==='invalid'||err?.message==='EMPTY'?'النسخة دي مش سليمة، ومتغيّرش أي حاجة.':cloudSnapshotErrorText(err);}
+};
 
 function showAuthOverlay(){document.querySelector('#daftarAuthOverlay').classList.add('show')}
 function hideAuthOverlay(){document.querySelector('#daftarAuthOverlay').classList.remove('show')}
@@ -5998,7 +6170,29 @@ console.log('DAFTAR Supabase Account + Offline Sync Loaded');
 if('serviceWorker' in navigator&&location.protocol==='https:'&&!window.daftarElectron){
   window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW register failed',e)));
 }
+// حماية بيانات نسخة الموبايل: بنطلب من المتصفح يعتبر بيانات البرنامج «دائمة» فميمسحهاش لما المساحة
+// تقل. وسفاري على الآيفون بيمسح بيانات أي موقع متفتحش 7 أيام — إلا لو البرنامج متضاف للشاشة
+// الرئيسية، فبنفكّرك تضيفه (التنبيه بيختفي لما تضيفه، ولو قفلته بيرجع بعد أسبوعين).
+if(!window.daftarElectron&&/^https?:$/.test(location.protocol)){
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persisted().then(p=>p||navigator.storage.persist()).catch(()=>{});}catch(e){}
+  window.addEventListener('load',()=>setTimeout(()=>{
+    const ios=/iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+    const standalone=navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
+    let hiddenUntil=0;try{hiddenUntil=+localStorage.getItem('daftar-a2hs-hidden-until')||0}catch(e){}
+    if(!ios||standalone||Date.now()<hiddenUntil||document.getElementById('daftarA2hs'))return;
+    const box=document.createElement('div');box.id='daftarA2hs';box.setAttribute('role','note');
+    box.innerHTML='<div><b>📲 ضيف البرنامج للشاشة الرئيسية</b><span>عشان سفاري ميمسحش بياناتك لو مفتحتش البرنامج أسبوع: اضغط زرار المشاركة <b>⬆️</b> تحت، وبعدين <b>«إضافة إلى الشاشة الرئيسية»</b>، وافتح البرنامج بعد كده من الأيقونة.</span></div><button type="button" class="secondary-btn">فهمت</button>';
+    box.querySelector('button').onclick=()=>{try{localStorage.setItem('daftar-a2hs-hidden-until',String(Date.now()+14*864e5))}catch(e){}box.remove()};
+    document.body.appendChild(box);
+  },2500));
+}
 </script>
+<style>
+#daftarA2hs{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:9000;display:flex;gap:10px;align-items:center;background:var(--surface,#fff);color:var(--ink,#111);border:1px solid var(--line,#ddd);border-radius:14px;padding:12px 14px;box-shadow:0 8px 28px rgba(0,0,0,.18);direction:rtl;max-width:560px;margin:0 auto}
+#daftarA2hs>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;font-size:13px;line-height:1.6}
+#daftarA2hs>div>b{font-size:14px}
+#daftarA2hs>button{flex:none;white-space:nowrap}
+</style>
 <style id="daftarMobileStyle">
 /* ===== شكل الموبايل (آيفون وأي شاشة أصغر من 700px) =====
    كل القواعد هنا جوه media query، فشكل البرنامج على الكمبيوتر مش بيتأثر خالص. */
