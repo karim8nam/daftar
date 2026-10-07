@@ -893,6 +893,19 @@ function orderDueAtDelivery(o){
   for(const x of pending){const take=Math.min(credit,orderOutstanding(x));if(String(x.id)===String(o.id))return {outstanding,credit:take,due:Math.max(0,outstanding-take)};credit-=take;}
   return {outstanding,credit:0,due:outstanding};
 }
+// المطلوب من العميل لما ييجي يستلم الطلبية دي = اللي عليه للطلبية (بعد العربون والمدفوع مقدم) + أي رصيد
+// سابق عليه في حسابه (فواتير أو مديونيات لسه مدفعهاش). ده الرقم اللي بيتكتب في رسايل الوصول والتأخير.
+// لو عنده كذا طلبية مفتوحة، الرصيد السابق بيتحط على أقدم طلبية بس (زي توزيع رصيده)، عشان لو الطلبيات
+// وصلت مع بعض ميتكتبش عليه مرتين.
+function orderPickupTotal(o){
+  const d=orderDueAtDelivery(o);
+  let debt=0;
+  if(o?.customer&&!o.invoiced){
+    const oldest=db.orders.filter(x=>x.customer===o.customer&&!x.invoiced).sort((a,b)=>String(a.date||'').localeCompare(String(b.date||''))||(+a.id||0)-(+b.id||0))[0];
+    if(oldest&&String(oldest.id)===String(o.id))debt=Math.max(0,customerBalance(o.customer));
+  }
+  return {...d,debt,due:Math.round((d.due+debt)*100)/100};
+}
 // رصيد المرتجعات اللي لسه ما اتستخدمش لعميل، محسوب كإجمالي (مش مرتجع مرتجع)، عشان
 // أي سجل قديم اتسحب منه أكتر من رصيده ميبوّظش الرصيد.
 function unusedReturnCreditOf(rets){let credit=0,used=0;for(const r of rets){if(r.paid)continue;credit+=+r.creditAmount||0;used+=+r.creditUsed||0;}return Math.max(0,credit-used);}
@@ -1509,7 +1522,7 @@ function openOrderMessages(orderIds,cfg){
   const render=()=>{
     const orders=orderIds.map(id=>db.orders.find(o=>String(o.id)===String(id))).filter(Boolean);
     const sent=orders.filter(cfg.isSent).length;
-    box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:640px"><div class="settlement-title"><div><small>${esc(cfg.subtitle(orders.length))}</small><h3>${esc(cfg.title)}</h3></div><button type="button" class="settlement-close" data-close>×</button></div><div style="line-height:1.8;margin-bottom:8px">اضغط «إرسال» جنب كل عميل: الواتساب هيتفتح على الشات ${esc(cfg.what)}، اضغط إرسال هناك وارجع هنا للعميل اللي بعده. <strong>اتبعت ${sent} من ${orders.length}</strong></div><div class="arrival-list">${orders.map(o=>{const phone=normalizeWhatsAppPhone(getCustomerPhone(o.customer)),done=cfg.isSent(o);return `<div class="arrival-row${done?' is-sent':''}"><div><strong>${esc(o.customer)}</strong><br><small>طلبية #${displayNo('orders',o.id)} — المطلوب عند الاستلام ${money(orderDueAtDelivery(o).due)}${phone?'':' — <span style="color:var(--danger)">مفيش رقم موبايل</span>'}</small></div><div class="arrival-actions">${done?'<span class="badge badge-status">✓ اتبعتت</span>':''}${phone?`<button type="button" class="${done?'secondary-btn':'primary'}" data-send="${esc(String(o.id))}">${done?'إرسال تاني':'إرسال'}</button>`:`<button type="button" class="secondary-btn" data-profile="${esc(o.customer)}">إضافة الرقم</button>`}</div></div>`;}).join('')}</div><div class="settlement-actions"><button type="button" class="secondary-btn" data-close>${sent===orders.length?'تمام، قفل':'قفل (تقدر تبعت الباقي بعدين)'}</button></div></div>`;
+    box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:640px"><div class="settlement-title"><div><small>${esc(cfg.subtitle(orders.length))}</small><h3>${esc(cfg.title)}</h3></div><button type="button" class="settlement-close" data-close>×</button></div><div style="line-height:1.8;margin-bottom:8px">اضغط «إرسال» جنب كل عميل: الواتساب هيتفتح على الشات ${esc(cfg.what)}، اضغط إرسال هناك وارجع هنا للعميل اللي بعده. <strong>اتبعت ${sent} من ${orders.length}</strong></div><div class="arrival-list">${orders.map(o=>{const phone=normalizeWhatsAppPhone(getCustomerPhone(o.customer)),done=cfg.isSent(o);return `<div class="arrival-row${done?' is-sent':''}"><div><strong>${esc(o.customer)}</strong><br><small>طلبية #${displayNo('orders',o.id)} — المطلوب عند الاستلام ${money(orderPickupTotal(o).due)}${phone?'':' — <span style="color:var(--danger)">مفيش رقم موبايل</span>'}</small></div><div class="arrival-actions">${done?'<span class="badge badge-status">✓ اتبعتت</span>':''}${phone?`<button type="button" class="${done?'secondary-btn':'primary'}" data-send="${esc(String(o.id))}">${done?'إرسال تاني':'إرسال'}</button>`:`<button type="button" class="secondary-btn" data-profile="${esc(o.customer)}">إضافة الرقم</button>`}</div></div>`;}).join('')}</div><div class="settlement-actions"><button type="button" class="secondary-btn" data-close>${sent===orders.length?'تمام، قفل':'قفل (تقدر تبعت الباقي بعدين)'}</button></div></div>`;
     box.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>box.remove());
     box.querySelector('.settlement-backdrop').onclick=()=>box.remove();
     box.querySelectorAll('[data-send]').forEach(b=>b.onclick=()=>{const o=db.orders.find(x=>String(x.id)===b.dataset.send);if(!o)return;openWhatsAppTo(getCustomerPhone(o.customer),cfg.build(o));cfg.markSent(o);save();render();});
@@ -1559,9 +1572,11 @@ function fillOrderMessage(o,text,extra){
   const s=printSettings();
   const items=orderItemsOf(o).map(i=>({...i,q:Math.max(0,(+i.quantity||0)-(+i.movedQty||0)-(+i.invoicedQty||0))})).filter(i=>i.q>0);
   const dep=Math.max(0,(+o.deposit||0)-(+o.depositUsed||0));
-  // المطلوب عند الاستلام بعد خصم العربون وأي فلوس دفعها مقدم في حسابه.
-  const {credit,due:rest}=o.id==='preview'?{credit:0,due:orderOutstanding(o)}:orderDueAtDelivery(o);
-  const paidLines=[dep>0?`العربون المدفوع: ${money(dep)}`:'',credit>0?`مدفوع مقدمًا من حسابك: ${money(credit)}`:''].filter(Boolean).join('\n');
+  // المطلوب عند الاستلام = إجمالي حسابه وقت الاستلام: الطلبية − العربون − أي فلوس دفعها مقدم في حسابه
+  // + أي رصيد سابق عليه (فواتير لسه مدفعهاش). سطور المدفوع والرصيد السابق بتظهر بس لو ليها قيمة.
+  const p=o.id==='preview'?{credit:0,debt:0,due:orderOutstanding(o)}:orderPickupTotal(o);
+  const {credit,debt,due:rest}=p;
+  const paidLines=[dep>0?`العربون المدفوع: ${money(dep)}`:'',credit>0?`مدفوع مقدمًا من حسابك: ${money(credit)}`:'',debt>0?`رصيد سابق عليك: ${money(debt)}`:''].filter(Boolean).join('\n');
   const values={'{العميل}':o.customer||'','{رقم_الطلبية}':o.id==='preview'?'12':String(displayNo('orders',o.id)),
     '{الأصناف}':items.map((i,n)=>`${n+1}) ${i.productName}${i.sku?` (كود ${i.sku})`:''} × ${i.q}`).join('\n'),
     '{الإجمالي}':money(o.total||0),'{العربون}':paidLines,'{الباقي}':money(rest),
@@ -2512,6 +2527,13 @@ function runDaftarTests(){
     const d26b=[orderDueAtDelivery(db.orders[0]).due,orderDueAtDelivery(db.orders[1]).due];
     daftarAssertEqual([d26a,...d26b],[9200,0,1100],'المطلوب عند التسليم بيخصم الفلوس اللي العميل دافعها مقدم في حسابه، من غير ما يتخصم مرتين',results);
 
+    // 27) رسالة الاستلام بإجمالي الحساب: «ام محمد محمود» عليها فاتورة 550 + طلبية 5550 بعربون 3000 → المطلوب 3100.
+    db=structuredClone(initial);
+    db.orders=[{id:80,customer:'ش',date:'2026-09-30',total:5550,deposit:3000,cashDeposit:3000,depositUsed:0,received:false,items:[{productName:'أ',quantity:15,salePrice:370}]}];
+    db.invoices=[{id:81,customer:'ش',date:'2026-09-30',total:550,deposit:0,remaining:550,items:[{productName:'ب',quantity:1,unitPrice:550}]}];
+    const p27=orderPickupTotal(db.orders[0]),m27=orderArrivalMessage(db.orders[0],'{العربون}\nالمطلوب: {الباقي}');
+    daftarAssertEqual([p27.debt,p27.due,m27.includes('رصيد سابق عليك'),m27.includes('العربون المدفوع')],[550,3100,true,true],'المطلوب عند الاستلام = الطلبية + الرصيد السابق − المدفوع',results);
+
     // 21) فاتورة من طلبية والعميل ليه رصيد: الرصيد بيتحسب من غير باقي الطلبية نفسها
     db=structuredClone(initial);
     db.orders=[{id:20,customer:'م',date:'2026-03-01',total:1000,deposit:300,cashDeposit:300,depositUsed:0,creditUsed:0,received:true,items:[{productName:'أ',quantity:1,salePrice:1000}]}];
@@ -3182,7 +3204,7 @@ const DAFTAR_PRINT_DEFAULTS={
   // نص رسالة «اعتذار عن التأخير + ميعاد الاستلام الجديد» (بيتعدّل من الإعدادات).
   delayMessage:'السلام عليكم {العميل}،\nبنعتذر جدًا عن التأخير في طلبيتك رقم #{رقم_الطلبية} 🙏\n\nالأصناف:\n{الأصناف}\n\nميعاد الاستلام الجديد: {الميعاد_الجديد}\n{العربون}\nالمطلوب عند الاستلام: {الباقي}\n\nشكرًا لتفهمك وصبرك.\n{اسم_المحل}\nللتواصل: {تليفون_المحل}'
 };// الكلمات اللي ممكن تتحط في نص رسالة الوصول، وبتتبدّل ببيانات الطلبية والعميل.
-const ARRIVAL_MSG_TOKENS=[['{العميل}','اسم العميل'],['{رقم_الطلبية}','رقم الطلبية'],['{الأصناف}','الأصناف والكميات'],['{الإجمالي}','إجمالي الطلبية'],['{العربون}','سطر العربون المدفوع (بيختفي لو مفيش عربون)'],['{الباقي}','المطلوب عند الاستلام'],['{التاريخ}','تاريخ الطلبية'],['{اسم_المحل}','اسم الشركة'],['{تليفون_المحل}','رقم الشركة']];
+const ARRIVAL_MSG_TOKENS=[['{العميل}','اسم العميل'],['{رقم_الطلبية}','رقم الطلبية'],['{الأصناف}','الأصناف والكميات'],['{الإجمالي}','إجمالي الطلبية'],['{العربون}','سطور المدفوع (العربون والمدفوع مقدم) والرصيد السابق — بتختفي لو مفيش'],['{الباقي}','المطلوب عند الاستلام (الطلبية + الرصيد السابق − المدفوع)'],['{التاريخ}','تاريخ الطلبية'],['{اسم_المحل}','اسم الشركة'],['{تليفون_المحل}','رقم الشركة']];
 // رسالة الاعتذار عن التأخير: نفس الكلمات + ميعاد الاستلام الجديد.
 const DELAY_MSG_TOKENS=[...ARRIVAL_MSG_TOKENS.slice(0,6),['{الميعاد_الجديد}','ميعاد الاستلام الجديد'],...ARRIVAL_MSG_TOKENS.slice(6)];
 // تاريخ الاستلام الجديد مكتوب بالعربي باليوم (مثلاً «الخميس 8 أكتوبر 2026») + ملاحظة اختيارية.
