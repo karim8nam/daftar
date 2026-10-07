@@ -882,6 +882,17 @@ function orderOutstanding(o){if(o.invoiced)return 0;return Math.max(0,(+o.total|
 // العربون المدفوع في طلبية لسه ما اتفوترتش: محجوز للطلبية دي — مش بيدخل في رصيد العميل (لا عليه
 // ولا له)، وبيتخصم من فاتورة الطلبية نفسها لما تتعمل (depositUsed). بيظهر لوحده في ملف العميل.
 function orderUnusedDeposit(o){if(o.invoiced)return 0;return Math.max(0,(+o.deposit||0)-(+o.depositUsed||0));}
+// المطلوب فعلاً عند تسليم طلبية: قيمتها − عربونها − أي رصيد للعميل في حسابه (زي دفعة دفعها مقدم
+// كدفعة عادية مش كعربون). رصيد العميل بيتوزّع على طلبياته المفتوحة من الأقدم للأحدث، عشان
+// ميتخصمش مرتين لو عنده كذا طلبية. ده للعرض والرسايل بس — الحساب نفسه بيحصل وقت الفاتورة.
+function orderDueAtDelivery(o){
+  const outstanding=orderOutstanding(o);
+  if(!o?.customer||o.invoiced)return {outstanding,credit:0,due:outstanding};
+  let credit=customerCreditForNewWork(o.customer);
+  const pending=db.orders.filter(x=>x.customer===o.customer&&!x.invoiced).sort((a,b)=>String(a.date||'').localeCompare(String(b.date||''))||(+a.id||0)-(+b.id||0));
+  for(const x of pending){const take=Math.min(credit,orderOutstanding(x));if(String(x.id)===String(o.id))return {outstanding,credit:take,due:Math.max(0,outstanding-take)};credit-=take;}
+  return {outstanding,credit:0,due:outstanding};
+}
 // رصيد المرتجعات اللي لسه ما اتستخدمش لعميل، محسوب كإجمالي (مش مرتجع مرتجع)، عشان
 // أي سجل قديم اتسحب منه أكتر من رصيده ميبوّظش الرصيد.
 function unusedReturnCreditOf(rets){let credit=0,used=0;for(const r of rets){if(r.paid)continue;credit+=+r.creditAmount||0;used+=+r.creditUsed||0;}return Math.max(0,credit-used);}
@@ -1498,7 +1509,7 @@ function openOrderMessages(orderIds,cfg){
   const render=()=>{
     const orders=orderIds.map(id=>db.orders.find(o=>String(o.id)===String(id))).filter(Boolean);
     const sent=orders.filter(cfg.isSent).length;
-    box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:640px"><div class="settlement-title"><div><small>${esc(cfg.subtitle(orders.length))}</small><h3>${esc(cfg.title)}</h3></div><button type="button" class="settlement-close" data-close>×</button></div><div style="line-height:1.8;margin-bottom:8px">اضغط «إرسال» جنب كل عميل: الواتساب هيتفتح على الشات ${esc(cfg.what)}، اضغط إرسال هناك وارجع هنا للعميل اللي بعده. <strong>اتبعت ${sent} من ${orders.length}</strong></div><div class="arrival-list">${orders.map(o=>{const phone=normalizeWhatsAppPhone(getCustomerPhone(o.customer)),done=cfg.isSent(o);return `<div class="arrival-row${done?' is-sent':''}"><div><strong>${esc(o.customer)}</strong><br><small>طلبية #${displayNo('orders',o.id)} — المطلوب عند الاستلام ${money(orderOutstanding(o))}${phone?'':' — <span style="color:var(--danger)">مفيش رقم موبايل</span>'}</small></div><div class="arrival-actions">${done?'<span class="badge badge-status">✓ اتبعتت</span>':''}${phone?`<button type="button" class="${done?'secondary-btn':'primary'}" data-send="${esc(String(o.id))}">${done?'إرسال تاني':'إرسال'}</button>`:`<button type="button" class="secondary-btn" data-profile="${esc(o.customer)}">إضافة الرقم</button>`}</div></div>`;}).join('')}</div><div class="settlement-actions"><button type="button" class="secondary-btn" data-close>${sent===orders.length?'تمام، قفل':'قفل (تقدر تبعت الباقي بعدين)'}</button></div></div>`;
+    box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:640px"><div class="settlement-title"><div><small>${esc(cfg.subtitle(orders.length))}</small><h3>${esc(cfg.title)}</h3></div><button type="button" class="settlement-close" data-close>×</button></div><div style="line-height:1.8;margin-bottom:8px">اضغط «إرسال» جنب كل عميل: الواتساب هيتفتح على الشات ${esc(cfg.what)}، اضغط إرسال هناك وارجع هنا للعميل اللي بعده. <strong>اتبعت ${sent} من ${orders.length}</strong></div><div class="arrival-list">${orders.map(o=>{const phone=normalizeWhatsAppPhone(getCustomerPhone(o.customer)),done=cfg.isSent(o);return `<div class="arrival-row${done?' is-sent':''}"><div><strong>${esc(o.customer)}</strong><br><small>طلبية #${displayNo('orders',o.id)} — المطلوب عند الاستلام ${money(orderDueAtDelivery(o).due)}${phone?'':' — <span style="color:var(--danger)">مفيش رقم موبايل</span>'}</small></div><div class="arrival-actions">${done?'<span class="badge badge-status">✓ اتبعتت</span>':''}${phone?`<button type="button" class="${done?'secondary-btn':'primary'}" data-send="${esc(String(o.id))}">${done?'إرسال تاني':'إرسال'}</button>`:`<button type="button" class="secondary-btn" data-profile="${esc(o.customer)}">إضافة الرقم</button>`}</div></div>`;}).join('')}</div><div class="settlement-actions"><button type="button" class="secondary-btn" data-close>${sent===orders.length?'تمام، قفل':'قفل (تقدر تبعت الباقي بعدين)'}</button></div></div>`;
     box.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>box.remove());
     box.querySelector('.settlement-backdrop').onclick=()=>box.remove();
     box.querySelectorAll('[data-send]').forEach(b=>b.onclick=()=>{const o=db.orders.find(x=>String(x.id)===b.dataset.send);if(!o)return;openWhatsAppTo(getCustomerPhone(o.customer),cfg.build(o));cfg.markSent(o);save();render();});
@@ -1547,10 +1558,13 @@ function orderDelayMessage(o,newDate,note,template){
 function fillOrderMessage(o,text,extra){
   const s=printSettings();
   const items=orderItemsOf(o).map(i=>({...i,q:Math.max(0,(+i.quantity||0)-(+i.movedQty||0)-(+i.invoicedQty||0))})).filter(i=>i.q>0);
-  const dep=Math.max(0,(+o.deposit||0)-(+o.depositUsed||0)),rest=orderOutstanding(o);
+  const dep=Math.max(0,(+o.deposit||0)-(+o.depositUsed||0));
+  // المطلوب عند الاستلام بعد خصم العربون وأي فلوس دفعها مقدم في حسابه.
+  const {credit,due:rest}=o.id==='preview'?{credit:0,due:orderOutstanding(o)}:orderDueAtDelivery(o);
+  const paidLines=[dep>0?`العربون المدفوع: ${money(dep)}`:'',credit>0?`مدفوع مقدمًا من حسابك: ${money(credit)}`:''].filter(Boolean).join('\n');
   const values={'{العميل}':o.customer||'','{رقم_الطلبية}':o.id==='preview'?'12':String(displayNo('orders',o.id)),
     '{الأصناف}':items.map((i,n)=>`${n+1}) ${i.productName}${i.sku?` (كود ${i.sku})`:''} × ${i.q}`).join('\n'),
-    '{الإجمالي}':money(o.total||0),'{العربون}':dep>0?`العربون المدفوع: ${money(dep)}`:'','{الباقي}':money(rest),
+    '{الإجمالي}':money(o.total||0),'{العربون}':paidLines,'{الباقي}':money(rest),
     '{الميعاد_الجديد}':extra?.newDate||'','{التاريخ}':o.date||'','{اسم_المحل}':s.companyName||'','{تليفون_المحل}':s.phone||''};
   const out=[];
   for(const line of text.split('\n')){
@@ -2487,6 +2501,17 @@ function runDaftarTests(){
     const st25b=customerStatementData('ق');
     daftarAssertEqual([...before25,customerBalance('ق'),st25b.balance,st25b.rows.some(r=>r.label==='تسوية')],[550,0,550,false,3100,3100,false],'عربون الطلبية محجوز: عليها 550 قبل التسليم و3100 بعد فاتورة الطلبية',results);
 
+    // 26) حالة «علي عامر»: دفع 6900 كدفعة عادية (مش عربون) وطلبيته 16100 → المطلوب عند الاستلام 9200.
+    // ولو عنده طلبيتين، رصيده بيتوزّع على الأقدم الأول ومش بيتخصم مرتين.
+    db=structuredClone(initial);
+    db.orders=[{id:70,customer:'ر',date:'2026-10-01',total:16100,deposit:0,depositUsed:0,received:false,items:[{productName:'أ',quantity:35,salePrice:460}]}];
+    db.customerPayments=[{id:71,customer:'ر',date:'2026-10-01',amount:6900}];
+    const d26a=orderDueAtDelivery(db.orders[0]).due;
+    db.orders.push({id:72,customer:'ر',date:'2026-10-02',total:5000,deposit:0,depositUsed:0,received:false,items:[]});
+    db.customerPayments[0].amount=20000;
+    const d26b=[orderDueAtDelivery(db.orders[0]).due,orderDueAtDelivery(db.orders[1]).due];
+    daftarAssertEqual([d26a,...d26b],[9200,0,1100],'المطلوب عند التسليم بيخصم الفلوس اللي العميل دافعها مقدم في حسابه، من غير ما يتخصم مرتين',results);
+
     // 21) فاتورة من طلبية والعميل ليه رصيد: الرصيد بيتحسب من غير باقي الطلبية نفسها
     db=structuredClone(initial);
     db.orders=[{id:20,customer:'م',date:'2026-03-01',total:1000,deposit:300,cashDeposit:300,depositUsed:0,creditUsed:0,received:true,items:[{productName:'أ',quantity:1,salePrice:1000}]}];
@@ -2603,7 +2628,7 @@ function customerHistoryTable(name){
   // والباقي اللي هيتحسب عليه عند التسليم — ومش داخلة في الرصيد.
   const openOrders=db.orders.filter(o=>o.customer===name&&!o.invoiced);
   const openDeposits=openOrders.reduce((s,o)=>s+orderUnusedDeposit(o),0),openTotal=openOrders.reduce((s,o)=>s+(+o.total||0),0);
-  const openOrdersHtml=openOrders.length?`<div class="notice open-orders-box"><strong>📦 طلبيات مطلوبة للعميل — هتتحسب عليه عند التسليم (مش داخلة في الرصيد دلوقتي)</strong>${table(['الطلبية','التاريخ','الأصناف','القيمة','العربون المدفوع','هيتحسب عليه عند التسليم','الحالة'],openOrders.map(o=>`<tr><td>#${displayNo('orders',o.id)}</td><td>${esc(o.date)||'—'}</td><td>${historyItemsText(o)}</td><td>${money(o.total||0)}</td><td>${orderUnusedDeposit(o)>0?money(orderUnusedDeposit(o)):'—'}</td><td><strong>${money(orderOutstanding(o))}</strong></td><td>${o.received?'وصلت المخزون':'لسه في المصنع'}</td></tr>`))}<div style="margin-top:6px">الإجمالي: ${money(openTotal)}${openDeposits>0?` — العربون المدفوع ${money(openDeposits)} محجوز للطلبيات دي وهيتخصم منها عند الاستلام (مش داخل في الرصيد)`:''}</div></div>`:'';
+  const openOrdersHtml=openOrders.length?`<div class="notice open-orders-box"><strong>📦 طلبيات مطلوبة للعميل — هتتحسب عليه عند التسليم (مش داخلة في الرصيد دلوقتي)</strong>${table(['الطلبية','التاريخ','الأصناف','القيمة','العربون المدفوع','هيتحسب عليه عند التسليم','الحالة'],openOrders.map(o=>`<tr><td>#${displayNo('orders',o.id)}</td><td>${esc(o.date)||'—'}</td><td>${historyItemsText(o)}</td><td>${money(o.total||0)}</td>${(()=>{const d=orderDueAtDelivery(o),dep=orderUnusedDeposit(o);return `<td>${dep>0?money(dep):(d.credit>0?'':'—')}${d.credit>0?`${dep>0?'<br>':''}<small>مدفوع مقدمًا من حسابه ${money(d.credit)}</small>`:''}</td><td><strong>${money(d.due)}</strong></td>`;})()}<td>${o.received?'وصلت المخزون':'لسه في المصنع'}</td></tr>`))}<div style="margin-top:6px">الإجمالي: ${money(openTotal)}${openDeposits>0?` — العربون المدفوع ${money(openDeposits)} محجوز للطلبيات دي وهيتخصم منها عند الاستلام (مش داخل في الرصيد)`:''}</div></div>`:'';
   const deleteCompletelyBtn=`<button type="button" class="danger" onclick="deleteCustomerCompletely('${encodeURIComponent(name)}')" title="حذف نهائي لكل فواتيره وطلبياته — لعميل تجريبي أو مُدخَل بالغلط فقط">حذف العميل نهائيًا (مع كل الفواتير والطلبيات)</button>`;
   return `<div class="customer-ledger-head"><div><div class="ledger-subtitle">كشف حساب العميل</div><div class="ledger-current">${balanceLabel} <strong>${money(balanceValue)}</strong></div></div><div class="ledger-actions"><button type="button" class="primary settle-account-btn" onclick="openCustomerSettlement('${encodeURIComponent(name)}')" ${current<=0?'disabled':''}>تصفية الحساب</button><button type="button" class="secondary-btn" onclick="document.querySelector('#paymentForm [name=amount]').focus()">دفعة جديدة</button><button type="button" class="primary" onclick="printCustomerStatement('${encodeURIComponent(name)}')">طباعة كشف الحساب</button><button type="button" class="secondary-btn" id="historyResetSizes">إعادة أحجام الجدول</button><button type="button" class="secondary-btn" onclick="openMergeCustomer('${encodeURIComponent(name)}')">تغيير الاسم / دمج مع عميل</button>${deleteCustomerBtn}${deleteCompletelyBtn}</div></div>`+
     openOrdersHtml+
