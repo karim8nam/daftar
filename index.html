@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.4.6";</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.4.7";</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
 <!-- نسخة الموبايل (آيفون): اسم وأيقونة البرنامج على الشاشة الرئيسية، وبيفتح بملء الشاشة زي التطبيق -->
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="دفتر"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#C2185B"><style>
 /* حقول رمز الأمان (6 أرقام): بنستخدم input عادي مقنّع بصريًا بدل type="password"،
@@ -305,6 +305,11 @@ html,body{background:#fff!important}
         <p class="notice">بيدوّر في حساباتك على أخطاء شائعة، زي: عميل ليه رصيد واتكتب مدفوع زيادة في فاتورة، أو فاتورة الباقي فيها أكبر من قيمتها، أو مخزون بالسالب، أو أسماء عملاء متكررة. بيشتغل لوحده مرة في الأسبوع، وتقدر تشغّله دلوقتي. الفحص بيقرا بس، ومش بيغيّر أي حاجة.</p>
         <div class="form-actions"><button type="button" class="primary" id="runDataCheckBtn">افحص دلوقتي</button></div>
         <div id="dataCheckResult" style="margin-top:12px"></div>
+      </article><article class="panel hidden" style="margin-bottom:0;grid-column:1/-1" id="updatePanel">
+        <h2>⬆️ تحديث البرنامج</h2>
+        <p class="notice">البرنامج بيدوّر لوحده على نسخة جديدة على حسابك (أول ما يفتح وكل 6 ساعات). لو لقى، بيظهرلك تنبيه فوق، وتدوس «تنزيل وتسطيب»: بينزّلها ويتأكد إنها سليمة، وبعدين يتقفل ويتسطب ويفتح تاني لوحده. بياناتك مش بتتأثر.<br>لما تعمل نسخة جديدة على الجهاز ده: اضغط «🚀 نشر نسخة جديدة» واختار ملف التسطيب، فالأجهزة التانية تلاقيها لوحدها.</p>
+        <div id="updateStatus" class="notice"></div>
+        <div class="form-actions" style="margin-top:10px"><button type="button" class="secondary-btn" id="updateCheckBtn">🔄 دوّر على تحديث</button><button type="button" class="primary hidden" id="updateInstallBtn">⬇️ تنزيل وتسطيب</button><button type="button" class="secondary-btn" id="updatePublishBtn">🚀 نشر نسخة جديدة</button></div>
       </article><article class="panel" style="margin-bottom:0" id="devicesPanel">
         <h2>📱 الأجهزة ونسخة البرنامج</h2>
         <p class="notice">كل جهاز بيسجّل نسخة البرنامج اللي عليه. لو جهاز على نسخة أقدم من التاني، بيظهرلك تنبيه فوق عشان تحدّثه.</p>
@@ -5734,7 +5739,9 @@ details.variant-editor[open]{padding-bottom:12px}
 .variant-row .variant-remove{padding:8px 12px!important;min-width:40px}
 @media (max-width:700px){.variant-row{grid-template-columns:1fr 1fr}.variant-row label:first-child{grid-column:1/-1}}
 /* 🩺 فحص وصيانة + التنبيهات اللي فوق */
-#dataCheckPanel .form-actions,#devicesPanel .form-actions,#errorLogPanel .form-actions{display:flex;gap:10px;flex-wrap:wrap}
+#dataCheckPanel .form-actions,#devicesPanel .form-actions,#errorLogPanel .form-actions,#updatePanel .form-actions{display:flex;gap:10px;flex-wrap:wrap}
+.update-progress{height:12px;border-radius:99px;background:var(--soft);border:1px solid var(--line);overflow:hidden;margin:12px 0 6px}
+.update-progress>div{height:100%;width:0;background:linear-gradient(90deg,#f5a524,#d6336c);transition:width .3s}
 #daftarNotices:empty{display:none}
 #daftarNotices{display:grid;gap:8px;margin:12px 0}
 .autolock-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:10px}
@@ -6901,7 +6908,9 @@ function renderDaftarNotices(){
   // التنبيهات تحت شريط الصفحات (مش فوق اسم البرنامج)
   if(!bar){bar=document.createElement('div');bar.id='daftarNotices';const nav=document.querySelector('#nav');if(!nav)return;nav.insertAdjacentElement('afterend',bar);}
   const items=[];
-  const newer=newerDevices();
+  const upd=window.daftarElectron?.update?updateAvailable():null;
+  if(upd&&!daftarNoticeDismissed.update)items.push({key:'update',html:`⬆️ فيه تحديث جديد للبرنامج (${esc(upd.version)}). <button type="button" class="primary" data-update-install>تنزيل وتسطيب</button>`});
+  const newer=upd?[]:newerDevices();
   if(newer.length&&!daftarNoticeDismissed.version){
     const v=newer.reduce((m,d)=>compareVersions(d.version,m)>0?d.version:m,'0');
     items.push({key:'version',html:`📢 «${esc(deviceDisplayName(newer.find(d=>d.version===v)))}» شغال على نسخة أحدث (${esc(v)}) من الجهاز ده (${esc(DAFTAR_APP_VERSION)}). ${window.daftarElectron?'سطّب ملف التسطيب الجديد على الجهاز ده.':'ارفع ملفات فولدر web الجديدة على GitHub، وبعدين اقفل البرنامج وافتحه تاني.'}`});
@@ -6911,6 +6920,7 @@ function renderDaftarNotices(){
   bar.innerHTML=items.map(x=>`<div class="daftar-notice" data-key="${x.key}"><span>${x.html}</span><button type="button" class="settlement-close" data-notice-close aria-label="إخفاء">×</button></div>`).join('');
   bar.querySelectorAll('[data-notice-close]').forEach(b=>b.onclick=()=>{daftarNoticeDismissed[b.closest('.daftar-notice').dataset.key]=true;renderDaftarNotices();});
   bar.querySelector('[data-notice-open]')?.addEventListener('click',()=>{document.querySelector('#nav [data-page=settings]').click();showPageView('settings','health');});
+  bar.querySelector('[data-update-install]')?.addEventListener('click',()=>downloadAndInstallUpdate());
 }
 
 // ---- 🔒 القفل التلقائي بعد مدة من غير استخدام (إعداد لكل جهاز)
@@ -6954,6 +6964,93 @@ document.querySelector('#mirrorRunBtn')?.addEventListener('click',async()=>{cons
 document.querySelector('#mirrorOpenBtn')?.addEventListener('click',()=>window.daftarElectron?.mirror?.open());
 document.querySelector('#mirrorOffBtn')?.addEventListener('click',async()=>{if(!await daftarConfirm('إيقاف النسخة التانية؟ النسخ اللي اتعملت قبل كده هتفضل في الفولدر زي ما هي.'))return;await window.daftarElectron?.mirror?.off();renderMirrorPanel();});
 
+// ---- ⬆️ التحديث التلقائي (على الكمبيوتر): latest.json في bucket «daftar-updates» على حساب Supabase
+const UPDATE_BUCKET='daftar-updates';
+let daftarUpdateInfo=null; // {manifest,error,checkedAt}
+let daftarUpdateBase=null;  // للاختبارات بس (سيرفر محلي بدل Supabase)
+const updateBase=()=>daftarUpdateBase||SUPABASE_URL;
+const okManifest=m=>!!m&&/^\d+\.\d+\.\d+$/.test(String(m.version||''))&&Array.isArray(m.parts)&&m.parts.length>0&&+m.size>0;
+function updateAvailable(){const m=daftarUpdateInfo?.manifest;return m&&compareVersions(m.version,DAFTAR_APP_VERSION)>0?m:null;}
+async function checkForUpdate(manual){
+  if(!window.daftarElectron?.update)return null;
+  if(!supabaseCurrentUser||daftarOfflineFallback||!navigator.onLine){if(manual){daftarUpdateInfo={...(daftarUpdateInfo||{}),error:'OFFLINE',checkedAt:Date.now()};renderUpdatePanel();}return null;}
+  try{
+    const token=await getSupabaseAccessToken();if(!token)throw Object.assign(new Error('NO_AUTH'),{code:'OFFLINE'});
+    const r=await fetchWithTimeout(`${updateBase()}/storage/v1/object/authenticated/${UPDATE_BUCKET}/latest.json?t=${Date.now()}`,{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+token},cache:'no-store'},20000);
+    if(r.ok){const m=await r.json().catch(()=>null);daftarUpdateInfo={manifest:okManifest(m)?m:null,checkedAt:Date.now()};}
+    else{const t=await r.text();daftarUpdateInfo={manifest:null,error:/Bucket not found/i.test(t)?'NO_BUCKET':/not.?found/i.test(t)?'':`HTTP ${r.status}`,checkedAt:Date.now()};}
+  }catch(err){daftarUpdateInfo={...(daftarUpdateInfo||{}),error:err?.code==='OFFLINE'?'OFFLINE':'NET',checkedAt:Date.now()};if(err?.code!=='OFFLINE'&&navigator.onLine)daftarLogError('update-check',err);}
+  renderUpdatePanel();renderDaftarNotices();
+  return daftarUpdateInfo;
+}
+function renderUpdatePanel(){
+  const panel=document.querySelector('#updatePanel');if(!panel)return;
+  const api=window.daftarElectron?.update;panel.classList.toggle('hidden',!api);if(!api)return;
+  const info=daftarUpdateInfo,m=info?.manifest,avail=updateAvailable();
+  const fmt=t=>new Date(t).toLocaleString('ar-EG',{dateStyle:'medium',timeStyle:'short'});
+  let html=`النسخة على الجهاز ده: <strong>${esc(DAFTAR_APP_VERSION)}</strong>`;
+  if(!info)html+='<br>لسه مادوّرش على تحديث.';
+  else if(info.error==='NO_BUCKET')html+='<br>⚠️ التحديث التلقائي محتاج كود SQL مرة واحدة في Supabase (مكان التحديثات لسه مش متعمل).';
+  else if(info.error==='OFFLINE')html+='<br>لازم تكون مسجّل دخول ومتصل بالنت عشان يدوّر على تحديث.';
+  else if(info.error)html+=`<br>تعذر الوصول للسحابة دلوقتي (${esc(info.error)}) — هيحاول تاني لوحده.`;
+  else if(avail)html+=`<br>⬆️ فيه نسخة جديدة: <strong>${esc(avail.version)}</strong>${avail.publishedAt?` (اتنشرت ${esc(fmt(avail.publishedAt))})`:''} — حجمها ${Math.round(avail.size/1048576)} ميجا.`;
+  else html+=`<br>✅ الجهاز ده على آخر نسخة${m?` (آخر نسخة منشورة ${esc(m.version)})`:''}.`;
+  if(info?.checkedAt)html+=`<br><small>آخر مرة دوّر: ${esc(fmt(info.checkedAt))}</small>`;
+  document.querySelector('#updateStatus').innerHTML=html;
+  document.querySelector('#updateInstallBtn').classList.toggle('hidden',!avail);
+}
+function showUpdateProgress(title){
+  let box=document.getElementById('daftarUpdateModal');if(box)box.remove();
+  box=document.createElement('div');box.id='daftarUpdateModal';
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:460px"><div class="settlement-title"><div><small>تحديث البرنامج</small><h3>${esc(title)}</h3></div></div><div class="update-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"><div></div></div><div class="update-progress-text" style="text-align:center;color:var(--muted)">جاري التجهيز…</div><p class="notice" style="margin-top:10px">سيب البرنامج مفتوح لحد ما يخلص.</p></div>`;
+  document.body.appendChild(box);
+  const bar=box.querySelector('.update-progress>div'),txt=box.querySelector('.update-progress-text');
+  const off=window.daftarElectron.update.onProgress(d=>{const pct=d.total?Math.round(d.done*100/d.total):0;bar.style.width=pct+'%';box.querySelector('.update-progress').setAttribute('aria-valuenow',pct);txt.textContent=`${d.phase==='upload'?'رفع':'تنزيل'} ${pct}% — ${Math.round(d.done/1048576)} من ${Math.round(d.total/1048576)} ميجا`;});
+  return {close:()=>{off();box.remove();},text:t=>{txt.textContent=t;}};
+}
+// قبل ما البرنامج يتقفل للتسطيب: نحفظ كل حاجة في الملف فورًا، ونرفع أي تعديل لسه ما اتزامنش (بحد أقصى 8 ثواني).
+async function saveBeforeUpdate(){
+  try{if(typeof stampChangedItems==='function')stampChangedItems();}catch(e){}
+  try{if(daftarFileStore){const s=JSON.stringify(db);const r=daftarFileStore.saveSync(s);if(r?.ok)daftarLastSerialized=s;}else flushLocalSave();}catch(e){daftarLogError('update-save',e);}
+  try{if(daftarSyncDirty&&navigator.onLine&&supabaseCurrentUser)await Promise.race([supabaseSave(),new Promise(r=>setTimeout(r,8000))]);}catch(e){}
+}
+async function downloadAndInstallUpdate(){
+  const api=window.daftarElectron?.update,m=updateAvailable();
+  if(!api||!m)return daftarAlert('مفيش تحديث جديد دلوقتي.');
+  if(!await daftarConfirm(`تنزيل وتسطيب النسخة ${m.version}؟\nالتنزيل حوالي ${Math.round(m.size/1048576)} ميجا. بعد ما يخلص، البرنامج هيتقفل ويتسطب التحديث ويفتح تاني لوحده (حوالي دقيقة). بياناتك مش بتتأثر.`))return;
+  const token=await getSupabaseAccessToken().catch(()=>null);if(!token)return daftarAlert('لازم تكون مسجّل دخول ومتصل بالنت.');
+  const ui=showUpdateProgress(`تنزيل النسخة ${m.version}`);
+  let res;try{res=await api.download({base:updateBase(),apikey:SUPABASE_KEY,token,bucket:UPDATE_BUCKET,manifest:m});}catch(err){res={ok:false,error:String(err?.message||err)};}
+  if(!res?.ok){ui.close();return daftarAlert('التحديث ما اتنزلش: '+(res?.error||''));}
+  ui.text('✓ اتنزل واتأكدنا إنه سليم — جاري حفظ شغلك وتسطيب التحديث…');
+  await saveBeforeUpdate();
+  const r=await api.install(res.path);
+  if(!r?.ok){ui.close();daftarAlert('التسطيب ما بدأش: '+(r?.error||''));}
+}
+async function publishUpdate(){
+  const api=window.daftarElectron?.update;if(!api)return;
+  if(!supabaseCurrentUser||daftarOfflineFallback||!navigator.onLine)return daftarAlert('لازم تكون مسجّل دخول ومتصل بالنت عشان تنشر.');
+  const pick=await api.pick();if(pick?.canceled)return;if(!pick?.ok)return daftarAlert(pick?.error||'تعذر قراءة الملف.');
+  const pub=daftarUpdateInfo?.manifest;
+  if(pub&&compareVersions(pick.version,pub.version)<=0&&!await daftarConfirm(`النسخة ${pick.version} مش أحدث من النسخة المنشورة (${pub.version}).\nتنشرها برضو؟`))return;
+  if(!await daftarConfirm(`نشر النسخة ${pick.version} (${Math.round(pick.size/1048576)} ميجا) على حسابك؟\nالأجهزة التانية هتلاقيها وتتحدّث منها.`))return;
+  const token=await getSupabaseAccessToken().catch(()=>null);if(!token)return daftarAlert('لازم تكون مسجّل دخول.');
+  const ui=showUpdateProgress(`نشر النسخة ${pick.version}`);
+  let res;try{res=await api.publish({base:updateBase(),apikey:SUPABASE_KEY,token,bucket:UPDATE_BUCKET,file:pick.path,version:pick.version,sha256:pick.sha256,size:pick.size});}catch(err){res={ok:false,error:String(err?.message||err)};}
+  ui.close();
+  if(!res?.ok)return daftarAlert(/Bucket not found/i.test(res?.error||'')?'مكان التحديثات في Supabase لسه مش متعمل — شغّل كود SQL بتاع التحديث التلقائي مرة واحدة.':'النشر ما كملش: '+(res?.error||''));
+  daftarUpdateInfo={manifest:res.manifest,checkedAt:Date.now()};renderUpdatePanel();renderDaftarNotices();
+  if(compareVersions(pick.version,DAFTAR_APP_VERSION)>0){
+    const c=await daftarChoice(`تم نشر النسخة ${pick.version} ✓\nالأجهزة التانية هتلاقيها لوحدها.\nتسطّبها على الجهاز ده كمان دلوقتي؟`,[{label:'سطّبها دلوقتي',value:'now'},{label:'بعدين',value:null,cls:'secondary-btn'}],'تم النشر');
+    if(c==='now'){await saveBeforeUpdate();const r=await api.install(pick.path);if(!r?.ok)daftarAlert('التسطيب ما بدأش: '+(r?.error||''));}
+  }else daftarAlert(`تم نشر النسخة ${pick.version} ✓`);
+}
+document.querySelector('#updateCheckBtn')?.addEventListener('click',async()=>{await checkForUpdate(true);const a=updateAvailable();daftarToast(a?`فيه نسخة جديدة: ${a.version}`:daftarUpdateInfo?.error?'تعذر التحقق دلوقتي.':'✅ انت على آخر نسخة.');});
+document.querySelector('#updateInstallBtn')?.addEventListener('click',()=>downloadAndInstallUpdate());
+document.querySelector('#updatePublishBtn')?.addEventListener('click',()=>publishUpdate());
+// أول ما البرنامج يفتح (بعد ما الحساب يجهز) وبعدين كل 6 ساعات
+setTimeout(()=>{checkForUpdate();setInterval(()=>checkForUpdate(),6*3600e3);},30000);
+
 // ---- تشغيل: لما البرنامج يفتح وكل ساعة — تسجيل نسخة الجهاز، وفحص البيانات لو بقاله أسبوع.
 function daftarMaintenanceTick(){
   if(!daftarUnlocked||!daftarStorageReady)return;
@@ -6967,7 +7064,7 @@ setInterval(()=>{if(daftarUnlocked)renderDaftarNotices();},60000);
 // لما تفتح «فحص وصيانة» أو الأمان أو البيانات من الإعدادات، المحتوى بيتحدّث
 function onSettingsView(v){
   try{
-    if(v==='health'){showDataCheckResult(runDataCheck());renderDevicesPanel();renderErrorLog();}
+    if(v==='health'){showDataCheckResult(runDataCheck());renderDevicesPanel();renderErrorLog();renderUpdatePanel();}
     if(v==='security')renderAutoLockSettings();
     if(v==='data')renderMirrorPanel();
   }catch(err){daftarLogError('settings-view',err);}
