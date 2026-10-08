@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.4.5";</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
 <!-- نسخة الموبايل (آيفون): اسم وأيقونة البرنامج على الشاشة الرئيسية، وبيفتح بملء الشاشة زي التطبيق -->
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="دفتر"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#C2185B"><style>
 /* حقول رمز الأمان (6 أرقام): بنستخدم input عادي مقنّع بصريًا بدل type="password"،
@@ -215,7 +215,7 @@ html,body{background:#fff!important}
     <p class="notice">هذا هو الرصيد الموجود فعليًا الآن. أما تفاصيل كل شهر فتُعرض من خلال حركة الشهر المختار.</p>
     <div id="stockReport"></div>
   </article></div></section>
-<section id="settings" class="page hidden"><div class="page-views" data-page-views="settings"><button type="button" data-view="data">💾 النسخ الاحتياطي والبيانات</button><button type="button" data-view="print">🖨️ الطباعة</button><button type="button" data-view="security">🔐 الأمان</button><button type="button" data-view="look">🎨 المظهر والاختبارات</button></div><div data-view="data"><p class="notice">النسخة الاحتياطية تشمل جميع بيانات البرنامج، بما فيها الأصناف والمخزون والطلبيات والفواتير والعملاء والدفعات والمرتجعات والمشتريات وخلفيات الطباعة.</p><div class="two settings-grid"><article class="panel" style="margin-bottom:0">
+<section id="settings" class="page hidden"><div class="page-views" data-page-views="settings"><button type="button" data-view="data">💾 النسخ الاحتياطي والبيانات</button><button type="button" data-view="print">🖨️ الطباعة</button><button type="button" data-view="security">🔐 الأمان</button><button type="button" data-view="look">🎨 المظهر والاختبارات</button><button type="button" data-view="health">🩺 فحص وصيانة <span class="badge hidden" id="healthTabBadge"></span></button></div><div data-view="data"><p class="notice">النسخة الاحتياطية تشمل جميع بيانات البرنامج، بما فيها الأصناف والمخزون والطلبيات والفواتير والعملاء والدفعات والمرتجعات والمشتريات وخلفيات الطباعة.</p><div class="two settings-grid"><article class="panel" style="margin-bottom:0">
         <h2>إنشاء نسخة احتياطية</h2>
         <p class="notice">سيتم تنزيل ملف JSON على جهازك. احتفظ به في مكان آمن.</p>
         <button type="button" class="primary" id="exportBackup">تحميل نسخة احتياطية</button>
@@ -246,6 +246,11 @@ html,body{background:#fff!important}
         <p class="notice">كل يوم مع أول مزامنة، بيتحفظ على حسابك في السحابة نسخة كاملة من البيانات (من غير الصور)، وبيفضل آخر 30 يوم. لو حصل مسح أو تعديل غلط، تقدر ترجع لأي يوم منهم من هنا — حتى لو الجهاز نفسه باظ. الاستعادة بترجّع كل اللي كان موجود في اليوم ده، ومش بتمسح الحاجات اللي اتضافت بعده.</p>
         <div class="cloud-snapshot-actions"><select id="cloudSnapshotSelect"><option value="">— اضغط «عرض النسخ» الأول —</option></select><button type="button" class="secondary-btn" id="cloudSnapshotsLoad">عرض النسخ</button><button type="button" class="primary" id="cloudSnapshotRestore">استعادة النسخة المختارة</button></div>
         <div id="cloudSnapshotsStatus" class="notice" style="margin-top:10px"></div>
+      </article><article class="panel hidden" id="mirrorBackupPanel" style="margin-bottom:0;grid-column:1/-1">
+        <h2>🗂️ نسخة احتياطية تانية في مكان تاني</h2>
+        <p class="notice">البرنامج بيعمل نسخة من بياناتك لوحده في فولدر تاني تختاره: فلاشة، أو بارتشن على هارد تاني، أو فولدر Google Drive على الجهاز (لو برنامج Google Drive متسطب، البيانات بتترفع على حسابك لوحدها). بيعمل نسخة كل يوم (ويفضل آخر 30 يوم)، وبيحدّث «آخر نسخة» كل ربع ساعة وعند قفل البرنامج. ده نسخ بس: البرنامج عمره ما بيشتغل من الفولدر ده ولا بيقرا منه، فمفيش أي تعارض مع Google Drive.</p>
+        <div id="mirrorStatus" class="notice"></div>
+        <div class="form-actions" style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="primary" id="mirrorChooseBtn">اختيار الفولدر</button><button type="button" class="secondary-btn" id="mirrorRunBtn">انسخ دلوقتي</button><button type="button" class="secondary-btn" id="mirrorOpenBtn">📂 فتح الفولدر</button><button type="button" class="danger" id="mirrorOffBtn">إيقاف</button></div>
       </article></div></div><div data-view="print"><article class="panel" id="printSettingsPanel"><h2>بيانات الفاتورة وعرض السعر</h2><p class="notice">البيانات دي بتتكتب في الفاتورة وعرض السعر (في الطباعة وصورة الواتساب): الشعار واسم الشركة فوق على الشمال، واسمك ورقمك وباركود الواتساب والفيسبوك تحت. خلّي الخلفية نفسها الشعار بس بشكل خفيف.</p><form id="printSettingsForm" class="form"><label>اسم الشركة<input name="companyName"></label><label>الاسم تحت (مع الرقم)<input name="ownerName"></label><label>رقم الموبايل / الواتساب<input name="phone" dir="ltr"></label><label>لينك صفحة الفيسبوك<input name="facebookUrl" dir="ltr" placeholder="https://www.facebook.com/..."></label><label>وضوح شعار الخلفية % (15 = خفيف ورا الكلام)<input name="bgOpacity" type="number" min="0" max="100" step="5"></label><label style="grid-column:1/-1">نص شروط الدفع (بيظهر في عرض السعر تحت الإجمالي)<textarea name="quoteTerms" rows="2" style="font:inherit;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--input);color:var(--ink);resize:vertical"></textarea></label><button class="primary">حفظ البيانات</button></form><div class="form" style="margin-top:14px;align-items:center"><label>شعار الشركة (يفضّل PNG بخلفية شفافة)<input id="companyLogoInput" type="file" accept="image/*"></label><div id="companyLogoPreview" style="min-height:48px"></div><button type="button" class="danger" id="clearCompanyLogo">إزالة الشعار</button></div><div class="form" style="margin-top:14px;align-items:center"><label>صورة باركود الواتساب (اختياري — لو مش موجودة البرنامج بيعمل باركود من الرقم)<input id="whatsappQrInput" type="file" accept="image/*"></label><div id="whatsappQrPreview" style="min-height:48px"></div><button type="button" class="danger" id="clearWhatsappQr">إزالة الصورة</button></div><div id="printSettingsStatus" class="notice" style="margin-top:12px"></div></article><article class="panel" id="arrivalMsgPanel"><h2>رسالة واتساب «الطلبية وصلت»</h2><p class="notice">دي الرسالة اللي بتتفتح في واتساب للعميل لما ترحّل طلبيته للمخزون (لوحدها أو من «رسائل الوصول»). اكتبها بالشكل اللي يعجبك، والكلمات اللي بين { } بتتبدّل ببيانات كل عميل وطلبيته — اضغط على أي واحدة تحت عشان تتحط مكان المؤشر.</p><div class="arrival-tokens" id="arrivalTokens"></div><div class="arrival-msg-grid"><label>نص الرسالة<textarea id="arrivalMsgInput" rows="13"></textarea></label><div><div class="arrival-preview-title">شكل الرسالة عند العميل <small id="arrivalPreviewWho"></small></div><div id="arrivalMsgPreview" class="arrival-preview"></div></div></div><div class="form-actions" style="margin-top:12px"><button type="button" class="primary" id="arrivalMsgSave">حفظ نص الرسالة</button><button type="button" class="secondary-btn" id="arrivalMsgReset">رجوع للنص الأصلي</button></div></article><article class="panel" id="delayMsgPanel"><h2>رسالة واتساب «اعتذار عن التأخير وميعاد الاستلام الجديد»</h2><p class="notice">دي الرسالة اللي بتتبعت للعملاء اللي تحددهم من «الطلبيات السابقة» بزرار «رسالة ميعاد الاستلام». {الميعاد_الجديد} بيتبدّل بالميعاد اللي هتختاره ساعتها (باليوم والتاريخ)، وباقي الكلمات زي رسالة الوصول.</p><div class="arrival-tokens" id="delayTokens"></div><div class="arrival-msg-grid"><label>نص الرسالة<textarea id="delayMsgInput" rows="14"></textarea></label><div><div class="arrival-preview-title">شكل الرسالة عند العميل <small id="delayPreviewWho"></small></div><div id="delayMsgPreview" class="arrival-preview"></div></div></div><div class="form-actions" style="margin-top:12px"><button type="button" class="primary" id="delayMsgSave">حفظ نص الرسالة</button><button type="button" class="secondary-btn" id="delayMsgReset">رجوع للنص الأصلي</button></div></article><article class="panel" id="debtMsgPanel"><h2>رسالة واتساب «تذكير بالمديونية»</h2><p class="notice">دي الرسالة اللي بتتبعت للعميل اللي عليه فلوس — من زرار «💬 تذكير بالمديونية» في ملفه، أو من «📨 تذكير المديونيات» فوق قايمة العملاء. {المبلغ_المستحق} بيتبدّل برصيده وقت الإرسال، والسطور اللي مالهاش قيمة (زي آخر دفعة لو مدفعش) بتختفي لوحدها.</p><div class="arrival-tokens" id="debtTokens"></div><div class="arrival-msg-grid"><label>نص الرسالة<textarea id="debtMsgInput" rows="12"></textarea></label><div><div class="arrival-preview-title">شكل الرسالة عند العميل <small id="debtPreviewWho"></small></div><div id="debtMsgPreview" class="arrival-preview"></div></div></div><div class="form-actions" style="margin-top:12px"><button type="button" class="primary" id="debtMsgSave">حفظ نص الرسالة</button><button type="button" class="secondary-btn" id="debtMsgReset">رجوع للنص الأصلي</button></div></article><article class="panel" id="printBackgroundsPanel"><h2>خلفيات الطباعة</h2><form id="backgroundForm" class="form"><label>خلفية الفاتورة<input name="background" type="file" accept="image/*"></label><button class="primary">حفظ خلفية الفاتورة</button><button type="button" class="danger" id="clearBackground">إزالة الخلفية</button></form><form id="receiptBackgroundForm" class="form"><label>خلفية إيصال الدفع<input name="background" type="file" accept="image/*"></label><button class="primary">حفظ خلفية الإيصال</button><button type="button" class="danger" id="clearReceiptBackground">إزالة الخلفية</button></form><form id="statementBackgroundForm" class="form"><label>خلفية كشف حساب العميل (A4)<input name="background" type="file" accept="image/*"></label><button class="primary">حفظ خلفية كشف الحساب</button><button type="button" class="danger" id="clearStatementBackground">إزالة الخلفية</button></form><form id="quoteBackgroundForm" class="form"><label>خلفية عرض السعر<input name="background" type="file" accept="image/*"></label><button class="primary">حفظ خلفية عرض السعر</button><button type="button" class="danger" id="clearQuoteBackground">إزالة الخلفية</button></form><p class="notice">الخلفيات تُحفظ على هذا الجهاز. عند الطباعة فعّل خيار <strong>طباعة الخلفيات</strong> من إعدادات الطابعة.</p></article></div><div data-view="security"><div class="two settings-grid"><article class="panel" style="margin-bottom:0">
         <h2>كود حماية البرنامج (الرمز الخارجي)</h2>
         <p class="notice">هذا هو الكود المطلوب لفتح البرنامج نفسه على هذا الجهاز. لازم تعرف الكود الحالي عشان تغيّره.</p>
@@ -277,6 +282,11 @@ html,body{background:#fff!important}
         </form>
         <div id="clearPasswordStatus" class="notice"></div>
         <button type="button" class="danger" id="clearAllData" style="margin-top:10px">مسح جميع البيانات</button>
+      </article><article class="panel" style="margin-bottom:0" id="autoLockPanel">
+        <h2>🔒 القفل التلقائي</h2>
+        <p class="notice">لو الجهاز فضل من غير استخدام المدة دي، البرنامج بيقفل لوحده ويطلب كود حماية البرنامج. شغلك المفتوح مش بيضيع، بيكمل من نفس المكان بعد ما تكتب الكود. الإعداد ده على الجهاز ده بس.</p>
+        <div class="autolock-row"><label>يقفل بعد<select id="autoLockMinutes"><option value="0">إيقاف (من غير قفل تلقائي)</option><option value="5">5 دقايق</option><option value="10">10 دقايق</option><option value="15">15 دقيقة</option><option value="30">نص ساعة</option><option value="60">ساعة</option></select></label><button type="button" class="primary" id="autoLockSave">حفظ</button><button type="button" class="secondary-btn" id="lockNowBtn">🔒 اقفل دلوقتي</button></div>
+        <div id="autoLockStatus" class="notice"></div>
       </article></div></div><div data-view="look"><div class="two settings-grid"><article class="panel" style="margin-bottom:0">
         <h2>المظهر والألوان</h2>
         <form id="appearanceForm" class="form">
@@ -290,12 +300,29 @@ html,body{background:#fff!important}
         <p class="notice">تشغّل مجموعة اختبارات فعلية على حسابات المبيعات والمشتريات ورصيد العميل وتوزيع الدفعات ودمج المزامنة، من غير ما تلمس بياناتك الحقيقية أبدًا (بتشتغل على بيانات وهمية مؤقتة وترجّع بياناتك زي ما هي بعدها).</p>
         <button type="button" class="primary" id="runAccountingTests">تشغيل اختبارات الحسابات</button>
         <div id="accountingTestsResult" style="margin-top:12px"></div>
+      </article></div></div><div data-view="health"><div class="two settings-grid"><article class="panel" style="margin-bottom:0;grid-column:1/-1" id="dataCheckPanel">
+        <h2>🩺 فحص البيانات</h2>
+        <p class="notice">بيدوّر في حساباتك على أخطاء شائعة، زي: عميل ليه رصيد واتكتب مدفوع زيادة في فاتورة، أو فاتورة الباقي فيها أكبر من قيمتها، أو مخزون بالسالب، أو أسماء عملاء متكررة. بيشتغل لوحده مرة في الأسبوع، وتقدر تشغّله دلوقتي. الفحص بيقرا بس، ومش بيغيّر أي حاجة.</p>
+        <div class="form-actions"><button type="button" class="primary" id="runDataCheckBtn">افحص دلوقتي</button></div>
+        <div id="dataCheckResult" style="margin-top:12px"></div>
+      </article><article class="panel" style="margin-bottom:0" id="devicesPanel">
+        <h2>📱 الأجهزة ونسخة البرنامج</h2>
+        <p class="notice">كل جهاز بيسجّل نسخة البرنامج اللي عليه. لو جهاز على نسخة أقدم من التاني، بيظهرلك تنبيه فوق عشان تحدّثه.</p>
+        <div id="devicesTable"></div>
+        <div class="form-actions" style="margin-top:10px"><button type="button" class="secondary-btn" id="renameDeviceBtn">✏️ تسمية الجهاز ده</button></div>
+      </article><article class="panel" style="margin-bottom:0" id="errorLogPanel">
+        <h2>🧾 سجل الأخطاء</h2>
+        <p class="notice">لو حصل أي خطأ في البرنامج بيتسجل هنا. لو ظهرلك إيرور، اضغط «نسخ السجل» وابعته، عشان سببه يتعرف بالظبط.</p>
+        <div id="errorLogList"></div>
+        <div class="form-actions" style="margin-top:10px"><button type="button" class="secondary-btn" id="copyErrorLogBtn">📋 نسخ السجل</button><button type="button" class="secondary-btn" id="openErrorLogBtn">📂 فتح فولدر السجل</button><button type="button" class="secondary-btn" id="clearErrorLogBtn">مسح السجل</button></div>
       </article></div></div></section>
 </main>
 <!-- مكتبة توليد الباركود (QR) لروابط الواتساب والفيسبوك في الطباعة — متضمنة جوه البرنامج عشان تشتغل من غير نت. -->
 <script src="qrcode.js"></script>
 <script>
-const initial={products:[],factoryItems:[],invoices:[],quotes:[],orders:[],customerBalances:{},customerPayments:[],ledgerEntries:[],extraPurchases:[],customerReturns:[],deletedIds:{},customerPhones:{},customerReps:{},repRates:{},repPayments:[],factoryLedger:[],factoryOpeningBalance:0,customerDataUpdatedAt:{},printSettings:{},colorCodes:[]};
+// رقم نسخة البرنامج: على الكمبيوتر من البرنامج نفسه، وعلى الموبايل بيتكتب في الصفحة وقت تجهيز نسخة الموقع.
+const DAFTAR_APP_VERSION=window.daftarElectron?.appVersion||window.DAFTAR_WEB_VERSION||'';
+const initial={products:[],factoryItems:[],invoices:[],quotes:[],orders:[],customerBalances:{},customerPayments:[],ledgerEntries:[],extraPurchases:[],customerReturns:[],deletedIds:{},customerPhones:{},customerReps:{},repRates:{},repPayments:[],factoryLedger:[],factoryOpeningBalance:0,customerDataUpdatedAt:{},printSettings:{},colorCodes:[],deviceInfo:{}};
 let db=JSON.parse(localStorage.getItem('daftar-v1')||JSON.stringify(initial));
 // ===== الحفظ في ملف حقيقي على الجهاز (داخل برنامج الديسكتوب) =====
 // البيانات بقت بتتحفظ في ملف daftar-data.json في فولدر بيختاره المستخدم (الافتراضي
@@ -5185,7 +5212,7 @@ document.querySelectorAll('#nav [data-page]').forEach(btn=>btn.addEventListener(
   render();
 }));
 // رقم النسخة تحت اسم البرنامج (بيجي من package.json عن طريق Electron).
-{const v=window.daftarElectron?.appVersion;const el=document.querySelector('#appVersionTag');if(el&&v)el.textContent='— نسخة '+v;}
+{const v=DAFTAR_APP_VERSION;const el=document.querySelector('#appVersionTag');if(el&&v)el.textContent='— نسخة '+v;}
 document.querySelector('#customerBackBtn')?.addEventListener('click',()=>{showCustomersList();renderCustomerList();window.scrollTo({top:0});});
 
 // ===== "جديدة / السابقة" في الفواتير والطلبيات وعروض الأسعار =====
@@ -5197,6 +5224,7 @@ function showPageView(page,view){
   daftarPageView[page]=view;
   sec.querySelectorAll(':scope > [data-view]').forEach(el=>el.classList.toggle('hidden',el.dataset.view!==view));
   sec.querySelectorAll('.page-views [data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+  if(page==='settings'&&typeof onSettingsView==='function')setTimeout(()=>onSettingsView(view),0);
 }
 document.querySelectorAll('.page-views').forEach(bar=>{
   const page=bar.dataset.pageViews;
@@ -5689,6 +5717,24 @@ details.variant-editor[open]{padding-bottom:12px}
 .variant-row label{margin:0}
 .variant-row .variant-remove{padding:8px 12px!important;min-width:40px}
 @media (max-width:700px){.variant-row{grid-template-columns:1fr 1fr}.variant-row label:first-child{grid-column:1/-1}}
+/* 🩺 فحص وصيانة + التنبيهات اللي فوق */
+#dataCheckPanel .form-actions,#devicesPanel .form-actions,#errorLogPanel .form-actions{display:flex;gap:10px;flex-wrap:wrap}
+#daftarNotices:empty{display:none}
+#daftarNotices{display:grid;gap:8px;margin:12px 0}
+.autolock-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:10px}
+.autolock-row label{flex:1 1 180px;margin:0}
+.autolock-row button{flex:none;white-space:nowrap}
+.daftar-notice{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border:1px solid #f5c26b;border-radius:12px;background:#fff7e6;color:#7a4b00;line-height:1.7}
+body.dark .daftar-notice{background:#3a2a0b;border-color:#8a6a1f;color:#ffd99a}
+.daftar-notice .settlement-close{flex:none}
+.check-list{display:grid;gap:8px}
+.check-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-inline-start:4px solid var(--warn);border-radius:10px;background:var(--surface);line-height:1.7}
+.check-row.danger{border-inline-start-color:var(--danger)}
+.check-row small{color:var(--muted)}
+.check-row button{flex:none}
+.error-log{display:grid;gap:6px;max-height:340px;overflow:auto}
+.error-log-row{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow-wrap:anywhere}
+.error-log-row small{color:var(--muted)}
 /* زرار ⋮ في سطر المخزون والقايمة اللي بتفتح منه */
 .row-menu-btn{min-width:40px;padding-inline:10px!important;font-size:18px;line-height:1;font-weight:700}
 .row-menu{position:fixed;z-index:9500;min-width:200px;max-width:calc(100vw - 16px);display:flex;flex-direction:column;padding:6px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);direction:rtl}
@@ -6100,6 +6146,9 @@ function mergeDb(local,cloud){
   // بيانات الطباعة (اسم الشركة والرقم ولينك الفيسبوك...): إعداد واحد للحساب، فبناخد الأحدث تعديلاً.
   const lp=local.printSettings||{},cp=cloud.printSettings||{};
   result.printSettings=(Date.parse(cp.updatedAt||'')||0)>(Date.parse(lp.updatedAt||'')||0)?cp:lp;
+  // الأجهزة ونسخة البرنامج على كل واحد: لكل جهاز الأحدث (seenAt) من الناحيتين.
+  result.deviceInfo={};
+  for(const src of [local.deviceInfo||{},cloud.deviceInfo||{}])for(const [id,d] of Object.entries(src)){if(!d||typeof d!=='object')continue;const cur=result.deviceInfo[id];if(!cur||(Date.parse(d.seenAt||'')||0)>(Date.parse(cur.seenAt||'')||0))result.deviceInfo[id]=d;}
   result.deletedIds=deletedIds;
   return result;
 }
@@ -6316,6 +6365,7 @@ async function supabaseSave(){
     }
   }catch(err){
     console.warn('Supabase sync failed:',err);
+    if(navigator.onLine&&err?.name!=='AbortError'&&typeof daftarLogError==='function')daftarLogError('sync',err);
     queueOfflineSync();
     syncStatus('☁️ تعذرت المزامنة — البيانات محفوظة محليًا وستُعاد المحاولة تلقائيًا','#d97706');
     nextSyncDelay=2000;
@@ -6458,7 +6508,8 @@ async function ensurePinFor(key,opts){
   // ورجع، خصوصًا بعد عمليات زي فتح واتساب أو أي نافذة خارجية تانية — لإن
   // ويندوز في الحالة دي أحيانًا بيفضل معتبر نافذتنا مش "النشطة" فعليًا حتى
   // لو ظاهرة، ووقتها أي focus() جوه الصفحة نفسها مالوش تأثير حقيقي.
-  try{window.daftarElectron?.focusWindow?.().catch(()=>{});}catch(_){}
+  // القفل التلقائي (noFocus) مبيجيبش النافذة قدام لو انت شغال في برنامج تاني.
+  if(!opts.noFocus)try{window.daftarElectron?.focusWindow?.().catch(()=>{});}catch(_){}
   return new Promise(resolve=>{
     let settled=false;
     const finish=val=>{if(settled)return;settled=true;document.querySelector('#daftarPinOverlay').classList.remove('show');document.removeEventListener('keydown',daftarPinKeyFallback);resolve(val)};
@@ -6481,7 +6532,7 @@ async function ensurePinFor(key,opts){
     // التلقائي فشل لأي سبب يبقى فيه طريقة تانية سريعة.
     input.focus();
     const daftarRaf=typeof requestAnimationFrame==='function'?requestAnimationFrame:(fn)=>setTimeout(fn,16);
-    daftarRaf(()=>daftarRaf(()=>{try{window.daftarElectron?.focusWindow?.().catch(()=>{});}catch(_){}input.focus();}));
+    daftarRaf(()=>daftarRaf(()=>{if(!opts.noFocus)try{window.daftarElectron?.focusWindow?.().catch(()=>{});}catch(_){}input.focus();}));
     document.querySelector('#daftarPinBox').onclick=e=>{if(e.target!==btn&&e.target!==cancelBtn){try{window.daftarElectron?.focusWindow?.().catch(()=>{});}catch(_){}input.focus();}};
     // فحص احتياطي أخير: لو حتى بعد كل المحاولات فوق لسه المستخدم مش قادر
     // يكتب (حالة نادرة جدًا)، أول ضغطة على أي حرف/رقم في أي مكان في الصفحة
@@ -6691,6 +6742,221 @@ setInterval(()=>{if(document.visibilityState==='visible'&&!daftarOfflineFallback
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){if(daftarOfflineFallback)retryOnlineAuthUpgrade();else supabasePullIfChanged();}});
 window.addEventListener('pageshow',()=>{if(!daftarOfflineFallback)supabasePullIfChanged();});
 console.log('DAFTAR Supabase Account + Offline Sync Loaded');
+// ===================== 🩺 فحص وصيانة =====================
+// ---- سجل الأخطاء: أي خطأ في الصفحة بيتسجل (على الكمبيوتر في ملف جوه فولدر البيانات، وعلى الموبايل
+// في ذاكرة المتصفح — آخر 200 خطأ). نفس الخطأ لو اتكرر في خلال دقيقة مش بيتسجل تاني.
+const DAFTAR_ERROR_LOG_KEY='daftar-error-log-v1';
+function daftarLogError(source,err,where){
+  try{
+    const message=String(err?.message||err||'').slice(0,2000);
+    if(!message||/ResizeObserver loop/.test(message))return;
+    const entry={source,message,stack:String(err?.stack||'').slice(0,4000),where:String(where||'').slice(0,300)};
+    if(window.daftarElectron?.logError){window.daftarElectron.logError(entry);return;}
+    const list=JSON.parse(localStorage.getItem(DAFTAR_ERROR_LOG_KEY)||'[]');
+    if(list.some(x=>x.message===message&&Date.now()-Date.parse(x.time)<60000))return;
+    list.push({time:new Date().toISOString(),version:DAFTAR_APP_VERSION,...entry});
+    localStorage.setItem(DAFTAR_ERROR_LOG_KEY,JSON.stringify(list.slice(-200)));
+  }catch(e){}
+}
+window.addEventListener('error',e=>daftarLogError('error',e.error||e.message,`${e.filename||''}:${e.lineno||''}`));
+window.addEventListener('unhandledrejection',e=>daftarLogError('promise',e.reason));
+async function readDaftarErrorLog(){
+  if(window.daftarElectron?.readErrorLog){const r=await window.daftarElectron.readErrorLog();return (r?.lines||[]).map(l=>{try{return JSON.parse(l)}catch(e){return {time:'',message:l}}});}
+  try{return JSON.parse(localStorage.getItem(DAFTAR_ERROR_LOG_KEY)||'[]')}catch(e){return []}
+}
+async function renderErrorLog(){
+  const box=document.querySelector('#errorLogList');if(!box)return;
+  const list=(await readDaftarErrorLog()).slice(-30).reverse();
+  box.innerHTML=list.length?`<div class="error-log">${list.map(e=>`<div class="error-log-row"><small dir="ltr">${esc(e.time?new Date(e.time).toLocaleString('ar-EG'):'')}${e.version?' — v'+esc(e.version):''} — ${esc(e.source||'')}</small><div dir="auto">${esc(e.message||'')}</div></div>`).join('')}</div>`:'<div class="notice">مفيش أخطاء متسجلة 👌</div>';
+  document.querySelector('#openErrorLogBtn')?.classList.toggle('hidden',!window.daftarElectron?.openErrorLog);
+  document.querySelector('#clearErrorLogBtn')?.classList.toggle('hidden',!!window.daftarElectron);
+}
+document.querySelector('#copyErrorLogBtn')?.addEventListener('click',async()=>{
+  const list=await readDaftarErrorLog();
+  const text=[`دفتر — نسخة ${DAFTAR_APP_VERSION||'?'} — ${navigator.userAgent}`,...list.slice(-50).map(e=>`[${e.time}] v${e.version||''} ${e.source||''}: ${e.message||''}${e.where?' @ '+e.where:''}${e.stack?'\n'+e.stack.split('\n').slice(0,4).join('\n'):''}`)].join('\n');
+  try{await navigator.clipboard.writeText(text);daftarToast('اتنسخ السجل — الصقه في رسالة وابعته.');}catch(e){daftarAlert(text.slice(0,3000));}
+});
+document.querySelector('#openErrorLogBtn')?.addEventListener('click',()=>window.daftarElectron?.openErrorLog?.());
+document.querySelector('#clearErrorLogBtn')?.addEventListener('click',async()=>{if(!await daftarConfirm('مسح سجل الأخطاء من الجهاز ده؟'))return;localStorage.removeItem(DAFTAR_ERROR_LOG_KEY);renderErrorLog();});
+
+// ---- الأجهزة ونسخة البرنامج: كل جهاز بيسجّل نسخته في البيانات (بتتزامن)، ولو جهاز تاني اتشاف في آخر
+// 30 يوم على نسخة أحدث من الجهاز ده، بيظهر تنبيه فوق.
+function compareVersions(a,b){const x=String(a||'').split('.').map(Number),y=String(b||'').split('.').map(Number);for(let i=0;i<Math.max(x.length,y.length);i++){const d=(x[i]||0)-(y[i]||0);if(d)return d>0?1:-1;}return 0;}
+function myDeviceKind(){return window.daftarElectron?'كمبيوتر':/iPhone|iPad|iPod/i.test(navigator.userAgent)?'آيفون':/Android/i.test(navigator.userAgent)?'موبايل أندرويد':'متصفح';}
+function myDeviceName(){try{return localStorage.getItem('daftar-device-name')||''}catch(e){return ''}}
+function deviceDisplayName(d){return d?.name||d?.kind||'جهاز';}
+function updateMyDeviceInfo(force){
+  if(!DAFTAR_APP_VERSION||typeof daftarDeviceId==='undefined')return;
+  db.deviceInfo=db.deviceInfo&&typeof db.deviceInfo==='object'?db.deviceInfo:{};
+  const me=db.deviceInfo[daftarDeviceId],name=myDeviceName(),kind=myDeviceKind();
+  if(!force&&me&&me.version===DAFTAR_APP_VERSION&&(me.name||'')===name&&me.kind===kind&&Date.now()-(Date.parse(me.seenAt||'')||0)<20*3600e3)return;
+  db.deviceInfo[daftarDeviceId]={version:DAFTAR_APP_VERSION,name,kind,seenAt:new Date().toISOString()};
+  save();
+}
+function newerDevices(){
+  return Object.entries(db.deviceInfo||{}).filter(([id,d])=>id!==daftarDeviceId&&d&&Date.now()-(Date.parse(d.seenAt||'')||0)<30*864e5&&compareVersions(d.version,DAFTAR_APP_VERSION)>0).map(([,d])=>d);
+}
+function renderDevicesPanel(){
+  const box=document.querySelector('#devicesTable');if(!box)return;
+  const rows=Object.entries(db.deviceInfo||{}).sort((a,b)=>(Date.parse(b[1]?.seenAt||'')||0)-(Date.parse(a[1]?.seenAt||'')||0));
+  const top=rows.reduce((m,[,d])=>compareVersions(d?.version,m)>0?d.version:m,DAFTAR_APP_VERSION);
+  box.innerHTML=rows.length?table(['الجهاز','النسخة','آخر ظهور'],rows.map(([id,d])=>`<tr><td>${esc(deviceDisplayName(d))}${d?.name&&d?.kind?` <small>(${esc(d.kind)})</small>`:''}${id===daftarDeviceId?' <span class="badge">الجهاز ده</span>':''}</td><td>${esc(d?.version||'—')}${compareVersions(d?.version,top)<0?' <span class="badge" style="color:var(--danger)">قديمة</span>':''}</td><td>${d?.seenAt?esc(new Date(d.seenAt).toLocaleString('ar-EG',{dateStyle:'medium',timeStyle:'short'})):'—'}</td></tr>`)):'<div class="notice">لسه مفيش أجهزة متسجلة.</div>';
+}
+document.querySelector('#renameDeviceBtn')?.addEventListener('click',async()=>{
+  const cur=myDeviceName();
+  const v=await daftarTextPrompt('اسم الجهاز ده',`مثلاً «كمبيوتر المحل» أو «كمبيوتر المخزن» — عشان تعرف أنهي جهاز محتاج تحديث.`,cur);
+  if(v===null)return;
+  try{localStorage.setItem('daftar-device-name',v.trim())}catch(e){}
+  updateMyDeviceInfo(true);renderDevicesPanel();
+});
+// نافذة صغيرة لكتابة نص (بديل prompt العادي اللي بيعلّق في Electron)
+function daftarTextPrompt(title,text,value){
+  return new Promise(resolve=>{
+    let old=document.getElementById('daftarTextPromptModal');if(old)old.remove();
+    const box=document.createElement('div');box.id='daftarTextPromptModal';
+    box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:440px"><div class="settlement-title"><div><h3>${esc(title)}</h3></div><button type="button" class="settlement-close" data-close>×</button></div><div style="line-height:1.8;margin-bottom:8px">${esc(text)}</div><input id="daftarTextPromptInput" value="${esc(value||'')}" style="width:100%;box-sizing:border-box"><div class="settlement-actions"><button type="button" class="primary" data-ok>حفظ</button><button type="button" class="secondary-btn" data-close>إلغاء</button></div></div>`;
+    document.body.appendChild(box);
+    const input=box.querySelector('input'),done=v=>{box.remove();resolve(v);};
+    box.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>done(null));box.querySelector('.settlement-backdrop').onclick=()=>done(null);
+    box.querySelector('[data-ok]').onclick=()=>done(input.value);
+    input.onkeydown=e=>{if(e.key==='Enter')done(input.value);if(e.key==='Escape')done(null);};
+    input.focus();input.select();
+  });
+}
+
+// ---- 🩺 فحص البيانات: بيقرا بس، وبيرجّع قايمة بالحاجات اللي محتاجة مراجعة (وكل واحدة ليها زرار يوديك عليها).
+function runDataCheck(){
+  const issues=[];
+  const add=(level,title,detail,go)=>issues.push({level,title,detail,go});
+  const goCustomer=n=>()=>{document.querySelector('[data-page=customers]').click();showCustomer(encodeURIComponent(n));};
+  const goSearch=(page,view,input,q)=>()=>{document.querySelector(`[data-page=${page}]`).click();if(view)showPageView(page,view);const s=document.querySelector(input);if(s){s.value=q;s.dispatchEvent(new Event('input'));}};
+  const names=customers(),bals=computeAllCustomerBalances(names);
+  // 1) فاتورة اتخصم منها رصيد العميل القديم واتكتب فيها مدفوع كمان، والعميل دلوقتي «له» فلوس (زي اللي حصل مع علي عامر)
+  const flagged=new Set();
+  for(const inv of db.invoices){
+    if(isDebtRecord(inv)||flagged.has(inv.customer))continue;
+    const cash=+inv.cashDeposit||0,cr=+inv.creditApplied||0,bal=bals.get(inv.customer)||0;
+    if(cash>0.009&&cr>0.009&&bal<-0.009){flagged.add(inv.customer);add('danger',`«${inv.customer}» له ${money(-bal)} — راجع فاتورة #${displayNo('invoices',inv.id)} (${inv.date})`,`الفاتورة دي اتخصم منها ${money(cr)} من رصيده القديم، واتكتب فيها مدفوع ${money(cash)} كمان. لو المدفوع ده اتكتب بالغلط، حسابه هيفضل «له» فلوس مش بتاعته. لو ماتدفعوش فعلًا، سجّل عليه «مديونية» بالفرق وفي الملاحظة «تصحيح».`,goCustomer(inv.customer));}
+  }
+  // 2) أرقام فاتورة مش منطقية
+  for(const inv of db.invoices){
+    const total=+inv.total||0,rem=+inv.remaining||0,dep=+inv.deposit||0,no=displayNo('invoices',inv.id);
+    if(rem<-0.009||rem>total+0.009)add('warn',`فاتورة #${no} لـ«${inv.customer}»: الباقي (${money(rem)}) مش منطقي مع قيمتها (${money(total)})`,'الباقي لازم يبقى بين صفر وقيمة الفاتورة.',goSearch('invoices','list','#invoiceSearch',String(no)));
+    else if(dep>total+0.009)add('warn',`فاتورة #${no} لـ«${inv.customer}»: المدفوع (${money(dep)}) أكبر من قيمتها (${money(total)})`,'المدفوع في الفاتورة المفروض ميزدش عن قيمتها (الزيادة بتتسجل رصيد للعميل لوحدها).',goSearch('invoices','list','#invoiceSearch',String(no)));
+    if(!isDebtRecord(inv)&&!(inv.items||[]).length)add('warn',`فاتورة #${no} لـ«${inv.customer}» مفيهاش أصناف`,'فاتورة بيع من غير أصناف — غالبًا اتسجلت بالغلط.',goSearch('invoices','list','#invoiceSearch',String(no)));
+  }
+  // 3) مخزون بالسالب
+  for(const p of db.products)if((+p.stock||0)<0)add('danger',`«${p.name}»${p.sku?` (كود ${p.sku})`:''} رصيده في المخزون بالسالب (${p.stock})`,'اتباع منه أكتر من الموجود. راجع الكمية أو آخر فاتورة.',goSearch('products',null,'#productSearch',p.sku||p.name));
+  // 4) عربون طلبية أكبر من قيمتها
+  for(const o of db.orders){if(o.invoiced)continue;const dep=orderUnusedDeposit(o),t=+o.total||0;if(t>0&&dep>t+0.009)add('warn',`طلبية #${displayNo('orders',o.id)}${o.customer?` لـ«${o.customer}»`:''}: العربون (${money(dep)}) أكبر من قيمتها (${money(t)})`,'الزيادة المفروض تبقى رصيد للعميل مش جوه الطلبية.',goSearch('orders','list','#orderSearch',String(displayNo('orders',o.id))));}
+  // 5) دفعات بقيمة صفر أو بالسالب
+  for(const p of db.customerPayments)if(!((+p.amount||0)>0))add('warn',`دفعة بقيمة ${money(+p.amount||0)} لـ«${p.customer}» (${p.date||''})`,'دفعة من غير قيمة — غالبًا اتسجلت بالغلط.',goCustomer(p.customer));
+  // 6) أسطر مخزون متكررة بنفس البيانات بالظبط
+  for(const g of (typeof duplicateInventoryGroups==='function'?duplicateInventoryGroups():[]))add('warn',`«${g[0].name}»${g[0].batchNo?` باتش ${g[0].batchNo}`:''} متسجّل في ${g.length} أسطر في المخزون`,'نفس الصنف بنفس البيانات في أكتر من سطر — فيه زرار «دمج الأسطر المتكررة» في صفحة المخزون.',goSearch('products',null,'#productSearch',g[0].name));
+  // 7) أسماء عملاء شكلها واحد
+  for(const g of (typeof similarCustomerGroups==='function'?similarCustomerGroups():[]))add('warn',`أسماء عملاء متشابهة: ${g.map(n=>`«${n}»`).join(' و ')}`,'غالبًا نفس العميل متسجّل بأكتر من شكل، فحسابه متقسّم. تقدر تدمجهم من صفحة العملاء.',()=>{document.querySelector('[data-page=customers]').click();showCustomersList();});
+  return issues;
+}
+const DATA_CHECK_KEY='daftar-data-check-v1';
+let daftarDataCheckIssues=null;
+function showDataCheckResult(issues){
+  daftarDataCheckIssues=issues;
+  const box=document.querySelector('#dataCheckResult');
+  const last=(()=>{try{return JSON.parse(localStorage.getItem(DATA_CHECK_KEY)||'{}')}catch(e){return {}}})();
+  const when=last.at?`آخر فحص: ${new Date(last.at).toLocaleString('ar-EG',{dateStyle:'medium',timeStyle:'short'})}`:'';
+  if(box)box.innerHTML=issues.length?`<div class="notice tone-danger" style="margin-bottom:10px">لقيت <strong>${issues.length}</strong> حاجة محتاجة مراجعة. ${when}</div><div class="check-list">${issues.map((x,i)=>`<div class="check-row ${x.level}"><div><strong>${x.level==='danger'?'⛔':'⚠️'} ${esc(x.title)}</strong><br><small>${esc(x.detail)}</small></div>${x.go?`<button type="button" class="secondary-btn" data-check-go="${i}">افتح</button>`:''}</div>`).join('')}</div>`:`<div class="notice">✅ كله تمام — مفيش أخطاء في البيانات. ${when}</div>`;
+  box?.querySelectorAll('[data-check-go]').forEach(b=>b.onclick=()=>daftarDataCheckIssues[+b.dataset.checkGo]?.go?.());
+  const badge=document.querySelector('#healthTabBadge');if(badge){badge.textContent=issues.length||'';badge.classList.toggle('hidden',!issues.length);}
+  renderDaftarNotices();
+}
+function doDataCheck(){
+  let issues=[];
+  try{issues=runDataCheck();}catch(err){daftarLogError('data-check',err);}
+  try{localStorage.setItem(DATA_CHECK_KEY,JSON.stringify({at:new Date().toISOString(),count:issues.length}))}catch(e){}
+  showDataCheckResult(issues);
+  return issues;
+}
+document.querySelector('#runDataCheckBtn')?.addEventListener('click',()=>{const n=doDataCheck().length;daftarToast(n?`لقيت ${n} حاجة محتاجة مراجعة.`:'✅ كله تمام.');});
+
+// ---- تنبيهات فوق الصفحة (نسخة أحدث على جهاز تاني / فحص البيانات لقى حاجة)
+let daftarNoticeDismissed={};
+function renderDaftarNotices(){
+  let bar=document.getElementById('daftarNotices');
+  // التنبيهات تحت شريط الصفحات (مش فوق اسم البرنامج)
+  if(!bar){bar=document.createElement('div');bar.id='daftarNotices';const nav=document.querySelector('#nav');if(!nav)return;nav.insertAdjacentElement('afterend',bar);}
+  const items=[];
+  const newer=newerDevices();
+  if(newer.length&&!daftarNoticeDismissed.version){
+    const v=newer.reduce((m,d)=>compareVersions(d.version,m)>0?d.version:m,'0');
+    items.push({key:'version',html:`📢 «${esc(deviceDisplayName(newer.find(d=>d.version===v)))}» شغال على نسخة أحدث (${esc(v)}) من الجهاز ده (${esc(DAFTAR_APP_VERSION)}). ${window.daftarElectron?'سطّب ملف التسطيب الجديد على الجهاز ده.':'ارفع ملفات فولدر web الجديدة على GitHub، وبعدين اقفل البرنامج وافتحه تاني.'}`});
+  }
+  const n=daftarDataCheckIssues?.length||0;
+  if(n&&!daftarNoticeDismissed.check)items.push({key:'check',html:`🩺 فحص البيانات لقى ${n} حاجة محتاجة مراجعة. <button type="button" class="secondary-btn" data-notice-open>اعرضها</button>`});
+  bar.innerHTML=items.map(x=>`<div class="daftar-notice" data-key="${x.key}"><span>${x.html}</span><button type="button" class="settlement-close" data-notice-close aria-label="إخفاء">×</button></div>`).join('');
+  bar.querySelectorAll('[data-notice-close]').forEach(b=>b.onclick=()=>{daftarNoticeDismissed[b.closest('.daftar-notice').dataset.key]=true;renderDaftarNotices();});
+  bar.querySelector('[data-notice-open]')?.addEventListener('click',()=>{document.querySelector('#nav [data-page=settings]').click();showPageView('settings','health');});
+}
+
+// ---- 🔒 القفل التلقائي بعد مدة من غير استخدام (إعداد لكل جهاز)
+const AUTOLOCK_KEY='daftar-autolock-min';
+function autoLockMinutes(){try{const v=localStorage.getItem(AUTOLOCK_KEY);return v===null?10:Math.max(0,+v||0);}catch(e){return 0}}
+let daftarLastActivity=Date.now(),daftarAutoLocking=false;
+for(const ev of ['mousemove','mousedown','keydown','touchstart','wheel'])document.addEventListener(ev,()=>{daftarLastActivity=Date.now();},{passive:true,capture:true});
+async function lockAppNow(reason){
+  if(daftarAutoLocking||!daftarUnlocked||!localStorage.getItem(DAFTAR_PIN_KEY))return;
+  if(document.querySelector('#daftarPinOverlay')?.classList.contains('show'))return;
+  daftarAutoLocking=true;daftarReportsUnlockedThisSession=false;closeRowMenu();
+  try{
+    await ensurePinFor(DAFTAR_PIN_KEY,{setupTitle:'',setupText:'',title:'🔒 البرنامج اتقفل',text:reason||'اكتب كود حماية البرنامج عشان تكمّل من نفس المكان.',btnText:'فتح',allowCancel:false,noFocus:true});
+  }finally{daftarAutoLocking=false;daftarLastActivity=Date.now();}
+}
+setInterval(()=>{const min=autoLockMinutes();if(min&&Date.now()-daftarLastActivity>=min*60000)lockAppNow(`اتقفل لوحده بعد ${min} دقيقة من غير استخدام. اكتب كود حماية البرنامج عشان تكمّل من نفس المكان.`);},15000);
+function renderAutoLockSettings(){
+  const sel=document.querySelector('#autoLockMinutes');if(!sel)return;
+  sel.value=String(autoLockMinutes());
+  const st=document.querySelector('#autoLockStatus'),min=autoLockMinutes();
+  if(st)st.textContent=!localStorage.getItem(DAFTAR_PIN_KEY)?'⚠️ لازم يكون فيه كود حماية للبرنامج عشان القفل التلقائي يشتغل.':min?`القفل التلقائي شغال: بعد ${min} دقيقة من غير استخدام.`:'القفل التلقائي مقفول على الجهاز ده.';
+}
+document.querySelector('#autoLockSave')?.addEventListener('click',()=>{try{localStorage.setItem(AUTOLOCK_KEY,document.querySelector('#autoLockMinutes').value)}catch(e){}renderAutoLockSettings();daftarToast('تم حفظ إعداد القفل التلقائي.');});
+document.querySelector('#lockNowBtn')?.addEventListener('click',()=>lockAppNow());
+
+// ---- 🗂️ النسخة الاحتياطية التانية (على الكمبيوتر بس)
+async function renderMirrorPanel(){
+  const panel=document.querySelector('#mirrorBackupPanel');if(!panel)return;
+  const api=window.daftarElectron?.mirror;
+  panel.classList.toggle('hidden',!api);if(!api)return;
+  const s=await api.get().catch(()=>null);if(!s)return;
+  const st=document.querySelector('#mirrorStatus'),fmt=t=>t?new Date(t).toLocaleString('ar-EG',{dateStyle:'medium',timeStyle:'short'}):'';
+  const stale=s.dir&&(!s.lastOk||Date.now()-Date.parse(s.lastOk)>3*864e5);
+  st.className='notice'+(s.dir&&(s.lastError||stale)?' tone-danger':'');
+  st.innerHTML=!s.dir?'النسخة التانية مش متفعّلة. اضغط «اختيار الفولدر» واختار فلاشة أو بارتشن على هارد تاني أو فولدر Google Drive.'
+    :`الفولدر: <bdi dir="ltr">${esc(s.dir)}</bdi>${s.available?'':' — <strong>مش متاح دلوقتي</strong> (الفلاشة مش متوصلة؟ أو Google Drive مقفول؟)'}<br>آخر نسخة ناجحة: ${s.lastOk?esc(fmt(s.lastOk)):'لسه'}${s.lastError?`<br>آخر مشكلة (${esc(fmt(s.lastErrorAt))}): ${esc(s.lastError)}`:''}${stale?'<br>⚠️ بقالها أكتر من 3 أيام من غير نسخة ناجحة.':''}`;
+  for(const id of ['#mirrorRunBtn','#mirrorOpenBtn','#mirrorOffBtn'])document.querySelector(id)?.classList.toggle('hidden',!s.dir);
+}
+document.querySelector('#mirrorChooseBtn')?.addEventListener('click',async()=>{const r=await window.daftarElectron?.mirror?.choose();if(r?.canceled)return;if(r&&!r.ok&&r.error)daftarAlert(r.error);else if(r?.ok)daftarToast('تم — أول نسخة اتعملت في الفولدر ده.');renderMirrorPanel();});
+document.querySelector('#mirrorRunBtn')?.addEventListener('click',async()=>{const r=await window.daftarElectron?.mirror?.run();if(r?.ok)daftarToast('تم عمل نسخة دلوقتي.');else if(r?.error)daftarAlert('النسخة ما اتعملتش: '+r.error);renderMirrorPanel();});
+document.querySelector('#mirrorOpenBtn')?.addEventListener('click',()=>window.daftarElectron?.mirror?.open());
+document.querySelector('#mirrorOffBtn')?.addEventListener('click',async()=>{if(!await daftarConfirm('إيقاف النسخة التانية؟ النسخ اللي اتعملت قبل كده هتفضل في الفولدر زي ما هي.'))return;await window.daftarElectron?.mirror?.off();renderMirrorPanel();});
+
+// ---- تشغيل: لما البرنامج يفتح وكل ساعة — تسجيل نسخة الجهاز، وفحص البيانات لو بقاله أسبوع.
+function daftarMaintenanceTick(){
+  if(!daftarUnlocked||!daftarStorageReady)return;
+  try{updateMyDeviceInfo();}catch(err){daftarLogError('device-info',err);}
+  try{const last=JSON.parse(localStorage.getItem(DATA_CHECK_KEY)||'{}');if(!last.at||Date.now()-Date.parse(last.at)>7*864e5)doDataCheck();else if(daftarDataCheckIssues===null)showDataCheckResult(runDataCheck());}catch(err){daftarLogError('data-check',err);}
+  renderDaftarNotices();
+}
+setTimeout(()=>{daftarMaintenanceTick();setInterval(daftarMaintenanceTick,60*60*1000);},8000);
+// نسخة جهاز تاني بتوصل مع المزامنة: نحدّث التنبيه كل دقيقة (رخيص جدًا)
+setInterval(()=>{if(daftarUnlocked)renderDaftarNotices();},60000);
+// لما تفتح «فحص وصيانة» أو الأمان أو البيانات من الإعدادات، المحتوى بيتحدّث
+function onSettingsView(v){
+  try{
+    if(v==='health'){showDataCheckResult(runDataCheck());renderDevicesPanel();renderErrorLog();}
+    if(v==='security')renderAutoLockSettings();
+    if(v==='data')renderMirrorPanel();
+  }catch(err){daftarLogError('settings-view',err);}
+}
+document.querySelector('#nav [data-page=settings]')?.addEventListener('click',()=>setTimeout(()=>onSettingsView(daftarPageView.settings),0));
 // نسخة الموبايل (لما البرنامج يتفتح من لينك https): ملف sw.js بيحفظ البرنامج على الموبايل،
 // فيفتح حتى من غير نت بعد أول مرة. على الكمبيوتر (Electron) مش بيشتغل ومالوش لازمة.
 if('serviceWorker' in navigator&&location.protocol==='https:'&&!window.daftarElectron){
