@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.4.5";</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.4.6";</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
 <!-- نسخة الموبايل (آيفون): اسم وأيقونة البرنامج على الشاشة الرئيسية، وبيفتح بملء الشاشة زي التطبيق -->
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="دفتر"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#C2185B"><style>
 /* حقول رمز الأمان (6 أرقام): بنستخدم input عادي مقنّع بصريًا بدل type="password"،
@@ -4448,14 +4448,30 @@ document.querySelector('#invoiceForm').addEventListener('submit',async e=>{
   const invoiceQtyByProduct={};
   for(const i of invoiceCart)invoiceQtyByProduct[i.productId]=(invoiceQtyByProduct[i.productId]||0)+(+i.quantity||0);
   for(const productId of Object.keys(invoiceQtyByProduct)){const p=db.products.find(x=>String(x.id)===String(productId));if(!p||p.stock<invoiceQtyByProduct[productId])return daftarAlert('المخزون غير كافٍ للصنف: '+(p?p.name:productId));}
-  const paidTyped=Math.max(0,+f.get('paidAmount')||0);
+  let paidTyped=Math.max(0,+f.get('paidAmount')||0);
   const pendingOrderIdForDeposit=window.daftarPendingOrderInvoiceId;
   const orderDeposit=orderDepositAvailable(customer,pendingOrderIdForDeposit);
   const orderDepositUsed=Math.min(orderDeposit,total);
   const maxCashPayment=Math.max(0,total-orderDepositUsed);
+  // العميل ليه رصيد سابق (دفعات زيادة أو مرتجعات) بيتخصم من الفاتورة لوحده. لو اتكتب مدفوع كمان
+  // وبقى المدفوع + الرصيد أكتر من المطلوب، غالبًا المدفوع اتكتب بالغلط (زي اللي حصل في حساب علي عامر):
+  // بنسأل الأول، ونعرض نخلّي المدفوع على قد المطلوب بس.
+  const creditForCheck=customerCreditForNewWork(customer,pendingOrderIdForDeposit);
+  let paidConfirmed=false;
+  if(creditForCheck>0.009&&paidTyped>0.009&&paidTyped+creditForCheck>maxCashPayment+0.009){
+    const needed=Math.max(0,Math.round((maxCashPayment-creditForCheck)*100)/100);
+    const extra=Math.round((paidTyped+creditForCheck-maxCashPayment)*100)/100;
+    const choice=await daftarChoice(`«${customer}» ليه رصيد سابق ${money(creditForCheck)} هيتخصم من الفاتورة دي لوحده.\n${needed>0?`يعني المطلوب منه فعلًا ${money(needed)} بس.`:'الرصيد ده بيغطي الفاتورة كلها، يعني مش مطلوب منه ولا جنيه.'}\nانت كاتب مدفوع ${money(paidTyped)}، فكده هيفضل ليه ${money(extra)} زيادة.\nهو دفع ${money(paidTyped)} فعلًا النهارده؟`,[
+      {label:needed>0?`لأ — خلّي المدفوع ${money(needed)}`:'لأ — مدفعش حاجة (المدفوع صفر)',value:'fix'},
+      {label:`أيوه، دفع ${money(paidTyped)} فعلًا`,value:'keep',cls:'secondary-btn'},
+      {label:'رجوع',value:null,cls:'secondary-btn'}],'تأكيد المدفوع');
+    if(choice===null)return;
+    if(choice==='fix'){paidTyped=needed;e.target.querySelector('[name=paidAmount]').value=needed;}
+    else paidConfirmed=true;
+  }
   // مدفوع أكبر من المستحق: الفاتورة بتاخد المستحق بس، والزيادة بتتسجل رصيد للعميل.
   const paidExtra=Math.round((paidTyped-maxCashPayment)*100)/100;
-  if(paidExtra>0&&!await daftarConfirm(`المدفوع (${money(paidTyped)}) أكبر من المستحق على الفاتورة (${money(maxCashPayment)}).\nالزيادة ${money(paidExtra)} هتفضل رصيد لـ«${customer}» وتتخصم تلقائيًا من أي شغل جديد ليه.\nتكمل؟`))return;
+  if(paidExtra>0&&!paidConfirmed&&!await daftarConfirm(`المدفوع (${money(paidTyped)}) أكبر من المستحق على الفاتورة (${money(maxCashPayment)}).\nالزيادة ${money(paidExtra)} هتفضل رصيد لـ«${customer}» وتتخصم تلقائيًا من أي شغل جديد ليه.\nتكمل؟`))return;
   const paidNow=Math.min(paidTyped,maxCashPayment);
   // رصيد العميل السابق (من دفعات زيادة أو مرتجعات) بيتخصم من الفاتورة دي في حسابه —
   // بنسجّله على الفاتورة عشان يظهر في الطباعة والواتساب (رقم للعرض بس، الحساب نفسه
