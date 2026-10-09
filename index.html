@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.4.9";</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.5.0";</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
 <!-- نسخة الموبايل (آيفون): اسم وأيقونة البرنامج على الشاشة الرئيسية، وبيفتح بملء الشاشة زي التطبيق -->
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="دفتر"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#C2185B"><style>
 /* حقول رمز الأمان (6 أرقام): بنستخدم input عادي مقنّع بصريًا بدل type="password"،
@@ -665,7 +665,17 @@ function renderCustomerList(){
   const active=list.filter(isActive),rest=list.filter(n=>!isActive(n));
   const repCell=n=>{const rep=getCustomerRep(n);if(!rep)return '—';const ph=getCustomerPhone(rep);return `${esc(rep)}<br><button type="button" class="phone-edit-btn" onclick="editRepPhone('${encodeURIComponent(rep)}')" title="رقم موبايل المندوب">${ph?`📱 <bdi dir="ltr">${esc(ph)}</bdi>`:'+ رقم المندوب'}</button>`;};
   const head=['العميل','المندوب','الفواتير','الطلبيات','الرصيد',''];
-  const rowFn=n=>`<tr><td><strong>${esc(n)}</strong></td><td>${repCell(n)}</td><td>${invCountByC.get(n)||0}</td><td>${ordCountByC.get(n)||0}${openOrdByC.get(n)?`<br><small style="color:var(--muted)">مطلوب ${money(openOrdByC.get(n))} عند التسليم</small>`:''}</td><td>${(balances.get(n)||0)<-0.009?`له ${money(-balances.get(n))}`:money(balances.get(n))}</td><td><button class="primary" onclick="showCustomer('${encodeURIComponent(n)}')">فتح الملف</button></td></tr>`;
+  // العربون المدفوع في طلبيات لسه ما اتفوترتش: محجوز للطلبية (مش داخل في الرصيد)، بس بيظهر هنا عشان
+  // تعرف إن العميل دافع فلوس. لو حسابه صفر، الرصيد بيتكتب «له» بقيمة العربون.
+  const depByC=new Map();
+  for(const o of db.orders){if(o.invoiced||!o.customer)continue;const d=orderUnusedDeposit(o);if(d>0.009)depByC.set(o.customer,(depByC.get(o.customer)||0)+d);}
+  const balanceCell=n=>{
+    const bal=balances.get(n)||0,dep=depByC.get(n)||0;
+    let main=bal<-0.009?`له ${money(-bal)}`:money(bal);
+    if(dep>0.009){if(Math.abs(bal)<0.01)main=`له ${money(dep)}`;main+=`<br><small class="deposit-note">💰 عربون مدفوع ${money(dep)} — هيتخصم من طلبيته عند التسليم</small>`;}
+    return main;
+  };
+  const rowFn=n=>`<tr><td><strong>${esc(n)}</strong></td><td>${repCell(n)}</td><td>${invCountByC.get(n)||0}</td><td>${ordCountByC.get(n)||0}${openOrdByC.get(n)?`<br><small style="color:var(--muted)">مطلوب ${money(openOrdByC.get(n))} عند التسليم</small>`:''}</td><td>${balanceCell(n)}</td><td><button class="primary" onclick="showCustomer('${encodeURIComponent(n)}')">فتح الملف</button></td></tr>`;
   const allBals=q?computeAllCustomerBalances(customers()):balances,debtors=[...allBals.values()].filter(v=>v>0.009).length;
   const tools=`<div class="customer-list-tools"><div class="customer-list-count">عدد العملاء: <strong>${list.length}</strong>${q?'':` — ليهم حساب أو طلبيات: <strong>${active.length}</strong>`}</div>${debtors?`<button type="button" class="secondary-btn" onclick="openDebtReminders()">📨 تذكير المديونيات (${debtors})</button>`:''}</div>`;
   const restOpen=window.daftarRestCustomersOpen||(!!q&&rest.length>0);
@@ -3050,7 +3060,10 @@ function showCustomer(enc){
   document.querySelector('#profileReturnBtn').onclick=()=>{addReturn(name);document.querySelector('#returnBox')?.scrollIntoView({behavior:'smooth',block:'start'});};
   document.querySelector('#profileEditBtn').onclick=()=>{const e=document.querySelector('#customerEditBox');e.classList.toggle('hidden');if(!e.classList.contains('hidden'))e.scrollIntoView({behavior:'smooth',block:'nearest'});};
   const bal=customerBalance(name),credit=Math.max(0,unpaidReturnCredit(name));
-  document.querySelector('#customerTitle').textContent='ملف العميل: '+name+' — '+(bal>0?'الرصيد المستحق: '+money(bal):bal<0?'رصيد للعميل: '+money(Math.abs(bal)):'الرصيد: 0 ج.م');
+  // العربون المدفوع في طلبياته اللي لسه ما اتفوترتش بيظهر جنب الرصيد (محجوز للطلبية، مش داخل في الحساب)
+  const dep=db.orders.filter(o=>o.customer===name&&!o.invoiced).reduce((s,o)=>s+orderUnusedDeposit(o),0);
+  const depText=dep>0.009?` — عربون مدفوع ${money(dep)}`:'';
+  document.querySelector('#customerTitle').textContent='ملف العميل: '+name+' — '+(bal>0.009?'الرصيد المستحق: '+money(bal)+depText:bal<-0.009?'رصيد للعميل: '+money(Math.abs(bal))+depText:dep>0.009?'رصيد للعميل: '+money(dep)+' (عربون طلبية)':'الرصيد: 0 ج.م');
   renderCustomerPhoneBox(name);
   renderCustomerRepBox(name);
   const itemsHtml=customerItemsSummaryHtml(name);
@@ -3455,7 +3468,9 @@ function refreshInvoiceCreditBox(resetPrice){
   if(liveUnit&&!manual)liveUnit.value=unit;
   const line=q>0?unit*q:0;
   const total=invoiceCart.reduce((sum,x)=>sum+(+x.total||0),0);
-  const invoiceGrandTotal=total+line+formTransport('#invoiceForm');
+  // قيمة الفاتورة = الأصناف اللي اتضافت فعلًا + النقل بس. الصنف اللي لسه في خانات الاختيار ومادستش
+  // «إضافة» عليه مبيتحسبش (قيمته بتظهر لوحدها في «قيمة الصنف»)، عشان الإجمالي يبقى زي اللي هيتحفظ بالظبط.
+  const invoiceGrandTotal=total+formTransport('#invoiceForm');
   const orderDeposit=orderDepositAvailable(customer,window.daftarPendingOrderInvoiceId);
   const previousDeposit=Math.min(orderDeposit,invoiceGrandTotal);
   const dueCash=Math.max(0,invoiceGrandTotal-previousDeposit);
@@ -4427,8 +4442,19 @@ document.querySelector('#addInvoiceItem').onclick=()=>{
   if(old){old.quantity+=q;old.total=old.quantity*old.unitPrice;}
   else invoiceCart.push({productId:p.id,productName:p.name,sku:p.sku||'',quantity:q,unitPrice:unit,total:q*unit,packageWeight:p.packageWeight||0,packageType:p.packageType||'',batchNo:p.batchNo||'',factoryPrice:p.factoryPrice||p.cost||0,...invoiceItemSourceFields(p)});
   form.dataset.priceManual='';
-  renderCart();refreshInvoiceCreditBox(true);
+  renderCart();clearInvoiceProductSelection();refreshInvoiceCreditBox(true);
+  document.querySelector('#invoiceProductSearch')?.focus();
 };
+// بعد «إضافة صنف للفاتورة»: خانات الصنف بتفضى (والكمية ترجع 1) عشان تختار الصنف اللي بعده، ومفيش صنف
+// «معلّق» في الخانات يتلخبط مع الإجمالي.
+function clearInvoiceProductSelection(){
+  const f=document.querySelector('#invoiceForm');if(!f)return;
+  const select=f.querySelector('[name=product]');if(select){select.innerHTML='<option value="">اختر صنفًا</option>';select.value='';}
+  const input=document.querySelector('#invoiceProductSearch');if(input)input.value='';
+  const selected=document.querySelector('#invoiceProductSelected');if(selected)selected.textContent='لم يتم اختيار صنف بعد.';
+  f.querySelector('[name=quantity]').value=1;f.querySelector('[name=liveUnitPrice]').value=0;f.querySelector('[name=liveLineTotal]').value=money(0);
+  f.dataset.priceManual='';
+}
 document.querySelector('#invoiceForm [name=customer]').addEventListener('input',()=>refreshInvoiceCreditBox());
 bindCustomerPhoneHint(document.querySelector('#invoiceForm [name=customer]'),document.querySelector('#invoicePhoneHint'));
 bindCustomerPhoneHint(document.querySelector('#quoteForm [name=customer]'),document.querySelector('#quotePhoneHint'));
@@ -4624,8 +4650,18 @@ document.querySelector('#addQuoteItem').onclick=()=>{
  const key=source+':'+id,isTon=saleUnit==='ton',old=quoteCart.find(x=>x.key===key&&(x.unit==='ton')===isTon&&x.unitPrice===unit&&(+x.packageWeight||0)===w);if(old){old.quantity=Math.round((old.quantity+q)*1000)/1000;old.total=old.quantity*old.unitPrice;}else quoteCart.push({key,productName:p.name,sku:p.sku||'',quantity:q,unitPrice:unit,total:q*unit,sourceLabel,packageWeight:w,batchNo:p.batchNo||'',...(isTon?{unit:'ton'}:{})});
  f.elements.quantity.value=1;
  f.dataset.priceManual='';
- renderQuoteCart();refreshQuoteLiveTotals(true);
+ renderQuoteCart();clearQuoteProductSelection();refreshQuoteLiveTotals(true);
+ document.querySelector('#quoteProductSearch')?.focus();
 };
+// زي الفاتورة: بعد «إضافة صنف للعرض» خانات الصنف بتفضى عشان تختار اللي بعده.
+function clearQuoteProductSelection(){
+  const f=document.querySelector('#quoteForm');if(!f)return;
+  const select=f.querySelector('[name=product]');if(select){select.innerHTML='<option value="">اختر صنفًا</option>';select.value='';}
+  const input=document.querySelector('#quoteProductSearch');if(input)input.value='';
+  const selected=document.querySelector('#quoteProductSelected');if(selected)selected.textContent='لم يتم اختيار صنف بعد.';
+  const w=f.querySelector('[name=itemWeight]');if(w){w.value='';w.readOnly=false;}
+  f.querySelector('[name=liveUnitPrice]').value=0;f.querySelector('[name=liveLineTotal]').value=money(0);
+}
 document.querySelector('#quoteForm [name=product]').addEventListener('change',()=>refreshQuoteLiveTotals(true));
 document.querySelector('#quoteForm [name=saleUnit]')?.addEventListener('change',()=>{const f=document.querySelector('#quoteForm');f.elements.quantity.value=1;updateQuoteUnitLabels();refreshQuoteLiveTotals(true);});
 document.querySelector('#quoteForm [name=quantity]').addEventListener('input',()=>refreshQuoteLiveTotals());
@@ -5769,6 +5805,7 @@ body.dark .daftar-notice{background:#3a2a0b;border-color:#8a6a1f;color:#ffd99a}
 .orders-group-title{display:flex;align-items:center;gap:8px;margin:14px 0 8px;font-size:16px}
 .customer-list-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
 .customer-list-tools .customer-list-count{margin:0}
+.deposit-note{color:var(--good);font-weight:600}
 details.collapse-box,details.orders-received{margin-top:18px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
 details.collapse-box>summary,details.orders-received>summary,details.panel-collapse>summary{cursor:pointer;padding:12px 2px;font-weight:700;font-size:15px;list-style:none;display:flex;align-items:center;gap:8px;user-select:none}
 details.collapse-box>summary::-webkit-details-marker,details.orders-received>summary::-webkit-details-marker,details.panel-collapse>summary::-webkit-details-marker{display:none}
