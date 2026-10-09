@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.4.7";</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.4.8";</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
 <!-- نسخة الموبايل (آيفون): اسم وأيقونة البرنامج على الشاشة الرئيسية، وبيفتح بملء الشاشة زي التطبيق -->
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="دفتر"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#C2185B"><style>
 /* حقول رمز الأمان (6 أرقام): بنستخدم input عادي مقنّع بصريًا بدل type="password"،
@@ -6981,6 +6981,7 @@ async function checkForUpdate(manual){
     else{const t=await r.text();daftarUpdateInfo={manifest:null,error:/Bucket not found/i.test(t)?'NO_BUCKET':/not.?found/i.test(t)?'':`HTTP ${r.status}`,checkedAt:Date.now()};}
   }catch(err){daftarUpdateInfo={...(daftarUpdateInfo||{}),error:err?.code==='OFFLINE'?'OFFLINE':'NET',checkedAt:Date.now()};if(err?.code!=='OFFLINE'&&navigator.onLine)daftarLogError('update-check',err);}
   renderUpdatePanel();renderDaftarNotices();
+  if(!manual)promptForUpdate();
   return daftarUpdateInfo;
 }
 function renderUpdatePanel(){
@@ -7014,10 +7015,11 @@ async function saveBeforeUpdate(){
   try{if(daftarFileStore){const s=JSON.stringify(db);const r=daftarFileStore.saveSync(s);if(r?.ok)daftarLastSerialized=s;}else flushLocalSave();}catch(e){daftarLogError('update-save',e);}
   try{if(daftarSyncDirty&&navigator.onLine&&supabaseCurrentUser)await Promise.race([supabaseSave(),new Promise(r=>setTimeout(r,8000))]);}catch(e){}
 }
-async function downloadAndInstallUpdate(){
+// skipConfirm: لما الموافقة جاية من رسالة «فيه نسخة جديدة» اللي بتطلع أول ما البرنامج يفتح
+async function downloadAndInstallUpdate(skipConfirm){
   const api=window.daftarElectron?.update,m=updateAvailable();
   if(!api||!m)return daftarAlert('مفيش تحديث جديد دلوقتي.');
-  if(!await daftarConfirm(`تنزيل وتسطيب النسخة ${m.version}؟\nالتنزيل حوالي ${Math.round(m.size/1048576)} ميجا. بعد ما يخلص، البرنامج هيتقفل ويتسطب التحديث ويفتح تاني لوحده (حوالي دقيقة). بياناتك مش بتتأثر.`))return;
+  if(!skipConfirm&&!await daftarConfirm(`تنزيل وتسطيب النسخة ${m.version}؟\nالتنزيل حوالي ${Math.round(m.size/1048576)} ميجا. بعد ما يخلص، البرنامج هيتقفل ويتسطب التحديث ويفتح تاني لوحده (حوالي دقيقة). بياناتك مش بتتأثر.`))return;
   const token=await getSupabaseAccessToken().catch(()=>null);if(!token)return daftarAlert('لازم تكون مسجّل دخول ومتصل بالنت.');
   const ui=showUpdateProgress(`تنزيل النسخة ${m.version}`);
   let res;try{res=await api.download({base:updateBase(),apikey:SUPABASE_KEY,token,bucket:UPDATE_BUCKET,manifest:m});}catch(err){res={ok:false,error:String(err?.message||err)};}
@@ -7048,8 +7050,26 @@ async function publishUpdate(){
 document.querySelector('#updateCheckBtn')?.addEventListener('click',async()=>{await checkForUpdate(true);const a=updateAvailable();daftarToast(a?`فيه نسخة جديدة: ${a.version}`:daftarUpdateInfo?.error?'تعذر التحقق دلوقتي.':'✅ انت على آخر نسخة.');});
 document.querySelector('#updateInstallBtn')?.addEventListener('click',()=>downloadAndInstallUpdate());
 document.querySelector('#updatePublishBtn')?.addEventListener('click',()=>publishUpdate());
-// أول ما البرنامج يفتح (بعد ما الحساب يجهز) وبعدين كل 6 ساعات
-setTimeout(()=>{checkForUpdate();setInterval(()=>checkForUpdate(),6*3600e3);},30000);
+// رسالة «فيه نسخة جديدة» في نص الشاشة: بتطلع مرة واحدة لكل نسخة (لو قلت «بعدين» بيفضل الشريط اللي فوق
+// وزرار التحديث في الإعدادات). مبتطلعش فوق شاشة الكود ولا وسط تنزيل شغال.
+const daftarUpdatePrompted=new Set();
+async function promptForUpdate(){
+  const m=window.daftarElectron?.update?updateAvailable():null;
+  if(!m||daftarUpdatePrompted.has(m.version)||!daftarUnlocked)return;
+  if(document.querySelector('#daftarPinOverlay')?.classList.contains('show')||document.getElementById('daftarUpdateModal'))return;
+  daftarUpdatePrompted.add(m.version);
+  const c=await daftarChoice(`⬆️ فيه نسخة جديدة من البرنامج: ${m.version}\nالنسخة اللي على الجهاز ده: ${DAFTAR_APP_VERSION}\n\nالتحديث بيتنزل (حوالي ${Math.round(m.size/1048576)} ميجا)، وبعدين البرنامج يتقفل ويتسطب ويفتح تاني لوحده في حوالي دقيقة. بياناتك مش بتتأثر.\nتحدّث دلوقتي؟`,[{label:'⬇️ حدّث دلوقتي',value:'now'},{label:'بعدين',value:null,cls:'secondary-btn'}],'تحديث البرنامج');
+  if(c==='now')downloadAndInstallUpdate(true);
+}
+// أول ما البرنامج يفتح: بنستنى لحد ما تكتب الكود والحساب يجهز (بحد أقصى 3 دقايق) وبعدين ندوّر على طول،
+// وبعد كده كل 6 ساعات.
+async function startupUpdateCheck(){
+  if(!window.daftarElectron?.update)return;
+  for(let i=0;i<90&&!(daftarUnlocked&&supabaseAuthReady&&supabaseCurrentUser&&!daftarOfflineFallback);i++)await new Promise(r=>setTimeout(r,2000));
+  await checkForUpdate();
+}
+setTimeout(startupUpdateCheck,1500);
+setInterval(()=>checkForUpdate(),6*3600e3);
 
 // ---- تشغيل: لما البرنامج يفتح وكل ساعة — تسجيل نسخة الجهاز، وفحص البيانات لو بقاله أسبوع.
 function daftarMaintenanceTick(){
