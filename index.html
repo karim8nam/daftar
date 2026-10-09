@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.4.8";</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.4.9";</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
 <!-- نسخة الموبايل (آيفون): اسم وأيقونة البرنامج على الشاشة الرئيسية، وبيفتح بملء الشاشة زي التطبيق -->
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="دفتر"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#C2185B"><style>
 /* حقول رمز الأمان (6 أرقام): بنستخدم input عادي مقنّع بصريًا بدل type="password"،
@@ -5898,6 +5898,14 @@ async function pinHash(pin){return sha256(getPinSalt()+':'+pin)}
 // حد ما يتقفلش برا برنامجه من غير ما يعمل حاجة.
 async function legacyPinHash(pin){return sha256('daftar-pin-v1:'+pin)}
 async function getSupabaseAccessToken(){if(!supabaseClient)return null;const {data}=await supabaseClient.auth.getSession();return data?.session?.access_token||null}
+// تسجيل دخول جديد من السيرفر (بدل اللي محفوظ). بنستخدمه لما السيرفر يقول إن الدخول «انتهى» — ده بيحصل
+// غالبًا لما ساعة الجهاز مش مظبوطة، فالبرنامج يفتكر إن الدخول لسه صالح وهو خلص.
+async function refreshedAccessToken(){
+  try{const {data}=await supabaseClient.auth.refreshSession();if(data?.session?.access_token)return data.session.access_token;}catch(e){}
+  return getSupabaseAccessToken();
+}
+// رد السيرفر بيقول إن الدخول منتهي أو مرفوض (Storage بيرجّع 400 وجواه 403، وجدول البيانات بيرجّع 401)
+const isAuthExpiredText=t=>/jwt|exp\W*claim|expired|Unauthorized|invalid.{0,10}(token|signature|jws)|PGRST30[0-9]/i.test(String(t||''));
 async function supabaseHeaders(){const token=await getSupabaseAccessToken();if(!token)throw new Error('NO_AUTH_SESSION');return {'apikey':SUPABASE_KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=representation'}}
 
 function localStateHasData(x=db){return !!(x.products?.length||x.factoryItems?.length||x.invoices?.length||x.quotes?.length||x.orders?.length||x.ledgerEntries?.length||x.customerPayments?.length||x.customerReturns?.length)}
@@ -6300,6 +6308,8 @@ async function supabasePullIfChanged(){
   try{
     const token=await getSupabaseAccessToken();if(!token)return;
     const r=await fetchWithTimeout(SUPABASE_SYNC_URL+'?select=updated_at&user_id=eq.'+encodeURIComponent(supabaseCurrentUser.id)+'&order=updated_at.desc&limit=1',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+token}});
+    // الدخول منتهي في نظر السيرفر (غالبًا ساعة الجهاز مش مظبوطة): نجيب دخول جديد للمحاولة الجاية
+    if(r.status===401){refreshedAccessToken().catch(()=>{});return;}
     if(!r.ok)return;
     const stamp=(await r.json())?.[0]?.updated_at||null;
     if(!stamp||stamp===daftarLastCloudStamp)return;
@@ -6389,6 +6399,7 @@ async function supabaseSave(){
   }catch(err){
     console.warn('Supabase sync failed:',err);
     if(navigator.onLine&&err?.name!=='AbortError'&&typeof daftarLogError==='function')daftarLogError('sync',err);
+    if(isAuthExpiredText(err?.message))refreshedAccessToken().catch(()=>{});
     queueOfflineSync();
     syncStatus('☁️ تعذرت المزامنة — البيانات محفوظة محليًا وستُعاد المحاولة تلقائيًا','#d97706');
     nextSyncDelay=2000;
@@ -6908,6 +6919,7 @@ function renderDaftarNotices(){
   // التنبيهات تحت شريط الصفحات (مش فوق اسم البرنامج)
   if(!bar){bar=document.createElement('div');bar.id='daftarNotices';const nav=document.querySelector('#nav');if(!nav)return;nav.insertAdjacentElement('afterend',bar);}
   const items=[];
+  if(daftarClockSkew&&!daftarNoticeDismissed.clock)items.push({key:'clock',html:`⏰ ساعة الجهاز ده ${clockSkewText(daftarClockSkew)} عن الوقت الحقيقي، وده بيخلّي المزامنة والتحديث يفشلوا. ظبطها كده: اضغط بالزرار اليمين على الساعة اللي تحت في الشاشة ← «ضبط التاريخ/الوقت» ← شغّل «ضبط الوقت تلقائيًا» و«ضبط المنطقة الزمنية تلقائيًا» ← «مزامنة الآن»، وبعدين اقفل البرنامج وافتحه تاني.`});
   const upd=window.daftarElectron?.update?updateAvailable():null;
   if(upd&&!daftarNoticeDismissed.update)items.push({key:'update',html:`⬆️ فيه تحديث جديد للبرنامج (${esc(upd.version)}). <button type="button" class="primary" data-update-install>تنزيل وتسطيب</button>`});
   const newer=upd?[]:newerDevices();
@@ -6975,10 +6987,18 @@ async function checkForUpdate(manual){
   if(!window.daftarElectron?.update)return null;
   if(!supabaseCurrentUser||daftarOfflineFallback||!navigator.onLine){if(manual){daftarUpdateInfo={...(daftarUpdateInfo||{}),error:'OFFLINE',checkedAt:Date.now()};renderUpdatePanel();}return null;}
   try{
-    const token=await getSupabaseAccessToken();if(!token)throw Object.assign(new Error('NO_AUTH'),{code:'OFFLINE'});
-    const r=await fetchWithTimeout(`${updateBase()}/storage/v1/object/authenticated/${UPDATE_BUCKET}/latest.json?t=${Date.now()}`,{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+token},cache:'no-store'},20000);
+    let token=await getSupabaseAccessToken();if(!token)throw Object.assign(new Error('NO_AUTH'),{code:'OFFLINE'});
+    const get=tk=>fetchWithTimeout(`${updateBase()}/storage/v1/object/authenticated/${UPDATE_BUCKET}/latest.json?t=${Date.now()}`,{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+tk},cache:'no-store'},20000);
+    let r=await get(token),t=r.ok?'':await r.text();
+    // الدخول منتهي في نظر السيرفر: نجيب دخول جديد ونجرّب مرة كمان
+    if(!r.ok&&isAuthExpiredText(t)){token=await refreshedAccessToken();if(token){r=await get(token);t=r.ok?'':await r.text();}}
     if(r.ok){const m=await r.json().catch(()=>null);daftarUpdateInfo={manifest:okManifest(m)?m:null,checkedAt:Date.now()};}
-    else{const t=await r.text();daftarUpdateInfo={manifest:null,error:/Bucket not found/i.test(t)?'NO_BUCKET':/not.?found/i.test(t)?'':`HTTP ${r.status}`,checkedAt:Date.now()};}
+    else{
+      let msg='';try{msg=JSON.parse(t).message||''}catch(e){msg=t.slice(0,120)}
+      const error=/Bucket not found/i.test(t)?'NO_BUCKET':/not.?found/i.test(t)?'':`HTTP ${r.status}${msg?': '+msg:''}`;
+      daftarUpdateInfo={manifest:null,error,authProblem:isAuthExpiredText(t),checkedAt:Date.now()};
+      if(error&&error!=='NO_BUCKET')daftarLogError('update-check',error);
+    }
   }catch(err){daftarUpdateInfo={...(daftarUpdateInfo||{}),error:err?.code==='OFFLINE'?'OFFLINE':'NET',checkedAt:Date.now()};if(err?.code!=='OFFLINE'&&navigator.onLine)daftarLogError('update-check',err);}
   renderUpdatePanel();renderDaftarNotices();
   if(!manual)promptForUpdate();
@@ -6993,7 +7013,7 @@ function renderUpdatePanel(){
   if(!info)html+='<br>لسه مادوّرش على تحديث.';
   else if(info.error==='NO_BUCKET')html+='<br>⚠️ التحديث التلقائي محتاج كود SQL مرة واحدة في Supabase (مكان التحديثات لسه مش متعمل).';
   else if(info.error==='OFFLINE')html+='<br>لازم تكون مسجّل دخول ومتصل بالنت عشان يدوّر على تحديث.';
-  else if(info.error)html+=`<br>تعذر الوصول للسحابة دلوقتي (${esc(info.error)}) — هيحاول تاني لوحده.`;
+  else if(info.error)html+=`<br>تعذر الوصول للسحابة دلوقتي (${esc(info.error)}) — هيحاول تاني لوحده.${info.authProblem||daftarClockSkew?`<br>⏰ السبب غالبًا إن ساعة الجهاز ده مش مظبوطة${daftarClockSkew?` (${clockSkewText(daftarClockSkew)})`:''}، فالسحابة شايفة تسجيل الدخول منتهي. ظبط الساعة والتاريخ وجرّب تاني.`:''}`;
   else if(avail)html+=`<br>⬆️ فيه نسخة جديدة: <strong>${esc(avail.version)}</strong>${avail.publishedAt?` (اتنشرت ${esc(fmt(avail.publishedAt))})`:''} — حجمها ${Math.round(avail.size/1048576)} ميجا.`;
   else html+=`<br>✅ الجهاز ده على آخر نسخة${m?` (آخر نسخة منشورة ${esc(m.version)})`:''}.`;
   if(info?.checkedAt)html+=`<br><small>آخر مرة دوّر: ${esc(fmt(info.checkedAt))}</small>`;
@@ -7020,7 +7040,8 @@ async function downloadAndInstallUpdate(skipConfirm){
   const api=window.daftarElectron?.update,m=updateAvailable();
   if(!api||!m)return daftarAlert('مفيش تحديث جديد دلوقتي.');
   if(!skipConfirm&&!await daftarConfirm(`تنزيل وتسطيب النسخة ${m.version}؟\nالتنزيل حوالي ${Math.round(m.size/1048576)} ميجا. بعد ما يخلص، البرنامج هيتقفل ويتسطب التحديث ويفتح تاني لوحده (حوالي دقيقة). بياناتك مش بتتأثر.`))return;
-  const token=await getSupabaseAccessToken().catch(()=>null);if(!token)return daftarAlert('لازم تكون مسجّل دخول ومتصل بالنت.');
+  // دخول جديد من السيرفر قبل التنزيل (التنزيل بياخد دقايق، والدخول المحفوظ ممكن يكون قرّب يخلص)
+  const token=await refreshedAccessToken().catch(()=>null);if(!token)return daftarAlert('لازم تكون مسجّل دخول ومتصل بالنت.');
   const ui=showUpdateProgress(`تنزيل النسخة ${m.version}`);
   let res;try{res=await api.download({base:updateBase(),apikey:SUPABASE_KEY,token,bucket:UPDATE_BUCKET,manifest:m});}catch(err){res={ok:false,error:String(err?.message||err)};}
   if(!res?.ok){ui.close();return daftarAlert('التحديث ما اتنزلش: '+(res?.error||''));}
@@ -7036,7 +7057,7 @@ async function publishUpdate(){
   const pub=daftarUpdateInfo?.manifest;
   if(pub&&compareVersions(pick.version,pub.version)<=0&&!await daftarConfirm(`النسخة ${pick.version} مش أحدث من النسخة المنشورة (${pub.version}).\nتنشرها برضو؟`))return;
   if(!await daftarConfirm(`نشر النسخة ${pick.version} (${Math.round(pick.size/1048576)} ميجا) على حسابك؟\nالأجهزة التانية هتلاقيها وتتحدّث منها.`))return;
-  const token=await getSupabaseAccessToken().catch(()=>null);if(!token)return daftarAlert('لازم تكون مسجّل دخول.');
+  const token=await refreshedAccessToken().catch(()=>null);if(!token)return daftarAlert('لازم تكون مسجّل دخول.');
   const ui=showUpdateProgress(`نشر النسخة ${pick.version}`);
   let res;try{res=await api.publish({base:updateBase(),apikey:SUPABASE_KEY,token,bucket:UPDATE_BUCKET,file:pick.path,version:pick.version,sha256:pick.sha256,size:pick.size});}catch(err){res={ok:false,error:String(err?.message||err)};}
   ui.close();
@@ -7050,6 +7071,20 @@ async function publishUpdate(){
 document.querySelector('#updateCheckBtn')?.addEventListener('click',async()=>{await checkForUpdate(true);const a=updateAvailable();daftarToast(a?`فيه نسخة جديدة: ${a.version}`:daftarUpdateInfo?.error?'تعذر التحقق دلوقتي.':'✅ انت على آخر نسخة.');});
 document.querySelector('#updateInstallBtn')?.addEventListener('click',()=>downloadAndInstallUpdate());
 document.querySelector('#updatePublishBtn')?.addEventListener('click',()=>publishUpdate());
+// ⏰ ساعة الجهاز: بنقارنها بوقت سيرفر Supabase. لو الفرق أكتر من 3 دقايق بيظهر تنبيه فوق، لأن الساعة
+// الغلط بتخلّي السحابة تشوف تسجيل الدخول منتهي (فالمزامنة والتحديث يفشلوا).
+let daftarClockSkew=0; // بالمللي ثانية: موجب = ساعة الجهاز متقدمة، سالب = متأخرة
+function clockSkewText(ms){const a=Math.abs(ms),min=Math.round(a/60000),h=Math.round(min/60);const amount=min>=55?(h===1?'ساعة':h===2?'ساعتين':h<=10?`${h} ساعات`:`${h} ساعة`):`${min} دقيقة`;return `${ms<0?'متأخرة':'متقدمة'} حوالي ${amount}`;}
+async function checkClockSkew(){
+  const api=window.daftarElectron?.update;if(!api?.serverTime||!navigator.onLine)return;
+  try{
+    const r=await api.serverTime(updateBase());if(!r?.ok)return;
+    const skew=r.localTime-r.serverTime,prev=daftarClockSkew;
+    daftarClockSkew=Math.abs(skew)>3*60000?skew:0;
+    if(daftarClockSkew&&!prev)daftarLogError('clock',`ساعة الجهاز ${clockSkewText(daftarClockSkew)}`);
+    renderDaftarNotices();
+  }catch(e){}
+}
 // رسالة «فيه نسخة جديدة» في نص الشاشة: بتطلع مرة واحدة لكل نسخة (لو قلت «بعدين» بيفضل الشريط اللي فوق
 // وزرار التحديث في الإعدادات). مبتطلعش فوق شاشة الكود ولا وسط تنزيل شغال.
 const daftarUpdatePrompted=new Set();
@@ -7066,8 +7101,10 @@ async function promptForUpdate(){
 async function startupUpdateCheck(){
   if(!window.daftarElectron?.update)return;
   for(let i=0;i<90&&!(daftarUnlocked&&supabaseAuthReady&&supabaseCurrentUser&&!daftarOfflineFallback);i++)await new Promise(r=>setTimeout(r,2000));
+  await checkClockSkew();
   await checkForUpdate();
 }
+setInterval(()=>checkClockSkew(),60*60*1000);
 setTimeout(startupUpdateCheck,1500);
 setInterval(()=>checkForUpdate(),6*3600e3);
 
