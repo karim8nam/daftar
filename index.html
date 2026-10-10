@@ -1,4 +1,8 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.5.0";</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.5.1";</script><meta charset="utf-8">
+<!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
+     لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>دفتر — إدارة المبيعات والمخزون</title>
 <!-- نسخة الموبايل (آيفون): اسم وأيقونة البرنامج على الشاشة الرئيسية، وبيفتح بملء الشاشة زي التطبيق -->
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="دفتر"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="theme-color" content="#C2185B"><style>
 /* حقول رمز الأمان (6 أرقام): بنستخدم input عادي مقنّع بصريًا بدل type="password"،
@@ -3929,8 +3933,8 @@ function shareDocumentMarkup(kind,id){
 }
 
 // يحمّل مكتبة html2canvas مرة واحدة فقط عند الحاجة (لتحويل المستند لصورة حقيقية). المكتبة
-// متضمنة جوه البرنامج () فبتشتغل حتى والنت ضعيف أو مقطوع؛ لو الملف مش موجود لأي سبب
-// بنجرب نفس النسخة من الإنترنت.
+// متضمنة جوه البرنامج () فبتشتغل حتى والنت ضعيف أو مقطوع. مبنحمّلش أي كود من الإنترنت
+// (سياسة الأمان CSP اللي فوق بتمنعه)، فلو فشلت بنسيب المحاولة الجاية تجرب الملف المحلي تاني.
 let daftarHtml2CanvasPromise=null;
 function loadHtml2Canvas(){
   if(window.html2canvas)return Promise.resolve(window.html2canvas);
@@ -3943,7 +3947,6 @@ function loadHtml2Canvas(){
     document.head.appendChild(s);
   });
   daftarHtml2CanvasPromise=load('html2canvas.min.js')
-    .catch(()=>load('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js'))
     .catch(err=>{daftarHtml2CanvasPromise=null;throw err;});
   return daftarHtml2CanvasPromise;
 }
@@ -5648,7 +5651,6 @@ renderCustomerList();
      ورقم النسخة ثابت عشان أي تحديث للمكتبة ميغيّرش سلوك البرنامج فجأة. لو الملف المحلي
      مش موجود لأي سبب، بنرجع نحمّلها من الإنترنت بنفس رقم النسخة. -->
 <script src="supabase.js"></script>
-<script>if(!window.supabase?.createClient)document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2"><\/script>');</script>
 <style id="daftarAuthStyle">
 #daftarAuthOverlay{position:fixed;inset:0;background:rgba(15,23,42,.58);backdrop-filter:blur(5px);z-index:1000000;display:none;align-items:center;justify-content:center;padding:20px;direction:rtl}
 #daftarAuthOverlay.show{display:flex}
@@ -5862,6 +5864,7 @@ details.panel-collapse[open]>summary{margin-bottom:14px}
 #daftarPinInput{width:100%;font-size:26px;text-align:center;letter-spacing:8px;margin:12px 0}
 #daftarPinBox button{font:inherit;cursor:pointer;border-radius:9px;padding:11px 16px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 #daftarPinBox button.primary{background:var(--blue);color:#fff;border:0;width:100%}
+#daftarPinBox button:disabled,#daftarPinBox input:disabled{opacity:.5;cursor:not-allowed}
 #daftarPinError{color:var(--danger);background:#fef2f2;border-radius:9px;padding:9px;font-size:13px;display:none;margin-bottom:10px}
 </style>
 <div id="daftarAuthOverlay">
@@ -6559,6 +6562,23 @@ function hideAuthOverlay(){document.querySelector('#daftarAuthOverlay').classLis
 function authMessage(id,msg){const e=document.querySelector(id);e.textContent=msg;e.style.display=msg?'block':'none'}
 function updateAccountBar(){const bar=document.querySelector('#daftarAccountBar');if(!bar)return;if(supabaseCurrentUser){bar.style.display='flex';document.querySelector('#daftarAccountText').textContent='👤 '+(supabaseCurrentUser.email||'الحساب')}else bar.style.display='none'}
 
+// قفل مؤقت بعد محاولات غلط كتير ورا بعض (عشان محدش يقعد يجرب كل الأرقام لحد ما يوصل للكود):
+// 5 غلط → استنى 30 ثانية، 10 → دقيقتين، 15 وأكتر → 5 دقايق. العداد محفوظ على الجهاز (مش بيتصفّر
+// لو البرنامج اتقفل واتفتح) ولكل كود لوحده، وبيرجع صفر أول ما الكود الصح يتكتب.
+const PIN_FAIL_LIMIT=5;
+const pinFailKey=key=>'daftar-pin-fails:'+key;
+function pinFailState(key){try{return JSON.parse(localStorage.getItem(pinFailKey(key))||'{}')||{}}catch(_){return {}}}
+function pinLockLeft(key){return Math.max(0,Math.ceil(((pinFailState(key).until||0)-Date.now())/1000))}
+function pinRecordFail(key){
+  const s=pinFailState(key),n=(s.n||0)+1;
+  const until=n%PIN_FAIL_LIMIT===0?Date.now()+(n>=15?300:n>=10?120:30)*1000:(s.until||0);
+  localStorage.setItem(pinFailKey(key),JSON.stringify({n,until}));
+  return pinLockLeft(key);
+}
+function pinResetFails(key){localStorage.removeItem(pinFailKey(key))}
+function pinWaitText(sec){return sec<60?`${sec} ثانية`:`${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')} دقيقة`}
+function pinTriesLeftText(key){const left=PIN_FAIL_LIMIT-((pinFailState(key).n||0)%PIN_FAIL_LIMIT);return left<=2?` (فاضل ${left===1?'محاولة واحدة':'محاولتين'} وبعدها البرنامج هيستنى شوية)`:''}
+
 // دالة عامة لأي قفل بكود سري من 6 أرقام (اتعملت أول مرة عشان قفل البرنامج نفسه،
 // ودلوقتي بتتشارك مع قفل صفحة التقارير كمان، كل واحد بمفتاح تخزين منفصل).
 // allowCancel بتظهر زرار "رجوع" عشان تقدر تتراجع (مثلاً لو دخلت صفحة التقارير
@@ -6582,14 +6602,26 @@ async function ensurePinFor(key,opts){
   // القفل التلقائي (noFocus) مبيجيبش النافذة قدام لو انت شغال في برنامج تاني.
   if(!opts.noFocus)try{window.daftarElectron?.focusWindow?.().catch(()=>{});}catch(_){}
   return new Promise(resolve=>{
-    let settled=false;
-    const finish=val=>{if(settled)return;settled=true;document.querySelector('#daftarPinOverlay').classList.remove('show');document.removeEventListener('keydown',daftarPinKeyFallback);resolve(val)};
-    const handler=async()=>{const pin=input.value.trim();if(!/^\d{6}$/.test(pin)){err.textContent='اكتب 6 أرقام بالضبط.';err.style.display='block';return}
-      if(isSetup){localStorage.setItem(key,await pinHash(pin));finish(true);return}
-      if((await pinHash(pin))===saved){finish(true);return}
+    let settled=false,lockTimer=null;
+    const finish=val=>{if(settled)return;settled=true;clearTimeout(lockTimer);input.disabled=false;btn.disabled=false;document.querySelector('#daftarPinOverlay').classList.remove('show');document.removeEventListener('keydown',daftarPinKeyFallback);resolve(val)};
+    // لو الكود مقفول مؤقتًا: الخانة والزرار متوقفين وفيه عدّاد تنازلي، وأول ما الوقت يخلص بيرجعوا يشتغلوا لوحدهم.
+    const showLock=()=>{
+      clearTimeout(lockTimer);
+      const left=isSetup?0:pinLockLeft(key);
+      if(!left){const was=input.disabled;input.disabled=false;btn.disabled=false;if(was){err.style.display='none';input.focus();}return false}
+      input.value='';input.disabled=true;btn.disabled=true;
+      err.textContent=`🔒 الكود اتكتب غلط كذا مرة ورا بعض. استنى ${pinWaitText(left)} وجرّب تاني.`;err.style.display='block';
+      lockTimer=setTimeout(()=>{if(!settled)showLock()},1000);
+      return true;
+    };
+    const handler=async()=>{if(showLock())return;const pin=input.value.trim();if(!/^\d{6}$/.test(pin)){err.textContent='اكتب 6 أرقام بالضبط.';err.style.display='block';return}
+      if(isSetup){localStorage.setItem(key,await pinHash(pin));pinResetFails(key);finish(true);return}
+      if((await pinHash(pin))===saved){pinResetFails(key);finish(true);return}
       // توافق مع كود أمان اتحفظ قبل تحديث الملح: لو طابق النظام القديم، رفّعه تلقائيًا للنظام الجديد الأقوى.
-      if(key===DAFTAR_PIN_KEY&&(await legacyPinHash(pin))===saved){localStorage.setItem(key,await pinHash(pin));finish(true);return}
-      err.textContent='كود الأمان غير صحيح.';err.style.display='block';input.select();};
+      if(key===DAFTAR_PIN_KEY&&(await legacyPinHash(pin))===saved){localStorage.setItem(key,await pinHash(pin));pinResetFails(key);finish(true);return}
+      pinRecordFail(key);
+      if(showLock())return;
+      err.textContent='كود الأمان غير صحيح.'+pinTriesLeftText(key);err.style.display='block';input.select();};
     btn.onclick=handler;input.onkeydown=e=>{if(e.key==='Enter')handler()};input.oninput=()=>{input.value=input.value.replace(/\D/g,'').slice(0,6);err.style.display='none'};
     cancelBtn.onclick=()=>finish(false);
     // بنعمل focus() فورًا (من غير أي تأخير) عشان مستخدم سريع يقدر يكتب فورًا من
@@ -6614,6 +6646,7 @@ async function ensurePinFor(key,opts){
       if(/^[0-9]$/.test(e.key))input.focus();
     };
     document.addEventListener('keydown',daftarPinKeyFallback);
+    showLock();
   })
 }
 async function ensurePin(){
@@ -6656,8 +6689,12 @@ function setupPinChangeForm(formId,statusId,key){
     if(!/^\d{6}$/.test(current)||!/^\d{6}$/.test(next)||!/^\d{6}$/.test(confirmPin)){setStatus('لازم كل رمز يتكون من 6 أرقام بالظبط.',true);return;}
     const saved=localStorage.getItem(key);
     if(!saved){setStatus('لسه معملتش رمز أساسًا — افتح الصفحة المحمية أول مرة عشان تنشئ الرمز، وبعدين ارجع غيّره من هنا.',true);return;}
+    // نفس القفل المؤقت بتاع شاشة الكود، عشان محدش يجرب الأرقام من هنا بدلها.
+    const lockLeft=pinLockLeft(key);
+    if(lockLeft){setStatus(`🔒 الرمز اتكتب غلط كذا مرة ورا بعض. استنى ${pinWaitText(lockLeft)} وجرّب تاني.`,true);return;}
     const currentOk=(await pinHash(current))===saved||(key===DAFTAR_PIN_KEY&&(await legacyPinHash(current))===saved);
-    if(!currentOk){setStatus('الرمز الحالي غير صحيح.',true);return;}
+    if(!currentOk){const l=pinRecordFail(key);setStatus(l?`الرمز الحالي غير صحيح. 🔒 استنى ${pinWaitText(l)} وجرّب تاني.`:'الرمز الحالي غير صحيح.'+pinTriesLeftText(key),true);return;}
+    pinResetFails(key);
     if(next!==confirmPin){setStatus('تأكيد الرمز الجديد غير مطابق.',true);return;}
     localStorage.setItem(key,await pinHash(next));
     form.reset();
@@ -6713,16 +6750,16 @@ function daftarWithTimeout(promise,ms){
   let timer;
   return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('TIMEOUT')),ms);})]).finally(()=>clearTimeout(timer));
 }
-// المكتبة المفروض تكون اتحمّلت من الملف المحلي. لو لأي سبب مش موجودة، بنحاول
-// نحمّلها من الإنترنت وقتها (مثلاً لما النت يرجع)، بدل ما المزامنة تفضل واقفة لحد
-// ما البرنامج يتقفل ويتفتح تاني زي ما كان بيحصل.
+// المكتبة المفروض تكون اتحمّلت من الملف المحلي. لو لأي سبب مش موجودة (مثلاً نسخة الموبايل
+// اتفتحت أول مرة والنت قطع في النص)، بنحاول نحمّل نفس الملف المحلي تاني وقتها بدل ما المزامنة
+// تفضل واقفة لحد ما البرنامج يتقفل ويتفتح. مبنجيبش كود من الإنترنت (سياسة الأمان CSP بتمنعه).
 let daftarSupabaseLibLoading=null;
 function loadSupabaseLibrary(){
   if(window.supabase?.createClient)return Promise.resolve(true);
   if(daftarSupabaseLibLoading)return daftarSupabaseLibLoading;
   daftarSupabaseLibLoading=new Promise(resolve=>{
     const s=document.createElement('script');
-    s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2';
+    s.src='supabase.js';
     s.onload=()=>{daftarSupabaseLibLoading=null;resolve(!!window.supabase?.createClient);};
     s.onerror=()=>{daftarSupabaseLibLoading=null;s.remove();resolve(false);};
     document.head.appendChild(s);
@@ -7029,7 +7066,14 @@ async function checkForUpdate(manual){
     let r=await get(token),t=r.ok?'':await r.text();
     // الدخول منتهي في نظر السيرفر: نجيب دخول جديد ونجرّب مرة كمان
     if(!r.ok&&isAuthExpiredText(t)){token=await refreshedAccessToken();if(token){r=await get(token);t=r.ok?'':await r.text();}}
-    if(r.ok){const m=await r.json().catch(()=>null);daftarUpdateInfo={manifest:okManifest(m)?m:null,checkedAt:Date.now()};}
+    if(r.ok){
+      const m=await r.json().catch(()=>null);let manifest=okManifest(m)?m:null,unsigned=null;
+      // نسخة أحدث بس مش موقّعة بمفتاح الجهاز الأساسي: منعرضهاش كتحديث (الجهاز كده كده مش هيسطّبها)
+      if(manifest&&compareVersions(manifest.version,DAFTAR_APP_VERSION)>0&&window.daftarElectron.update.verify&&!(await window.daftarElectron.update.verify(manifest))?.ok){
+        unsigned=manifest.version;manifest=null;daftarLogError('update-signature',`النسخة ${unsigned} المنشورة مش موقّعة من الجهاز الأساسي`);
+      }
+      daftarUpdateInfo={manifest,unsigned,checkedAt:Date.now()};
+    }
     else{
       let msg='';try{msg=JSON.parse(t).message||''}catch(e){msg=t.slice(0,120)}
       const error=/Bucket not found/i.test(t)?'NO_BUCKET':/not.?found/i.test(t)?'':`HTTP ${r.status}${msg?': '+msg:''}`;
@@ -7051,6 +7095,7 @@ function renderUpdatePanel(){
   else if(info.error==='NO_BUCKET')html+='<br>⚠️ التحديث التلقائي محتاج كود SQL مرة واحدة في Supabase (مكان التحديثات لسه مش متعمل).';
   else if(info.error==='OFFLINE')html+='<br>لازم تكون مسجّل دخول ومتصل بالنت عشان يدوّر على تحديث.';
   else if(info.error)html+=`<br>تعذر الوصول للسحابة دلوقتي (${esc(info.error)}) — هيحاول تاني لوحده.${info.authProblem||daftarClockSkew?`<br>⏰ السبب غالبًا إن ساعة الجهاز ده مش مظبوطة${daftarClockSkew?` (${clockSkewText(daftarClockSkew)})`:''}، فالسحابة شايفة تسجيل الدخول منتهي. ظبط الساعة والتاريخ وجرّب تاني.`:''}`;
+  else if(info.unsigned)html+=`<br>⚠️ فيه نسخة ${esc(info.unsigned)} منشورة، بس مش موقّعة من الجهاز الأساسي، فالجهاز ده مش هيسطّبها (حماية من ملفات مزوّرة). لو انت اللي نشرتها: انشرها تاني من الجهاز الأساسي.`;
   else if(avail)html+=`<br>⬆️ فيه نسخة جديدة: <strong>${esc(avail.version)}</strong>${avail.publishedAt?` (اتنشرت ${esc(fmt(avail.publishedAt))})`:''} — حجمها ${Math.round(avail.size/1048576)} ميجا.`;
   else html+=`<br>✅ الجهاز ده على آخر نسخة${m?` (آخر نسخة منشورة ${esc(m.version)})`:''}.`;
   if(info?.checkedAt)html+=`<br><small>آخر مرة دوّر: ${esc(fmt(info.checkedAt))}</small>`;
