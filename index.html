@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.5.3";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.5.4";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -189,7 +189,7 @@ html,body{background:#fff!important}
     <div id="invoiceProductSelected" class="notice factory-product-selected">لم يتم اختيار صنف بعد.</div>
   </div>
 </label><label>الكمية<input name="quantity" type="number" min="1" step="1" value="1"></label><label>سعر الوحدة (قابل للتعديل)<input name="liveUnitPrice" type="number" min="0" step="0.01" value="0"></label><label>قيمة الصنف<input name="liveLineTotal" type="text" value="0.00 ج.م" readonly></label><button type="button" class="primary" id="addInvoiceItem">إضافة صنف للفاتورة</button><div id="invoiceCart" class="span-all"></div></div><div class="form-step pay-step"><div class="form-step-title"><b>3</b> الدفع والحفظ</div><label>مصاريف النقل (على العميل)<input name="transport" type="number" min="0" step="0.01" value="0" placeholder="0 لو مفيش نقل"></label><label>قيمة الفاتورة<input name="invoiceTotal" type="text" value="0.00 ج.م" readonly></label><label>المدفوع<input name="paidAmount" type="number" min="0" step="0.01" value="0" placeholder="المبلغ المدفوع الآن"></label><label>طريقة الدفع<select name="paymentMethod"><option>كاش</option><option>محفظة</option><option>تحويل بنكي</option></select></label><label>التاريخ<input required name="date" type="date"></label><div id="invoiceCreditBox" class="notice span-all" style="display:none"></div><div class="form-actions span-all"><button type="button" class="primary" id="saveInvoicePrint">حفظ وطباعة</button><button type="button" class="secondary-btn" id="saveInvoiceOnly">حفظ بس</button></div></div></form><div id="invoicesJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">آخر الفواتير</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="invoiceSearch" type="search" placeholder="🔎 ابحث برقم الفاتورة أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="invoicesTable" style="margin-top:16px"></div></article></section>
-<section id="quotes" class="page hidden"><div class="page-views" data-page-views="quotes"><button type="button" data-view="new">➕ عرض سعر جديد</button><button type="button" data-view="list">📄 العروض السابقة</button></div><article class="panel" data-view="new"><h2>إنشاء عرض أسعار</h2><form id="quoteForm" class="form"><div class="form-step"><div class="form-step-title"><b>1</b> العميل</div><label class="span-2">العميل<input required name="customer" list="customerNamesList" autocomplete="off"></label><div class="customer-phone-hint span-2" id="quotePhoneHint"></div></div><div class="form-step"><div class="form-step-title"><b>2</b> الأصناف</div><label class="span-2">بحث واختيار الصنف
+<section id="quotes" class="page hidden"><div class="page-views" data-page-views="quotes"><button type="button" data-view="new">➕ عرض سعر جديد</button><button type="button" data-view="list">📄 العروض السابقة</button></div><article class="panel" data-view="new"><h2>إنشاء عرض أسعار</h2><form id="quoteForm" class="form"><div id="quoteEditBanner" class="notice tone-danger span-all hidden" style="grid-column:1/-1"></div><div class="form-step"><div class="form-step-title"><b>1</b> العميل</div><label class="span-2">العميل<input required name="customer" list="customerNamesList" autocomplete="off"></label><div class="customer-phone-hint span-2" id="quotePhoneHint"></div></div><div class="form-step"><div class="form-step-title"><b>2</b> الأصناف</div><label class="span-2">بحث واختيار الصنف
   <div class="factory-order-picker" id="quoteProductPicker">
     <input name="productSearch" id="quoteProductSearch" type="search" autocomplete="off" placeholder="ابحث بالاسم أو الكود...">
     <select name="product" id="quoteProductSelect" style="display:none"><option value="">اختر صنفًا</option></select>
@@ -742,7 +742,7 @@ function orderRowHtml(o,orderNo,withSel,withStatus){
   const sel=withSel?`<td><input type="checkbox" class="order-sel" value="${esc(String(o.id))}"${window.daftarOrderSel?.has(String(o.id))?' checked':''} onchange="toggleOrderSel(this.value,this.checked)" title="تحديد للترحيل المجمّع"></td>`:'';
   // كل أوامر الطلبية في قايمة ⋮ (زي المخزون). الطلبيات المترحّلة ليها خانة «الحالة» بس.
   const status=o.received?`<td><span class="badge badge-status">✓ ${o.invoiced?'اتفوترت':'تم الترحيل'}</span></td>`:withStatus?'<td>⏳ لسه ما اترحّلتش</td>':'';
-  return `<tr>${sel}<td>#${orderNo.get(String(o.id))}</td><td>${o.date}${!o.received&&o.expectedPickupDate?`<br><small class="pickup-date" title="ميعاد الاستلام الجديد">الاستلام: ${esc(o.expectedPickupDate)}</small>`:''}</td><td>${esc(o.customer)||'المخزون العام'}</td><td>${items.map(i=>`${esc(i.productName)}${i.sku?` <small>(${esc(i.sku)})</small>`:''} × ${i.quantity}`).join('، ')}</td><td>${money(o.total)}</td><td>${money(o.deposit||0)}</td>${status}<td><div class="row-actions">${rowMenuButton(`openOrderMenu('${o.id}',this)`,'أوامر الطلبية')}</div></td></tr>`;
+  return `<tr>${sel}<td>#${orderNo.get(String(o.id))}</td><td>${o.date}${!o.received&&o.expectedPickupDate?`<br><small class="pickup-date" title="ميعاد الاستلام الجديد">الاستلام: ${esc(o.expectedPickupDate)}</small>`:''}${o.splitFrom&&orderNo.get(String(o.splitFrom))?`<br><small class="pickup-date" title="الجزء اللي لسه ما وصلش من طلبية اترحّل منها جزء">باقي طلبية #${orderNo.get(String(o.splitFrom))}</small>`:''}${o.splitTo&&orderNo.get(String(o.splitTo))?`<br><small class="pickup-date" title="اترحّل منها جزء بس">الباقي في #${orderNo.get(String(o.splitTo))}</small>`:''}</td><td>${esc(o.customer)||'المخزون العام'}</td><td>${items.map(i=>`${esc(i.productName)}${i.sku?` <small>(${esc(i.sku)})</small>`:''} × ${i.quantity}`).join('، ')}</td><td>${money(o.total)}</td><td>${money(o.deposit||0)}</td>${status}<td><div class="row-actions">${rowMenuButton(`openOrderMenu('${o.id}',this)`,'أوامر الطلبية')}</div></td></tr>`;
 }
 function rowMenuButton(onclick,label){return `<button type="button" class="secondary-btn row-menu-btn" title="الأوامر" aria-label="${label}" aria-haspopup="menu" onclick="${onclick}">⋮</button>`;}
 // أعمدة وسطور قوايم الطلبيات والفواتير وعروض الأسعار (نفس السطر في «السابقة» وفي «اتسجلت دلوقتي» تحت الفورم).
@@ -770,7 +770,7 @@ function renderJustSaved(kind){
 }
 function orderMenuActions(o){
   const acts=[];
-  if(!o.received)acts.push({label:'📦 ترحيل للمخزون',run:()=>receiveOrder(o.id)});
+  if(!o.received)acts.push({label:'📦 ترحيل للمخزون (كله أو جزء)',run:()=>openReceiveOrder(o.id)});
   if(!o.invoiced)acts.push({label:'✏️ تعديل',run:()=>editOrder(o.id)});
   acts.push({label:'📄 إرسال الطلبية على واتساب',run:()=>sendOrderWhatsApp(o.id)});
   if(o.received&&!o.invoiced&&o.customer)acts.push({label:'💬 إرسال رسالة الوصول',run:()=>openArrivalMessages([o.id])});
@@ -782,6 +782,7 @@ function openOrderMenu(id,btn){const o=db.orders.find(x=>String(x.id)===String(i
 function quoteMenuActions(q){
   return [
     {label:'🖨️ طباعة',run:()=>printQuote(q.id)},
+    {label:'✏️ تعديل (إضافة/مسح أصناف)',run:()=>editQuote(q.id)},
     {label:'💬 إرسال على واتساب',run:()=>sendQuoteWhatsApp(q.id)},
     {label:'🧾 تحويل لفاتورة',run:()=>convertQuoteToInvoice(q.id)},
     {label:'🛒 تحويل لطلبية',run:()=>convertQuoteToOrder(q.id)},
@@ -1826,11 +1827,86 @@ async function cancelOrder(id){
 function receiveOrder(id){
   const o=db.orders.find(x=>String(x.id)===String(id));if(!o)return;if(o.received)return daftarAlert('هذه الطلبية تم ترحيلها بالفعل.');
   const err=receiveOrderCore(o);if(err)return daftarAlert(err);
+  afterOrderReceived(o,'تم ترحيل الطلبية إلى المخزون بكل أصنافها وكمياتها، وتسجيل قيمتها في حساب المصنع.');
+}
+function afterOrderReceived(o,msg){
   save();scheduleRender();document.querySelector('[data-page=products]').click();
   // رسالة واتساب للعميل إن طلبيته وصلت: بتتفتح جاهزة على شات العميل، وانت بتضغط «إرسال» بس.
   const phone=o.customer?normalizeWhatsAppPhone(getCustomerPhone(o.customer)):'';
   if(phone){openWhatsAppTo(phone,orderArrivalMessage(o));o.arrivalMsgSent=today();save();}
-  daftarAlert('تم ترحيل الطلبية إلى المخزون بكل أصنافها وكمياتها، وتسجيل قيمتها في حساب المصنع.'+(o.customer?(phone?`\n\nواتساب اتفتح على شات «${o.customer}» برسالة إن الطلبية وصلت — اضغط «إرسال».`:`\n\nمفيش رقم موبايل متسجل لـ«${o.customer}»، فما اتفتحتش رسالة واتساب. ضيف رقمه من ملف العميل، وتقدر تبعتله من زرار «واتساب» في الطلبيات.`):''));
+  daftarAlert(msg+(o.customer?(phone?`\n\nواتساب اتفتح على شات «${o.customer}» برسالة إن الطلبية وصلت — اضغط «إرسال».`:`\n\nمفيش رقم موبايل متسجل لـ«${o.customer}»، فما اتفتحتش رسالة واتساب. ضيف رقمه من ملف العميل، وتقدر تبعتله من زرار «واتساب» في الطلبيات.`):''));
+}
+// ===== ترحيل جزء من الطلبية (اللي وصل بس) =====
+// نافذة الترحيل: «ترحيل الكمية كلها» زي الأول، أو تكتب اللي وصل من كل صنف (بالعبوة أو بالطن) و«ترحيل اللي وصل بس».
+// الجزئي = نفس اللي كان بيتعمل بإيد: الطلبية بتتعدّل للكمية اللي وصلت وتترحّل (للمخزون وحساب المصنع)، والباقي
+// بيبقى طلبية جديدة لسه ما اترحّلتش لنفس العميل بنفس الأسعار والتاريخ. العربون بيفضل على اللي وصل (هو اللي هيتفوتر
+// الأول)، ولو أكبر من قيمته الزيادة بتتنقل مع الباقي — كاش الأول، ورصيد المرتجعات بعده.
+function orderItemsForReceive(o){return o.items?.length?o.items:[{factoryProductId:o.factoryProductId,productName:o.productName,sku:o.sku,quantity:o.quantity,factoryPrice:o.factoryPrice,salePrice:o.salePrice,packageWeight:o.packageWeight,batchNo:o.batchNo,pebble:o.pebble||''}];}
+function openReceiveOrder(id){
+  const o=db.orders.find(x=>String(x.id)===String(id));if(!o)return;if(o.received)return daftarAlert('هذه الطلبية تم ترحيلها بالفعل.');
+  const items=orderItemsForReceive(o);
+  let old=document.getElementById('daftarReceiveModal');if(old)old.remove();
+  const box=document.createElement('div');box.id='daftarReceiveModal';
+  const tons=(q,w)=>w>0?`${daftarWeightFmt.format(q*w/1000)} طن`:'';
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:760px"><div class="settlement-title"><div><small>ترحيل للمخزون</small><h3>طلبية #${displayNo('orders',o.id)}${o.customer?` — ${esc(o.customer)}`:''}</h3></div><button type="button" class="settlement-close" data-close>×</button></div>
+    <div style="line-height:1.8;margin-bottom:8px">لو الطلبية وصلت كلها اضغط «ترحيل الكمية كلها». لو وصل جزء بس، اكتب اللي وصل من كل صنف (بالعبوة أو بالطن) واضغط «ترحيل اللي وصل بس» — والباقي هيفضل طلبية لسه ما اترحّلتش بنفس الأسعار.</div>
+    ${table(['الصنف','المطلوب','اللي وصل (عبوة)','اللي وصل (طن)'],items.map((it,i)=>{const q=+it.quantity||0,w=+it.packageWeight||0;return `<tr><td><strong>${esc(it.productName)}</strong>${it.sku?` <small>(${esc(it.sku)})</small>`:''}</td><td>${q} عبوة${w?`<br><small>${tons(q,w)}</small>`:''}</td><td><input type="number" class="recv-qty" data-i="${i}" min="0" max="${q}" step="1" value="${q}" style="max-width:120px"></td><td>${w?`<input type="number" class="recv-ton" data-i="${i}" min="0" step="0.001" value="${+(q*w/1000).toFixed(3)}" style="max-width:120px">`:'—'}</td></tr>`;}))}
+    <div class="notice" id="recvSummary" style="margin-top:10px"></div>
+    <div class="settlement-actions"><button type="button" class="primary" data-all>📦 ترحيل الكمية كلها</button><button type="button" class="secondary-btn" data-part>ترحيل اللي وصل بس</button><button type="button" class="secondary-btn" data-close>إلغاء</button></div></div>`;
+  document.body.appendChild(box);
+  const close=()=>box.remove();
+  box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);
+  box.querySelector('.settlement-backdrop').onclick=close;
+  const qtyInputs=[...box.querySelectorAll('.recv-qty')];
+  const read=()=>qtyInputs.map(el=>+el.value||0);
+  const summary=()=>{
+    const rec=read();let got=0,left=0,gotKg=0,leftKg=0;
+    items.forEach((it,i)=>{const q=+it.quantity||0,r=Math.min(q,Math.max(0,rec[i])),w=+it.packageWeight||0;got+=r;left+=q-r;gotKg+=r*w;leftKg+=(q-r)*w;});
+    box.querySelector('#recvSummary').innerHTML=`اللي وصل: <strong>${got}</strong> عبوة${gotKg?` (${tons(1,gotKg)})`:''} — الباقي: <strong>${left}</strong> عبوة${leftKg?` (${tons(1,leftKg)})`:''}${left?' (هيفضل طلبية لسه ما اترحّلتش)':''}`;
+  };
+  // الطن ↔ العبوات: بتكتب في أي خانة والتانية بتتحسب (العبوات أعداد صحيحة)
+  box.querySelectorAll('.recv-ton').forEach(el=>el.addEventListener('input',()=>{const it=items[+el.dataset.i],w=+it.packageWeight||0;if(w>0)qtyInputs[+el.dataset.i].value=Math.round((+el.value||0)*1000/w);summary();}));
+  qtyInputs.forEach(el=>el.addEventListener('input',()=>{const t=box.querySelector(`.recv-ton[data-i="${el.dataset.i}"]`),w=+items[+el.dataset.i].packageWeight||0;if(t&&w>0)t.value=+((+el.value||0)*w/1000).toFixed(3);summary();}));
+  summary();
+  box.querySelector('[data-all]').onclick=()=>{close();receiveOrder(o.id);};
+  box.querySelector('[data-part]').onclick=()=>{
+    const rec=read();
+    const bad=items.findIndex((it,i)=>!Number.isInteger(rec[i])||rec[i]<0||rec[i]>(+it.quantity||0));
+    if(bad>=0)return daftarAlert(`«${items[bad].productName}»: اللي وصل لازم يبقى عدد عبوات صحيح من 0 لحد ${+items[bad].quantity||0}.`);
+    if(!rec.some(x=>x>0))return daftarAlert('اكتب الكمية اللي وصلت من صنف واحد على الأقل (أو اقفل النافذة لو مفيش حاجة وصلت).');
+    close();
+    if(items.every((it,i)=>rec[i]===(+it.quantity||0)))return receiveOrder(o.id);
+    const res=receiveOrderPartial(o,rec);if(res.err)return daftarAlert(res.err);
+    if(!res.rest)return afterOrderReceived(o,'تم ترحيل الطلبية إلى المخزون بكل أصنافها وكمياتها، وتسجيل قيمتها في حساب المصنع.');
+    afterOrderReceived(o,`تم ترحيل اللي وصل من طلبية #${displayNo('orders',o.id)} للمخزون وتسجيل قيمته في حساب المصنع.\nالباقي بقى طلبية #${displayNo('orders',res.rest.id)} لسه ما اترحّلتش${res.rest.deposit>0?` (ومعاها ${money(res.rest.deposit)} من العربون)`:''} — تلاقيها في «الطلبيات السابقة».`);
+  };
+}
+function receiveOrderPartial(o,rec){
+  if(!o||o.received)return {err:'هذه الطلبية تم ترحيلها بالفعل.'};
+  const got=[],rest=[];
+  orderItemsForReceive(o).forEach((it,i)=>{
+    const q=+it.quantity||0,r=Math.min(q,Math.max(0,Math.round(+rec[i]||0))),price=+(it.salePrice??it.unitPrice)||0;
+    if(r>0)got.push({...it,quantity:r,total:r*price});
+    if(q-r>0)rest.push({...it,quantity:q-r,total:(q-r)*price});
+  });
+  if(!got.length)return {err:'اكتب الكمية اللي وصلت من صنف واحد على الأقل.'};
+  if(!rest.length)return {err:receiveOrderCore(o),rest:null};
+  const backup=structuredClone(o);
+  const totalGot=got.reduce((s,x)=>s+(+x.total||0),0),totalRest=rest.reduce((s,x)=>s+(+x.total||0),0);
+  const dep=Math.max(0,+o.deposit||0),credit=Math.max(0,+o.creditUsed||0),cash=o.cashDeposit!=null?Math.max(0,+o.cashDeposit||0):Math.max(0,dep-credit);
+  const keep=Math.min(dep,totalGot),keepCash=Math.min(cash,keep),keepCredit=Math.round((keep-keepCash)*100)/100;
+  const mirror=items=>{const f=items[0];return {factoryProductId:f.factoryProductId,productName:f.productName,sku:f.sku,quantity:f.quantity,factoryPrice:f.factoryPrice,salePrice:f.salePrice,unitPrice:f.salePrice,packageWeight:f.packageWeight,batchNo:f.batchNo,pebble:f.pebble||''};};
+  const r={id:daftarNextId(),customer:o.customer||'',whatsapp:o.whatsapp||'',items:rest,...mirror(rest),total:totalRest,
+    deposit:Math.round((dep-keep)*100)/100,cashDeposit:Math.round((cash-keepCash)*100)/100,creditUsed:Math.round(Math.max(0,credit-keepCredit)*100)/100,depositUsed:0,
+    date:o.date||today(),received:false,splitFrom:o.id};
+  if(o.expectedPickupDate)r.expectedPickupDate=o.expectedPickupDate;
+  r.remaining=orderOutstanding(r);
+  Object.assign(o,{items:got,...mirror(got),total:totalGot,deposit:keep,cashDeposit:keepCash,creditUsed:keepCredit,splitTo:r.id});
+  o.remaining=orderOutstanding(o);
+  const err=receiveOrderCore(o);
+  if(err){for(const k of Object.keys(o))delete o[k];Object.assign(o,backup);return {err};}
+  db.orders.push(r);
+  return {rest:r};
 }
 // ترحيل طلبية للمخزون (من غير حفظ ولا رسائل): بيضيف أصنافها للمخزون (محجوزة لعميلها لو ليها عميل)
 // وبيسجل قيمتها في حساب المصنع. بيرجّع رسالة خطأ لو فيه مشكلة، أو '' لو تمام.
@@ -4769,12 +4845,50 @@ document.querySelector('#quoteForm [name=quantity]').addEventListener('input',()
 document.querySelector('#quoteForm [name=transport]').addEventListener('input',()=>renderQuoteCart());
 document.querySelector('#quoteForm [name=itemWeight]')?.addEventListener('input',()=>refreshQuoteLiveTotals());
 document.querySelector('#quoteForm [name=liveUnitPrice]').addEventListener('input',()=>{document.querySelector('#quoteForm').dataset.priceManual='1';refreshQuoteLiveTotals();});
+// ===== تعديل عرض سعر =====
+// العرض بيتفتح في نفس الفورم بأصنافه (تضيف أصناف أو تشيلها بزرار «إزالة»)، وبيتحفظ مكانه بنفس الرقم.
+// لو العرض اتحوّل قبل كده لفاتورة أو طلبية، التعديل بيغيّر العرض بس.
+function setQuoteEditMode(q){
+  window.daftarEditingQuoteId=q?q.id:null;
+  const bp=document.querySelector('#saveQuotePrint'),bo=document.querySelector('#saveQuoteOnly'),banner=document.querySelector('#quoteEditBanner');
+  if(bp)bp.textContent=q?'حفظ التعديل وطباعة':'حفظ وطباعة';
+  if(bo)bo.textContent=q?'حفظ التعديل بس':'حفظ بس';
+  if(!banner)return;
+  banner.classList.toggle('hidden',!q);
+  banner.innerHTML=q?`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>✏️ بتعدّل عرض السعر <strong>#${displayNo('quotes',q.id)}</strong>${q.customer?` — «${esc(q.customer)}»`:''}. ضيف أصناف من فوق أو شيل أي صنف بزرار «إزالة» في الجدول، وبعدين اضغط «حفظ التعديل».</span><button type="button" class="secondary-btn" onclick="cancelQuoteEdit()">إلغاء التعديل</button></div>`:'';
+}
+function resetQuoteForm(){
+  const f=document.querySelector('#quoteForm');quoteCart=[];f.reset();
+  f.querySelector('[name=transport]').value=0;f.dataset.priceManual='';f.querySelector('[name=date]').value=today();f.querySelector('[name=quantity]').value=1;
+  f.querySelector('[name=liveUnitPrice]').value=0;f.querySelector('[name=liveLineTotal]').value=money(0);f.querySelector('[name=quoteTotal]').value=money(0);
+  updateQuoteUnitLabels();renderQuoteCart();
+}
+function cancelQuoteEdit(){setQuoteEditMode(null);resetQuoteForm();daftarToast('اتلغى التعديل، وعرض السعر فضل زي ما هو.');}
+async function editQuote(id){
+  const q=(db.quotes||[]).find(x=>String(x.id)===String(id));if(!q)return daftarAlert('لم يتم العثور على عرض السعر.');
+  if(q.convertedTo&&!await daftarConfirm(`عرض السعر ده ${quoteConvertedLabel(q)}.\nالتعديل هيغيّر العرض بس — اللي اتعمل منه قبل كده مش هيتغيّر.\nتكمّل؟`))return;
+  if(quoteCart.length&&String(window.daftarEditingQuoteId)!==String(q.id)&&!await daftarConfirm('سلة عرض السعر فيها أصناف لسه ما اتحفظتش، وهتتمسح. تكمّل؟'))return;
+  document.querySelector('[data-page=quotes]').click();showPageView('quotes','new');
+  resetQuoteForm();
+  quoteCart=(q.items||[]).map(i=>({...i}));
+  const f=document.querySelector('#quoteForm');
+  f.querySelector('[name=customer]').value=q.customer||'';f.querySelector('[name=customer]').dispatchEvent(new Event('input'));
+  f.querySelector('[name=date]').value=q.date||today();
+  f.querySelector('[name=transport]').value=Math.max(0,+q.transport||0);
+  setQuoteEditMode(q);renderQuoteCart();window.scrollTo({top:0,behavior:'smooth'});
+}
 document.querySelector('#quoteForm').addEventListener('submit',e=>{
  e.preventDefault();const saveWithoutPrint=!!window.daftarQuoteSaveWithoutPrint;window.daftarQuoteSaveWithoutPrint=false;const f=new FormData(e.target),customer=(f.get('customer')||'').trim();if(!customer)return daftarAlert('اكتب اسم العميل.');if(!quoteCart.length)return daftarAlert('أضف صنفًا واحدًا على الأقل إلى عرض السعر.');
+ const editId=window.daftarEditingQuoteId,editing=editId?(db.quotes||[]).find(x=>String(x.id)===String(editId)):null;
+ if(editId&&!editing){setQuoteEditMode(null);return daftarAlert('عرض السعر ده اتمسح، فمينفعش يتعدّل من هنا.');}
  const transport=formTransport('#quoteForm');
- const q={id:daftarNextId(),customer,whatsapp:(f.get('whatsapp')||'').trim(),date:f.get('date')||today(),items:quoteCart.map(x=>({...x})),total:quoteCart.reduce((s,x)=>s+(+x.total||0),0)+transport};
- if(transport>0)q.transport=transport;
- db.quotes??=[];db.quotes.push(q);markJustSaved('quotes',q.id);save();quoteCart=[];e.target.reset();e.target.querySelector('[name=transport]').value=0;e.target.dataset.priceManual='';e.target.querySelector('[name=date]').value=today();e.target.querySelector('[name=quantity]').value=1;e.target.querySelector('[name=liveUnitPrice]').value=0;e.target.querySelector('[name=liveLineTotal]').value=money(0);e.target.querySelector('[name=quoteTotal]').value=money(0);updateQuoteUnitLabels();renderQuoteCart();scheduleRender();if(saveWithoutPrint)daftarToast(`تم حفظ عرض السعر #${displayNo('quotes',q.id)}.`);else printQuote(q.id);
+ const fields={customer,date:f.get('date')||today(),items:quoteCart.map(x=>({...x})),total:quoteCart.reduce((s,x)=>s+(+x.total||0),0)+transport};
+ let q;
+ if(editing){q=editing;Object.assign(q,fields);if(transport>0)q.transport=transport;else delete q.transport;q.editedDate=today();}
+ else{q={id:daftarNextId(),whatsapp:(f.get('whatsapp')||'').trim(),...fields};if(transport>0)q.transport=transport;db.quotes??=[];db.quotes.push(q);markJustSaved('quotes',q.id);}
+ setQuoteEditMode(null);
+ save();resetQuoteForm();scheduleRender();
+ if(saveWithoutPrint)daftarToast(`تم ${editing?'تعديل':'حفظ'} عرض السعر #${displayNo('quotes',q.id)}.`);else printQuote(q.id);
 });
 function submitQuoteForm(withPrint){const form=document.querySelector('#quoteForm');const customer=(form.querySelector('[name=customer]').value||'').trim();if(!customer)return daftarAlert('اكتب اسم العميل.');if(!quoteCart.length)return daftarAlert('أضف صنفًا واحدًا على الأقل إلى عرض السعر.');window.daftarQuoteSaveWithoutPrint=!withPrint;form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));}
 document.querySelector('#saveQuotePrint').onclick=()=>submitQuoteForm(true);
@@ -5769,8 +5883,8 @@ renderCustomerList();
 </script>
 
 <!-- مكتبة Supabase متضمنة جوه البرنامج () عشان تشتغل حتى لو البرنامج اتفتح من غير نت،
-     ورقم النسخة ثابت عشان أي تحديث للمكتبة ميغيّرش سلوك البرنامج فجأة. لو الملف المحلي
-     مش موجود لأي سبب، بنرجع نحمّلها من الإنترنت بنفس رقم النسخة. -->
+     ورقم النسخة ثابت عشان أي تحديث للمكتبة ميغيّرش سلوك البرنامج فجأة. مبنحمّلش أي كود من الإنترنت
+     (سياسة الأمان CSP بتمنعه). -->
 <script src="supabase.js"></script>
 <style id="daftarAuthStyle">
 #daftarAuthOverlay{position:fixed;inset:0;background:rgba(15,23,42,.58);backdrop-filter:blur(5px);z-index:1000000;display:none;align-items:center;justify-content:center;padding:20px;direction:rtl}
@@ -7429,6 +7543,9 @@ if(!window.daftarElectron&&/^https?:$/.test(location.protocol)){
   #customerHistory .customer-ledger-table col{width:auto!important}
   /* النوافذ (تأكيد/تعديل/إرسال): بعرض الشاشة */
   .settlement-card{width:calc(100vw - 24px)!important;max-width:none!important;max-height:calc(100vh - 40px);overflow:auto;padding:16px!important}
+  /* أزرار النوافذ: لو مش واخدين في سطر بينزلوا تحت بعض، والزرار بيطول مع كلامه بدل ما الكلام يتقص */
+  .settlement-actions{flex-wrap:wrap}
+  .settlement-actions button{height:auto!important;min-height:40px;white-space:normal;line-height:1.35}
   .arrival-row{flex-wrap:wrap}.arrival-actions{width:100%;justify-content:flex-end}
   .order-bulk-bar{flex-direction:column;align-items:stretch}.order-bulk-actions{flex-direction:column}
   .arrival-msg-grid{grid-template-columns:1fr}
