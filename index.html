@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.5.2";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.5.3";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -250,7 +250,7 @@ html,body{background:#fff!important}
         </div>
       </article><article class="panel" style="margin-bottom:0">
         <h2>استعادة نسخة احتياطية</h2>
-        <p class="notice">قبل الاستعادة سيقوم البرنامج تلقائيًا بتنزيل نسخة من البيانات الحالية، ثم يستبدلها بالنسخة المختارة.</p>
+        <p class="notice">قبل الاستعادة سيقوم البرنامج تلقائيًا بتنزيل نسخة من البيانات الحالية، ثم يستبدلها بالنسخة المختارة.<br>تقدر تختار ملف «تحميل نسخة احتياطية»، أو <bdi dir="ltr">daftar-data-latest.json</bdi> من فولدر Daftar-Backup (والصور بترجع معاه)، أو نسخة يومية.</p>
         <input id="backupFile" type="file" accept="application/json,.json">
         <button type="button" class="primary" id="importBackup" style="margin-top:10px">استعادة النسخة</button>
       </article><article class="panel" id="cloudSnapshotsPanel" style="margin-bottom:0;grid-column:1/-1">
@@ -434,21 +434,40 @@ async function loadBackgrounds(){
   // ترحيل تلقائي لأي خلفيات كانت متخزنة قديمًا في localStorage أو جوه db نفسه.
   let migrated=false;
   const legacy=(()=>{try{return JSON.parse(localStorage.getItem(DAFTAR_BG_KEY)||'null')}catch(e){return null}})();
+  // على الكمبيوتر: نسخة الصور اللي جنب البيانات (daftar-images.json). لو البرنامج اتسطّب جديد أو اتمسحت
+  // إعداداته (مفيش صورة اتحفظت جواه قبل كده خالص)، الصور بترجع منها.
+  const imgFile=await (window.daftarElectron?.storage?.readImages?.()||Promise.resolve(null)).catch(()=>null);
+  if(imgFile?.images)daftarImagesFileLast=imagesFileText(imgFile.images);
   for(const k of DAFTAR_IMAGE_KEYS){
     const fromIdb=await idbGet(k);
     if(fromIdb){daftarBg[k]=fromIdb;}
     else if(legacy?.[k]){daftarBg[k]=legacy[k];migrated=true;}
     else if(db[k]){daftarBg[k]=db[k];migrated=true;}
+    else if(fromIdb===undefined&&imgFile?.images?.[k]){daftarBg[k]=imgFile.images[k];migrated=true;}
     if(db[k])delete db[k];
   }
   daftarBgReady=true;
   if(migrated){await saveBackgrounds();localStorage.removeItem(DAFTAR_BG_KEY);}
+  else writeImagesFile(); // أول مرة بعد التحديث: بيعمل الملف من الصور الموجودة (ولو مفيش تغيير مبيكتبش حاجة)
 }
 async function saveBackgrounds(){
   try{
     for(const k of DAFTAR_IMAGE_KEYS)await idbSet(k,daftarBg[k]||'');
+    writeImagesFile();
     return true;
   }catch(err){console.error('BG save failed:',err);if(typeof daftarToast==='function')daftarToast('تعذر حفظ الخلفية. المتصفح قد لا يدعم التخزين الكبير.','error');return false;}
+}
+// نسخة الصور في ملف جنب البيانات (على الكمبيوتر بس): بتتكتب بس لما صورة تتغير فعلاً، وبتتنسخ مع النسخة
+// التانية (Google Drive/الفلاشة) عشان «استعادة النسخة» ترجّع الصور كمان.
+let daftarImagesFileLast=null;
+function imagesFileText(images){return JSON.stringify(Object.fromEntries(DAFTAR_IMAGE_KEYS.map(k=>[k,images?.[k]||''])));}
+async function writeImagesFile(){
+  const store=window.daftarElectron?.storage;if(!store?.saveImages)return;
+  const text=imagesFileText(daftarBg);
+  if(text===daftarImagesFileLast)return;
+  if(daftarImagesFileLast===null&&!DAFTAR_IMAGE_KEYS.some(k=>daftarBg[k]))return; // مفيش صور ولا ملف — مفيش داعي لملف فاضي
+  const r=await store.saveImages(`{"app":"دفتر","kind":"images","savedAt":${JSON.stringify(new Date().toISOString())},"images":${text}}`).catch(()=>null);
+  if(r?.ok)daftarImagesFileLast=text;else daftarLogError?.('images-file',r?.error||'save failed');
 }
 const daftarBgLoadPromise=loadBackgrounds().catch(err=>console.warn('BG load failed:',err)); // يبدأ التحميل فورًا في الخلفية، من غير ما يعطّل ظهور الصفحة
 for(const p of db.factoryItems){p.factoryPrice??=p.price||0;p.salePrice??=p.price||0;p.batchNo??=p.manufacturer??'';p.pebble??=p.notes??'';delete p.manufacturer;delete p.notes;p.packageWeight??=0;}
@@ -5690,8 +5709,25 @@ document.querySelector('#importBackup').onclick=async()=>{
   reader.onload=async()=>{
     try{
       const parsed=JSON.parse(reader.result);
-      await applyRestoredData(parsed&&parsed.data);
-      input.value='';daftarAlert('تمت استعادة النسخة الاحتياطية بنجاح.');
+      // ملف الصور بس (daftar-images-latest.json من فولدر النسخة التانية): بيرجّع الصور من غير ما يلمس البيانات.
+      if(parsed&&parsed.images&&typeof parsed.images==='object'&&!parsed.data&&!Array.isArray(parsed.products)){
+        const keys=DAFTAR_IMAGE_KEYS.filter(k=>parsed.images[k]);if(!keys.length)throw new Error('empty');
+        for(const k of keys)daftarBg[k]=parsed.images[k];
+        await saveBackgrounds();scheduleRender();
+        input.value='';daftarAlert(`تم استرجاع صور الطباعة (${keys.length} صورة). البيانات زي ما هي.`);return;
+      }
+      // ملف «تحميل نسخة احتياطية» (البيانات جوه data)، أو ملف البيانات نفسه: daftar-data-latest.json من النسخة
+      // التانية (Google Drive/الفلاشة) أو نسخة يومية من فولدر backups.
+      const data=parsed&&parsed.data&&typeof parsed.data==='object'&&!Array.isArray(parsed.products)?parsed.data:parsed;
+      // ملف البيانات مفيهوش الصور: بنجيبها من ملف الصور اللي جنبه (على الكمبيوتر) لو موجود.
+      let withImages=!!data&&DAFTAR_IMAGE_KEYS.some(k=>data[k]);
+      if(!withImages&&data&&typeof data==='object'){
+        const near=await (window.daftarElectron?.storage?.imagesNear?.(file)||Promise.resolve(null)).catch(()=>null);
+        if(near?.images)for(const k of DAFTAR_IMAGE_KEYS)if(near.images[k]){data[k]=near.images[k];withImages=true;}
+      }
+      await applyRestoredData(data);
+      input.value='';
+      daftarAlert('تمت استعادة النسخة الاحتياطية بنجاح.'+(withImages?'':'\nالملف ده مفيهوش صور الطباعة (اللوجو والخلفيات) — هترجع من السحابة لما تسجّل دخول، أو اختار ملف daftar-images-latest.json من نفس فولدر النسخة.'));
     }catch(err){daftarAlert('ملف النسخة الاحتياطية غير صالح أو تالف، ولم يتم تغيير البيانات الحالية.');}
   };
   reader.readAsText(file,'utf-8');
