@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.5.1";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.5.2";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -156,6 +156,14 @@
 :is(#daftarPrintBox,#daftarShareBox).doc-sheet .dp-inner .receipt-meta{margin-top:1.8em;border-top:1px solid #E5D3A8;padding-top:1em;line-height:2;font-size:1.15em}
 :is(#daftarPrintBox,#daftarShareBox).doc-sheet .dp-inner .doc-sign{margin:3.5em 0 1.5em;font-size:1.15em}
 :is(#daftarPrintBox,#daftarShareBox).doc-sheet .dp-inner .doc-note{margin:.8em 0 0;font-size:1em;color:#475569}
+/* معاينة الطباعة على الموبايل: الورقة بتتعرض بمقاسها الحقيقي (زي الكمبيوتر) ومتصغّرة على قد الشاشة
+   (--dp-fit بيتحسب من عرض الشاشة)، بدل ما الجدول يتزنق ويطلع برّه الإطار. الطباعة نفسها مش بتتأثر. */
+@media screen and (max-width:700px){
+  #daftarPrintBox{padding:12px!important;overflow-x:hidden}
+  #daftarPrintBox .dp-inner{width:560px;max-width:none!important;zoom:var(--dp-fit,1)}
+  #daftarPrintBox:is(.statement-print,.review-print) .dp-inner{width:720px;zoom:var(--dp-fit-a4,1)}
+  #daftarPrintBox .dp-actions button{font-size:20px;padding:14px 22px}
+}
 /* كشف الحساب (A4، ممكن يبقى كذا صفحة): الإطار والخلفية وجزء التواصل (الاسم والرقم
    والباركود) عناصر "ثابتة" (position:fixed)، والطابعة بتكررها في كل صفحة — فكل صفحة ليها
    إطارها، والتواصل في آخرها فوق خط الإطار. الكلام بيسيب مسافة فوق وتحت في كل صفحة
@@ -180,7 +188,7 @@ html,body{background:#fff!important}
     <div id="invoiceProductResults" class="factory-product-results hidden"></div>
     <div id="invoiceProductSelected" class="notice factory-product-selected">لم يتم اختيار صنف بعد.</div>
   </div>
-</label><label>الكمية<input name="quantity" type="number" min="1" step="1" value="1"></label><label>سعر الوحدة (قابل للتعديل)<input name="liveUnitPrice" type="number" min="0" step="0.01" value="0"></label><label>قيمة الصنف<input name="liveLineTotal" type="text" value="0.00 ج.م" readonly></label><button type="button" class="primary" id="addInvoiceItem">إضافة صنف للفاتورة</button><div id="invoiceCart" class="span-all"></div></div><div class="form-step pay-step"><div class="form-step-title"><b>3</b> الدفع والحفظ</div><label>مصاريف النقل (على العميل)<input name="transport" type="number" min="0" step="0.01" value="0" placeholder="0 لو مفيش نقل"></label><label>قيمة الفاتورة<input name="invoiceTotal" type="text" value="0.00 ج.م" readonly></label><label>المدفوع<input name="paidAmount" type="number" min="0" step="0.01" value="0" placeholder="المبلغ المدفوع الآن"></label><label>طريقة الدفع<select name="paymentMethod"><option>كاش</option><option>محفظة</option><option>تحويل بنكي</option></select></label><label>التاريخ<input required name="date" type="date"></label><div id="invoiceCreditBox" class="notice span-all" style="display:none"></div><div class="form-actions span-all"><button type="button" class="primary" id="saveInvoicePrint">حفظ وطباعة</button><button type="button" class="secondary-btn" id="saveInvoiceOnly">حفظ بس</button></div></div></form></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">آخر الفواتير</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="invoiceSearch" type="search" placeholder="🔎 ابحث برقم الفاتورة أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="invoicesTable" style="margin-top:16px"></div></article></section>
+</label><label>الكمية<input name="quantity" type="number" min="1" step="1" value="1"></label><label>سعر الوحدة (قابل للتعديل)<input name="liveUnitPrice" type="number" min="0" step="0.01" value="0"></label><label>قيمة الصنف<input name="liveLineTotal" type="text" value="0.00 ج.م" readonly></label><button type="button" class="primary" id="addInvoiceItem">إضافة صنف للفاتورة</button><div id="invoiceCart" class="span-all"></div></div><div class="form-step pay-step"><div class="form-step-title"><b>3</b> الدفع والحفظ</div><label>مصاريف النقل (على العميل)<input name="transport" type="number" min="0" step="0.01" value="0" placeholder="0 لو مفيش نقل"></label><label>قيمة الفاتورة<input name="invoiceTotal" type="text" value="0.00 ج.م" readonly></label><label>المدفوع<input name="paidAmount" type="number" min="0" step="0.01" value="0" placeholder="المبلغ المدفوع الآن"></label><label>طريقة الدفع<select name="paymentMethod"><option>كاش</option><option>محفظة</option><option>تحويل بنكي</option></select></label><label>التاريخ<input required name="date" type="date"></label><div id="invoiceCreditBox" class="notice span-all" style="display:none"></div><div class="form-actions span-all"><button type="button" class="primary" id="saveInvoicePrint">حفظ وطباعة</button><button type="button" class="secondary-btn" id="saveInvoiceOnly">حفظ بس</button></div></div></form><div id="invoicesJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">آخر الفواتير</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="invoiceSearch" type="search" placeholder="🔎 ابحث برقم الفاتورة أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="invoicesTable" style="margin-top:16px"></div></article></section>
 <section id="quotes" class="page hidden"><div class="page-views" data-page-views="quotes"><button type="button" data-view="new">➕ عرض سعر جديد</button><button type="button" data-view="list">📄 العروض السابقة</button></div><article class="panel" data-view="new"><h2>إنشاء عرض أسعار</h2><form id="quoteForm" class="form"><div class="form-step"><div class="form-step-title"><b>1</b> العميل</div><label class="span-2">العميل<input required name="customer" list="customerNamesList" autocomplete="off"></label><div class="customer-phone-hint span-2" id="quotePhoneHint"></div></div><div class="form-step"><div class="form-step-title"><b>2</b> الأصناف</div><label class="span-2">بحث واختيار الصنف
   <div class="factory-order-picker" id="quoteProductPicker">
     <input name="productSearch" id="quoteProductSearch" type="search" autocomplete="off" placeholder="ابحث بالاسم أو الكود...">
@@ -188,7 +196,7 @@ html,body{background:#fff!important}
     <div id="quoteProductResults" class="factory-product-results hidden"></div>
     <div id="quoteProductSelected" class="notice factory-product-selected">لم يتم اختيار صنف بعد.</div>
   </div>
-</label><label>البيع بـ<select name="saleUnit"><option value="pkg">العبوة</option><option value="ton">الطن</option></select></label><label><span id="quoteQtyLabel">الكمية (عبوة)</span><input name="quantity" type="number" min="1" step="1" value="1"></label><label>وزن العبوة (كجم)<input name="itemWeight" type="number" min="0" step="0.001" list="quoteWeightOptions" placeholder="لأصناف المصنع"><datalist id="quoteWeightOptions"></datalist></label><label><span id="quotePriceLabel">سعر العبوة (قابل للتعديل)</span><input name="liveUnitPrice" type="number" min="0" step="0.01" value="0"></label><label>قيمة الصنف<input name="liveLineTotal" type="text" value="0.00 ج.م" readonly></label><button type="button" class="primary" id="addQuoteItem">إضافة صنف للعرض</button><div id="quoteCart" class="span-all"></div></div><div class="form-step"><div class="form-step-title"><b>3</b> الحفظ</div><label>مصاريف النقل (على العميل)<input name="transport" type="number" min="0" step="0.01" value="0" placeholder="0 لو مفيش نقل"></label><label>إجمالي العرض<input name="quoteTotal" type="text" value="0.00 ج.م" readonly></label><label>التاريخ<input required name="date" type="date"></label><div class="form-actions span-all"><button type="button" class="primary" id="saveQuotePrint">حفظ وطباعة</button><button type="button" class="secondary-btn" id="saveQuoteOnly">حفظ بس</button></div><p class="notice span-all" style="margin:0">عرض السعر مستقل تمامًا عن المبيعات والحسابات والمخزون: الحفظ والطباعة لا ينقصان المخزون ولا يضيفان مبيعات ولا يؤثران على حساب العميل.</p></div></form></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">عروض الأسعار السابقة</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="quoteSearch" type="search" placeholder="🔎 ابحث برقم العرض أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="quotesTable" style="margin-top:16px"></div></article></section>
+</label><label>البيع بـ<select name="saleUnit"><option value="pkg">العبوة</option><option value="ton">الطن</option></select></label><label><span id="quoteQtyLabel">الكمية (عبوة)</span><input name="quantity" type="number" min="1" step="1" value="1"></label><label>وزن العبوة (كجم)<input name="itemWeight" type="number" min="0" step="0.001" list="quoteWeightOptions" placeholder="لأصناف المصنع"><datalist id="quoteWeightOptions"></datalist></label><label><span id="quotePriceLabel">سعر العبوة (قابل للتعديل)</span><input name="liveUnitPrice" type="number" min="0" step="0.01" value="0"></label><label>قيمة الصنف<input name="liveLineTotal" type="text" value="0.00 ج.م" readonly></label><button type="button" class="primary" id="addQuoteItem">إضافة صنف للعرض</button><div id="quoteCart" class="span-all"></div></div><div class="form-step"><div class="form-step-title"><b>3</b> الحفظ</div><label>مصاريف النقل (على العميل)<input name="transport" type="number" min="0" step="0.01" value="0" placeholder="0 لو مفيش نقل"></label><label>إجمالي العرض<input name="quoteTotal" type="text" value="0.00 ج.م" readonly></label><label>التاريخ<input required name="date" type="date"></label><div class="form-actions span-all"><button type="button" class="primary" id="saveQuotePrint">حفظ وطباعة</button><button type="button" class="secondary-btn" id="saveQuoteOnly">حفظ بس</button></div><p class="notice span-all" style="margin:0">عرض السعر مستقل تمامًا عن المبيعات والحسابات والمخزون: الحفظ والطباعة لا ينقصان المخزون ولا يضيفان مبيعات ولا يؤثران على حساب العميل.</p></div></form><div id="quotesJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">عروض الأسعار السابقة</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="quoteSearch" type="search" placeholder="🔎 ابحث برقم العرض أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="quotesTable" style="margin-top:16px"></div></article></section>
 <section id="orders" class="page hidden"><div class="page-views" data-page-views="orders"><button type="button" data-view="new">➕ طلبية جديدة</button><button type="button" data-view="list">📄 الطلبيات السابقة</button></div><article class="panel" data-view="new"><h2>تسجيل طلبية</h2><form id="orderForm" class="form"><div id="orderEditBanner" class="notice tone-danger span-all hidden" style="grid-column:1/-1"></div><div class="form-step"><div class="form-step-title"><b>1</b> العميل</div><label class="span-2">العميل (اختياري)<input name="customer" list="customerNamesList" autocomplete="off" placeholder="اكتب اسم العميل أو اختَر من الاقتراحات"></label><div class="customer-phone-hint span-2" id="orderPhoneHint"></div></div><div class="form-step"><div class="form-step-title"><b>2</b> الأصناف</div><label class="span-2">بحث واختيار صنف المصنع
   <div class="factory-order-picker" id="factoryOrderPicker">
     <input name="factoryProductSearch" id="factoryProductSearch" type="search" autocomplete="off" placeholder="ابحث بالكود أو اسم الصنف...">
@@ -196,7 +204,7 @@ html,body{background:#fff!important}
     <div id="factoryProductResults" class="factory-product-results hidden"></div>
     <div id="factoryProductSelected" class="notice factory-product-selected">لم يتم اختيار صنف بعد.</div>
   </div>
-</label><label>الكمية<input required name="quantity" type="number" min="1" step="1" value="1"></label><label>الكود<input name="itemSku" placeholder="اكتب رقم الكود…" list="orderSkuList" autocomplete="off" dir="auto"><datalist id="orderSkuList"></datalist><datalist id="allSkuList"></datalist></label><label>وزن العبوة (كجم)<input name="itemWeight" type="number" min="0" step="0.001" list="orderWeightOptions" placeholder="بيتملي من الكتالوج"><datalist id="orderWeightOptions"></datalist></label><label>سعر بيع العبوة (قابل للتعديل)<input name="itemSalePrice" type="number" min="0" step="0.01" placeholder="بيتحسب من سعر الطن"></label><label>رقم الباتش<input name="batchNo" placeholder="يُسحب تلقائيًا من المصنع ويمكن تعديله"></label><label>الحصوة<input name="pebble" placeholder="تُسحب تلقائيًا من كتالوج المصنع ويمكن تعديلها"></label><button type="button" class="primary" id="addOrderItem">إضافة صنف للطلبية</button><div id="orderCart" class="span-all"></div></div><div class="form-step"><div class="form-step-title"><b>3</b> العربون والحفظ</div><label>العربون<input name="deposit" type="number" min="0" step="0.01" value="0"></label><label>تاريخ الطلب<input required name="date" type="date"></label><div class="form-actions span-2"><button class="primary" id="orderSaveBtn">حفظ الطلبية</button></div><p class="notice span-all" style="margin:0">أضف أكثر من صنف للطلبية ثم احفظها كطلبية واحدة. عند الترحيل للمخزون تُضاف كل الأصناف والكميات دفعة واحدة، ولا تدخل المخزون قبل الترحيل.</p></div></form></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">الطلبيات</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="orderSearch" type="search" placeholder="🔎 ابحث برقم الطلبية أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="ordersPendingWeightSummary" class="notice" style="margin-top:12px"></div><div id="ordersTable" style="margin-top:16px"></div></article></section>
+</label><label>الكمية<input required name="quantity" type="number" min="1" step="1" value="1"></label><label>الكود<input name="itemSku" placeholder="اكتب رقم الكود…" list="orderSkuList" autocomplete="off" dir="auto"><datalist id="orderSkuList"></datalist><datalist id="allSkuList"></datalist></label><label>وزن العبوة (كجم)<input name="itemWeight" type="number" min="0" step="0.001" list="orderWeightOptions" placeholder="بيتملي من الكتالوج"><datalist id="orderWeightOptions"></datalist></label><label>سعر بيع العبوة (قابل للتعديل)<input name="itemSalePrice" type="number" min="0" step="0.01" placeholder="بيتحسب من سعر الطن"></label><label>رقم الباتش<input name="batchNo" placeholder="يُسحب تلقائيًا من المصنع ويمكن تعديله"></label><label>الحصوة<input name="pebble" placeholder="تُسحب تلقائيًا من كتالوج المصنع ويمكن تعديلها"></label><button type="button" class="primary" id="addOrderItem">إضافة صنف للطلبية</button><div id="orderCart" class="span-all"></div></div><div class="form-step"><div class="form-step-title"><b>3</b> العربون والحفظ</div><label>العربون<input name="deposit" type="number" min="0" step="0.01" value="0"></label><label>تاريخ الطلب<input required name="date" type="date"></label><div class="form-actions span-2"><button class="primary" id="orderSaveBtn">حفظ الطلبية</button></div><p class="notice span-all" style="margin:0">أضف أكثر من صنف للطلبية ثم احفظها كطلبية واحدة. عند الترحيل للمخزون تُضاف كل الأصناف والكميات دفعة واحدة، ولا تدخل المخزون قبل الترحيل.</p></div></form><div id="ordersJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">الطلبيات</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="orderSearch" type="search" placeholder="🔎 ابحث برقم الطلبية أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="ordersPendingWeightSummary" class="notice" style="margin-top:12px"></div><div id="ordersTable" style="margin-top:16px"></div></article></section>
 <section id="customers" class="page hidden"><article class="panel" id="customersListPanel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">العملاء</h2><div style="display:flex;gap:10px;align-items:center;flex:1;justify-content:flex-end;flex-wrap:wrap"><button type="button" class="primary" onclick="openAddCustomerDebt()">➕ إضافة مديونية / عميل جديد</button><div style="min-width:280px;flex:1;max-width:430px"><input id="customerSearch" type="search" placeholder="🔎 ابحث باسم العميل..." autocomplete="off" style="width:100%"></div></div></div><div id="customersTable" style="margin-top:16px"></div></article><article class="panel hidden" id="customerProfile"><div class="profile-bar"><button type="button" class="secondary-btn" id="customerBackBtn">→ رجوع للعملاء</button><h2 id="customerTitle"></h2><div class="profile-actions"><button type="button" class="primary" id="profilePayBtn">💵 دفعة جديدة</button><button type="button" class="secondary-btn" id="profileDebtBtn">➕ مديونية</button><button type="button" class="secondary-btn" id="profileStatementBtn">🧾 كشف حساب</button><button type="button" class="secondary-btn" id="profileWhatsBtn">واتساب</button><button type="button" class="secondary-btn hidden" id="profileRemindBtn">💬 تذكير بالمديونية</button><button type="button" class="secondary-btn" id="profileReturnBtn">↩ مرتجع</button><button type="button" class="secondary-btn" id="profileEditBtn">⚙️ بيانات العميل</button></div></div><div id="customerEditBox" class="profile-section hidden"><h3 class="profile-section-title">بيانات العميل</h3><div id="customerPhoneBox" class="customer-phone-hint" style="margin-bottom:12px"></div><div id="customerRepBox" class="form" style="margin-bottom:12px"></div><form id="balanceForm" class="form"><label>الرصيد الافتتاحي<input name="openingBalance" type="number" step="0.01"></label><button class="primary">حفظ الرصيد الافتتاحي</button></form></div><form id="paymentForm" class="form profile-pay"><h3 class="profile-section-title">تسجيل دفعة</h3><label>قيمة الدفعة<input required name="amount" type="number" min="0.01" step="0.01"></label><label>طريقة الدفع<select name="paymentMethod"><option>كاش</option><option>محفظة</option><option>تحويل بنكي</option></select></label><label>التاريخ<input required name="date" type="date"></label><label>ملاحظة<input name="note"></label><button class="primary">تسجيل الدفعة</button></form><div id="returnBox"></div><details id="customerItemsDetails" class="profile-section"><summary>الأصناف اللي أخدها العميل</summary><div id="customerItemsSummary"></div></details><div id="customerHistory"></div></article><article class="panel" id="repsPanel"><details id="repsDetails" class="panel-collapse"><summary><h2>المناديب</h2><span class="badge" id="repsCount"></span></summary><div id="repsView"></div></details></article></section>
 <section id="balances" class="page hidden"><div class="grid" id="balanceSummary"></div><div class="page-views" data-page-views="balances"><button type="button" data-view="factory">🏭 حساب المصنع</button><button type="button" data-view="purchases">🧾 المشتريات</button><button type="button" data-view="extras">🚚 المصاريف الإضافية</button><button type="button" data-view="reps">👥 المناديب</button></div><div data-view="factory"><article class="panel" id="factoryAccountPanel"><h2>حساب المصنع (مديونية المصنع)</h2><p class="notice">حساب منفصل تمامًا عن المشتريات الإضافية وعن حساب أي عميل. بيزيد لما تسجل طلب من المصنع، وبينقص لما تسجل دفعة أو ترجع صنف للمصنع من المخزون.</p><div class="grid" id="factoryAccountSummary"></div><button type="button" class="danger" id="resetFactoryAccount" style="margin-top:10px">تصفير حساب المصنع (حذف قيود الطلبات والدفعات)</button><form id="factoryOpeningForm" class="form" style="margin-top:14px"><label>الرصيد الافتتاحي (مديونية سابقة قبل استخدام الحساب ده)<input name="opening" type="number" step="0.01"></label><button class="primary" type="submit">حفظ الرصيد الافتتاحي</button></form><div class="two" style="margin-top:16px"><form id="factoryDebitForm" class="form"><h3 style="margin:0 0 6px">تسجيل طلب من المصنع</h3><label>القيمة<input required name="amount" type="number" min="0.01" step="0.01"></label><label>التاريخ<input required name="date" type="date"></label><label>ملاحظة (اختياري)<input name="note" placeholder="مثلاً: طلبية جرافيتو 500 متر"></label><button class="primary" type="submit">تسجيل الطلب</button></form><form id="factoryPaymentForm" class="form"><h3 style="margin:0 0 6px">تسجيل دفعة للمصنع</h3><label>القيمة<input required name="amount" type="number" min="0.01" step="0.01"></label><label>التاريخ<input required name="date" type="date"></label><label>طريقة الدفع<select name="method" id="factoryPaymentMethod"><option value="cash">كاش</option><option value="transfer">تحويل</option></select></label><div id="factoryTransferFields" class="hidden"><label>نوع التحويل<select name="transferType" id="factoryTransferType"><option value="bank">تحويل بنكي</option><option value="wallet">محفظة إلكترونية</option></select></label><label id="factoryAccountDetailLabel">اسم/رقم الحساب البنكي<input name="accountDetail" id="factoryAccountDetail" placeholder="مثلاً: حساب أحمد - البنك الأهلي"></label></div><label>ملاحظة (اختياري)<input name="note" placeholder="اختياري"></label><button class="primary" type="submit">تسجيل الدفعة</button></form></div><article class="panel" style="margin-top:16px"><h2>سجل حساب المصنع</h2><div id="factoryLedgerTable"></div></article></article></div><div data-view="purchases"><article class="panel"><h2>إضافة قيد مشتريات</h2><form id="ledgerForm" class="form"><label>اسم الصنف<input required name="description" list="ledgerNameList" autocomplete="off"></label><datalist id="ledgerNameList"></datalist><label>سعر الشراء للوحدة<input required name="unitPrice" type="number" min="0" step="0.01"></label><label>سعر البيع للوحدة<input required name="sellPrice" type="number" min="0" step="0.01"></label><label>الكمية<input required name="quantity" type="number" min="1" step="1"></label><label>رقم الباتش<input name="batchNo" placeholder="اختياري"></label><label>التاريخ<input required name="date" type="date"></label><button class="primary">حفظ وإضافة للمخزون</button></form><p class="notice">عند حفظ قيد المشتريات تُضاف الكمية للمخزون فورًا، ويُحفظ سعر الشراء كتكلـفة وسعر البيع كسعر الفواتير. لا يوجد ترحيل منفصل.</p></article><article class="panel"><h2>سجل المشتريات (من غير طلبيات المصنع)</h2><div id="ledgerTable"></div></article></div><div data-view="extras"><article class="panel"><h2>مشتريات إضافية — نقل ومصاريف لا تدخل المخزون</h2><form id="extraForm" class="form"><label>البيان<input required name="description" placeholder="نقل"></label><label>القيمة<input required name="amount" type="number" min="0" step="0.01"></label><label>التاريخ<input required name="date" type="date"></label><button class="primary">إضافة</button></form></article><article class="panel"><h2>المشتريات الإضافية</h2><div id="extraTable"></div></article></div><div data-view="reps"><article class="panel"><h2>حسابات المناديب</h2><div id="repPaymentsTable"></div></article></div></section>
 <section id="reports" class="page hidden"><div class="page-views" data-page-views="reports"><button type="button" data-view="months">📅 الشهور والملخص</button><button type="button" data-view="stock">📦 الجرد الحالي</button></div><div data-view="months"><article class="panel">
@@ -679,7 +687,9 @@ function renderCustomerList(){
     if(dep>0.009){if(Math.abs(bal)<0.01)main=`له ${money(dep)}`;main+=`<br><small class="deposit-note">💰 عربون مدفوع ${money(dep)} — هيتخصم من طلبيته عند التسليم</small>`;}
     return main;
   };
-  const rowFn=n=>`<tr><td><strong>${esc(n)}</strong></td><td>${repCell(n)}</td><td>${invCountByC.get(n)||0}</td><td>${ordCountByC.get(n)||0}${openOrdByC.get(n)?`<br><small style="color:var(--muted)">مطلوب ${money(openOrdByC.get(n))} عند التسليم</small>`:''}</td><td>${balanceCell(n)}</td><td><button class="primary" onclick="showCustomer('${encodeURIComponent(n)}')">فتح الملف</button></td></tr>`;
+  // رقم واتساب العميل تحت اسمه (زي رقم المندوب): بتدوس عليه تعدّله، ولو مفيش رقم بتضيفه.
+  const nameCell=n=>{const ph=getCustomerPhone(n);return `<strong>${esc(n)}</strong><br><button type="button" class="phone-edit-btn" onclick="editCustomerPhoneFromList('${encodeURIComponent(n)}')" title="رقم واتساب العميل">${ph?`📱 <bdi dir="ltr">${esc(ph)}</bdi>`:'+ رقم الواتساب'}</button>`;};
+  const rowFn=n=>`<tr><td>${nameCell(n)}</td><td>${repCell(n)}</td><td>${invCountByC.get(n)||0}</td><td>${ordCountByC.get(n)||0}${openOrdByC.get(n)?`<br><small style="color:var(--muted)">مطلوب ${money(openOrdByC.get(n))} عند التسليم</small>`:''}</td><td>${balanceCell(n)}</td><td><button class="primary" onclick="showCustomer('${encodeURIComponent(n)}')">فتح الملف</button></td></tr>`;
   const allBals=q?computeAllCustomerBalances(customers()):balances,debtors=[...allBals.values()].filter(v=>v>0.009).length;
   const tools=`<div class="customer-list-tools"><div class="customer-list-count">عدد العملاء: <strong>${list.length}</strong>${q?'':` — ليهم حساب أو طلبيات: <strong>${active.length}</strong>`}</div>${debtors?`<button type="button" class="secondary-btn" onclick="openDebtReminders()">📨 تذكير المديونيات (${debtors})</button>`:''}</div>`;
   const restOpen=window.daftarRestCustomersOpen||(!!q&&rest.length>0);
@@ -695,20 +705,50 @@ async function editRepPhone(enc){
   setCustomerPhone(rep,next.trim());save();scheduleRender();
   daftarToast(next.trim()?`تم حفظ رقم المندوب «${rep}».`:`اتشال رقم المندوب «${rep}».`);
 }
+// رقم واتساب العميل من قايمة العملاء (نفس الرقم اللي في ملفه وفي الفواتير والطلبيات).
+async function editCustomerPhoneFromList(enc){
+  const name=decodeURIComponent(enc);
+  const next=await daftarPhonePrompt(name,getCustomerPhone(name),'رقم واتساب العميل');if(next===null)return;
+  setCustomerPhone(name,next.trim());save();scheduleRender();
+  daftarToast(next.trim()?`تم حفظ رقم «${name}».`:`اتشال رقم «${name}».`);
+}
 
 // جدول صفحة "المخزون" — فيه بحث ذكي (اسم/كود/باتش/حصوة/صاحب الطلبية) عشان لما
 // عدد الأصناف يكبر جدًا (آلاف الأصناف) يبقى ممكن توصل للصنف اللي عايزه بسرعة
 // من غير ما تتمرمغ في قائمة طويلة. بنبني خريطة الطلبيات مرة واحدة بدل ما نعمل
 // .find() على كل الطلبيات لكل صنف (كان بيبقى بطيء جدًا مع آلاف الأصناف والطلبيات).
 // سطر طلبية في «الطلبيات السابقة». withSel: خانة التحديد للترحيل المجمّع (للي لسه ما اترحّلتش بس).
-function orderRowHtml(o,orderNo,withSel){
+function orderRowHtml(o,orderNo,withSel,withStatus){
   const items=o.items?.length?o.items:[{productName:o.productName,quantity:o.quantity,salePrice:o.salePrice,total:o.total,batchNo:o.batchNo}];
   const sel=withSel?`<td><input type="checkbox" class="order-sel" value="${esc(String(o.id))}"${window.daftarOrderSel?.has(String(o.id))?' checked':''} onchange="toggleOrderSel(this.value,this.checked)" title="تحديد للترحيل المجمّع"></td>`:'';
   // كل أوامر الطلبية في قايمة ⋮ (زي المخزون). الطلبيات المترحّلة ليها خانة «الحالة» بس.
-  const status=o.received?`<td><span class="badge badge-status">✓ ${o.invoiced?'اتفوترت':'تم الترحيل'}</span></td>`:'';
+  const status=o.received?`<td><span class="badge badge-status">✓ ${o.invoiced?'اتفوترت':'تم الترحيل'}</span></td>`:withStatus?'<td>⏳ لسه ما اترحّلتش</td>':'';
   return `<tr>${sel}<td>#${orderNo.get(String(o.id))}</td><td>${o.date}${!o.received&&o.expectedPickupDate?`<br><small class="pickup-date" title="ميعاد الاستلام الجديد">الاستلام: ${esc(o.expectedPickupDate)}</small>`:''}</td><td>${esc(o.customer)||'المخزون العام'}</td><td>${items.map(i=>`${esc(i.productName)}${i.sku?` <small>(${esc(i.sku)})</small>`:''} × ${i.quantity}`).join('، ')}</td><td>${money(o.total)}</td><td>${money(o.deposit||0)}</td>${status}<td><div class="row-actions">${rowMenuButton(`openOrderMenu('${o.id}',this)`,'أوامر الطلبية')}</div></td></tr>`;
 }
 function rowMenuButton(onclick,label){return `<button type="button" class="secondary-btn row-menu-btn" title="الأوامر" aria-label="${label}" aria-haspopup="menu" onclick="${onclick}">⋮</button>`;}
+// أعمدة وسطور قوايم الطلبيات والفواتير وعروض الأسعار (نفس السطر في «السابقة» وفي «اتسجلت دلوقتي» تحت الفورم).
+var ORDER_LIST_HEAD=['رقم','التاريخ','العميل','الأصناف','إجمالي الطلبية','العربون'];
+var INVOICE_LIST_HEAD=['رقم','التاريخ','العميل','الأصناف','الإجمالي','المدفوع','المتبقي',''];
+var QUOTE_LIST_HEAD=['رقم','التاريخ','العميل','الأصناف','الإجمالي','الحالة',''];
+function invoiceRowHtml(x,invNo){const rem=Math.max(0,+x.remaining||0),paid=Math.max(0,(+x.total||0)-rem);return `<tr><td>#${invNo.get(String(x.id))}</td><td>${x.date}</td><td>${esc(x.customer)}</td><td>${x.items.map(i=>esc(i.productName)+' × '+i.quantity).join('، ')}${transportNote(x)}</td><td>${money(x.total)}</td><td>${money(paid)}</td><td>${money(rem)}</td><td><div class="row-actions">${rowMenuButton(`openInvoiceMenu('${x.id}',this)`,'أوامر الفاتورة')}</div></td></tr>`;}
+function quoteRowHtml(x,quoteNo){return `<tr><td>#${quoteNo.get(String(x.id))}</td><td>${x.date}</td><td>${esc(x.customer)}</td><td>${x.items.map(i=>esc(i.productName)+' × '+quoteQtyText(i)).join('، ')}${transportNote(x)}</td><td>${money(x.total)}</td><td>${x.convertedTo?`<span class="badge">${quoteConvertedLabel(x)}</span>`:'—'}</td><td><div class="row-actions">${rowMenuButton(`openQuoteMenu('${x.id}',this)`,'أوامر عرض السعر')}</div></td></tr>`;}
+// ===== «اتسجلت دلوقتي» تحت فورم الجديد =====
+// الطلبية/الفاتورة/عرض السعر اللي لسه متسجل بيظهر تحت الفورم على طول (تراجعه أو تطبعه أو تبعته من ⋮)،
+// وأول ما تخرج من التبويب القايمة دي بتفضى — هو أصلاً محفوظ وموجود في «السابقة».
+window.daftarJustSaved=window.daftarJustSaved||{orders:[],invoices:[],quotes:[]};
+function markJustSaved(kind,id){const l=window.daftarJustSaved[kind];if(l&&!l.includes(String(id)))l.push(String(id));}
+function clearJustSaved(kind){if(window.daftarJustSaved[kind])window.daftarJustSaved[kind]=[];}
+function renderJustSaved(kind){
+  const el=document.getElementById(kind+'JustSaved');if(!el)return;
+  const list=window.daftarJustSaved[kind].map(id=>(db[kind]||[]).find(x=>String(x.id)===id)).filter(Boolean).reverse();
+  if(!list.length){el.innerHTML='';return;}
+  const no=buildDisplayNoMap(kind);
+  const anyReceived=kind==='orders'&&list.some(o=>o.received);
+  const cfg={orders:{prev:'الطلبيات السابقة',head:[...ORDER_LIST_HEAD,...(anyReceived?['الحالة']:[]),''],row:o=>orderRowHtml(o,no,false,anyReceived)},
+    invoices:{prev:'الفواتير السابقة',head:INVOICE_LIST_HEAD,row:x=>invoiceRowHtml(x,no)},
+    quotes:{prev:'العروض السابقة',head:QUOTE_LIST_HEAD,row:x=>quoteRowHtml(x,no)}}[kind];
+  el.innerHTML=`<h3 class="orders-group-title">🆕 اتسجلت دلوقتي <span class="badge">${list.length}</span></h3><p class="notice just-saved-note">بتفضل هنا لحد ما تخرج من التبويب، وبعدها تلاقيها في «${cfg.prev}».</p>${table(cfg.head,list.map(cfg.row))}`;
+}
 function orderMenuActions(o){
   const acts=[];
   if(!o.received)acts.push({label:'📦 ترحيل للمخزون',run:()=>receiveOrder(o.id)});
@@ -1505,6 +1545,7 @@ function renderNow(){
  }
  if(pageVisible('products'))renderProductsTable();
  if(pageVisible('orders')){
+   renderJustSaved('orders');
    const orderNo=buildDisplayNoMap('orders');
    const oq=(document.querySelector('#orderSearch')?.value||'').trim().toLocaleLowerCase('ar-EG');
    const orderMatches=o=>{if(!oq)return true;if(String(orderNo.get(String(o.id))).includes(oq))return true;return String(o.customer||'').toLocaleLowerCase('ar-EG').includes(oq);};
@@ -1515,11 +1556,11 @@ function renderNow(){
    // شريط الترحيل المجمّع: بيظهر لو فيه طلبيات لسه ما اترحّلتش.
    const notReceivedCount=orderList.filter(o=>!o.received).length;
    setTimeout(updateOrderBulkBar,0);
-   const bulkBar=notReceivedCount?`<div class="order-bulk-bar"><label><input type="checkbox" id="orderSelAll" onchange="toggleAllOrderSel(this.checked)"> تحديد كل الطلبيات اللي لسه ما اترحّلتش في الصفحة دي</label><div class="order-bulk-actions"><button type="button" class="secondary-btn" id="bulkDelayBtn" onclick="bulkDelayMessages()" disabled title="رسالة اعتذار عن التأخير بميعاد استلام جديد للعملاء المحددين">رسالة ميعاد الاستلام (0)</button><button type="button" class="primary" id="bulkReceiveBtn" onclick="bulkReceiveOrders()" disabled>ترحيل المحدد للمخزون (0)</button></div></div>`:'';
+   const bulkBar=notReceivedCount?`<div class="order-bulk-bar"><label><input type="checkbox" id="orderSelAll" onchange="toggleAllOrderSel(this.checked)"> تحديد كل الطلبيات اللي لسه ما اترحّلتش في الصفحة دي</label><div class="order-bulk-actions"><button type="button" class="secondary-btn" id="bulkPrintBtn" onclick="printSelectedOrders()" disabled title="ورقة مراجعة: كل صنف بعدده واسم صاحبه">🖨️ طباعة المحدد (0)</button><button type="button" class="secondary-btn" id="bulkDelayBtn" onclick="bulkDelayMessages()" disabled title="رسالة اعتذار عن التأخير بميعاد استلام جديد للعملاء المحددين">رسالة ميعاد الاستلام (0)</button><button type="button" class="primary" id="bulkReceiveBtn" onclick="bulkReceiveOrders()" disabled>ترحيل المحدد للمخزون (0)</button></div></div>`:'';
    // الطلبيات اللي لسه ما اترحّلتش في الجدول الأول، واللي اترحّلت في قايمة تحتها مقفولة بسهم
    // (بتتفتح لوحدها لو البحث لقى فيها نتايج). حالة الفتح بتفضل زي ما هي مع إعادة الرسم.
    const pendingList=orderList.filter(o=>!o.received).reverse(),receivedList=orderList.filter(o=>o.received).reverse();
-   const orderHead=['رقم','التاريخ','العميل','الأصناف','إجمالي الطلبية','العربون'];
+   const orderHead=ORDER_LIST_HEAD;
    const receivedOpen=window.daftarReceivedOrdersOpen||(!!oq&&receivedList.length>0);
    document.querySelector('#ordersTable').innerHTML=bulkBar+(oq?`<div class="customer-list-count">عدد النتائج: <strong>${orderList.length}</strong></div>`:'')
      +`<h3 class="orders-group-title">⏳ لسه ما اترحّلتش <span class="badge">${pendingList.length}</span></h3>`
@@ -1531,7 +1572,8 @@ function renderNow(){
    const iq=(document.querySelector('#invoiceSearch')?.value||'').trim().toLocaleLowerCase('ar-EG');
    const invMatches=x=>{if(!iq)return true;if(String(invNo.get(String(x.id))).includes(iq))return true;return String(x.customer||'').toLocaleLowerCase('ar-EG').includes(iq);};
    const invList=salesInvoices().filter(invMatches);
-   document.querySelector('#invoicesTable').innerHTML=(iq?`<div class="customer-list-count">عدد النتائج: <strong>${invList.length}</strong></div>`:'')+pagedTable('invoices',['رقم','التاريخ','العميل','الأصناف','الإجمالي','المدفوع','المتبقي',''],invList.slice().reverse(),x=>{const rem=Math.max(0,+x.remaining||0),paid=Math.max(0,(+x.total||0)-rem);return `<tr><td>#${invNo.get(String(x.id))}</td><td>${x.date}</td><td>${esc(x.customer)}</td><td>${x.items.map(i=>esc(i.productName)+' × '+i.quantity).join('، ')}${transportNote(x)}</td><td>${money(x.total)}</td><td>${money(paid)}</td><td>${money(rem)}</td><td><div class="row-actions">${rowMenuButton(`openInvoiceMenu('${x.id}',this)`,'أوامر الفاتورة')}</div></td></tr>`;},iq);
+   renderJustSaved('invoices');
+   document.querySelector('#invoicesTable').innerHTML=(iq?`<div class="customer-list-count">عدد النتائج: <strong>${invList.length}</strong></div>`:'')+pagedTable('invoices',INVOICE_LIST_HEAD,invList.slice().reverse(),x=>invoiceRowHtml(x,invNo),iq);
    // فاتورة المبيعات بتبيع من مصدر واحد بس (المخزون db.products)، بعكس عروض
    // الأسعار اللي بتضيف بادئة "inv:"/"fac:" للتفرقة بين مصدرين. القيمة هنا
    // لازم تكون رقم الصنف الخام زي ما بيقرأه addInvoiceItem و refreshInvoiceCreditBox
@@ -1555,7 +1597,8 @@ function renderNow(){
    const qq=(document.querySelector('#quoteSearch')?.value||'').trim().toLocaleLowerCase('ar-EG');
    const quoteMatches=x=>{if(!qq)return true;if(String(quoteNo.get(String(x.id))).includes(qq))return true;return String(x.customer||'').toLocaleLowerCase('ar-EG').includes(qq);};
    const quoteList=(db.quotes||[]).filter(quoteMatches);
-   document.querySelector('#quotesTable').innerHTML=(qq?`<div class="customer-list-count">عدد النتائج: <strong>${quoteList.length}</strong></div>`:'')+pagedTable('quotes',['رقم','التاريخ','العميل','الأصناف','الإجمالي','الحالة',''],quoteList.slice().reverse(),x=>`<tr><td>#${quoteNo.get(String(x.id))}</td><td>${x.date}</td><td>${esc(x.customer)}</td><td>${x.items.map(i=>esc(i.productName)+' × '+quoteQtyText(i)).join('، ')}${transportNote(x)}</td><td>${money(x.total)}</td><td>${x.convertedTo?`<span class="badge">${quoteConvertedLabel(x)}</span>`:'—'}</td><td><div class="row-actions">${rowMenuButton(`openQuoteMenu('${x.id}',this)`,'أوامر عرض السعر')}</div></td></tr>`,qq);
+   renderJustSaved('quotes');
+   document.querySelector('#quotesTable').innerHTML=(qq?`<div class="customer-list-count">عدد النتائج: <strong>${quoteList.length}</strong></div>`:'')+pagedTable('quotes',QUOTE_LIST_HEAD,quoteList.slice().reverse(),x=>quoteRowHtml(x,quoteNo),qq);
  }
  if(pageVisible('customers')){renderCustomerList();renderRepsPanel();}
  }finally{daftarRendering=false;}
@@ -1821,10 +1864,40 @@ function updateOrderBulkBar(){
   for(const id of [...window.daftarOrderSel]){const o=db.orders.find(x=>String(x.id)===id);if(!o||o.received)window.daftarOrderSel.delete(id);}
   const n=window.daftarOrderSel.size,btn=document.querySelector('#bulkReceiveBtn');
   if(btn){btn.textContent=`ترحيل المحدد للمخزون (${n})`;btn.disabled=!n;}
+  const pbtn=document.querySelector('#bulkPrintBtn');if(pbtn){pbtn.textContent=`🖨️ طباعة المحدد (${n})`;pbtn.disabled=!n;}
   const withCust=[...window.daftarOrderSel].filter(id=>db.orders.find(o=>String(o.id)===id)?.customer).length,dbtn=document.querySelector('#bulkDelayBtn');
   if(dbtn){dbtn.textContent=`رسالة ميعاد الاستلام (${withCust})`;dbtn.disabled=!withCust;}
   const all=document.querySelector('#orderSelAll'),boxes=[...document.querySelectorAll('#ordersTable .order-sel')];
   if(all)all.checked=boxes.length>0&&boxes.every(c=>c.checked);
+}
+// ورقة مراجعة للطلبيات المحددة: كل صنف (بالكود والوزن) وتحته أصحابه بعدد كل واحد، وإجمالي الصنف،
+// وخانة ✓ فاضية تعلّم فيها بالقلم وانت بتستلم من المصنع. الصنف الواحد بيتجمع حتى لو في كذا طلبية.
+function printSelectedOrders(){
+  const orders=[...window.daftarOrderSel].map(id=>db.orders.find(o=>String(o.id)===id)).filter(Boolean);
+  if(!orders.length)return daftarAlert('حدد طلبية واحدة على الأقل.');
+  const groups=new Map();
+  for(const o of orders){
+    const items=o.items?.length?o.items:[{productName:o.productName,sku:o.sku,quantity:o.quantity,packageWeight:o.packageWeight}];
+    for(const i of items){
+      const r={name:String(i.productName||'').trim(),sku:String(i.sku||'').trim(),weight:+i.packageWeight||0,qty:+i.quantity||0,owner:o.customer||'المخزون العام',no:displayNo('orders',o.id)};
+      const k=`${r.name}|${colorKey(r.sku)}|${r.weight}`;
+      if(!groups.has(k))groups.set(k,[]);groups.get(k).push(r);
+    }
+  }
+  const list=[...groups.values()].sort((a,b)=>a[0].name.localeCompare(b[0].name,'ar')||a[0].sku.localeCompare(b[0].sku,'ar',{numeric:true}));
+  let n=0,totalQty=0,totalKg=0;
+  const rows=list.map(g=>{
+    g.sort((a,b)=>a.owner.localeCompare(b.owner,'ar'));
+    const sum=g.reduce((s,r)=>s+r.qty,0);totalQty+=sum;totalKg+=sum*g[0].weight;
+    const head=`<td rowspan="${g.length}">${++n}</td><td rowspan="${g.length}"><strong>${esc(g[0].name)}</strong>${g[0].sku?`<br><small>كود: <bdi>${esc(g[0].sku)}</bdi></small>`:''}${g[0].weight?`<br><small>${weight(g[0].weight)}</small>`:''}</td><td rowspan="${g.length}" class="review-sum">${sum}</td>`;
+    return g.map((r,i)=>`<tr${i===0?' class="review-first"':''}>${i===0?head:''}<td>${esc(r.owner)}</td><td class="review-qty">${r.qty}</td><td>#${r.no}</td><td class="review-check"></td></tr>`).join('');
+  }).join('');
+  let box=document.getElementById('daftarPrintBox');if(box)box.remove();
+  box=document.createElement('div');box.id='daftarPrintBox';box.className='review-print';
+  box.innerHTML=`<div class="dp-inner"><h1>ورقة مراجعة الطلبيات</h1><p class="review-meta">التاريخ: ${today()} — عدد الطلبيات: ${orders.length} (${orders.map(o=>'#'+displayNo('orders',o.id)).join('، ')})</p><table><tr><th>#</th><th>الصنف</th><th>إجمالي العدد</th><th>صاحب الصنف</th><th>العدد</th><th>الطلبية</th><th>✓</th></tr>${rows}</table><div class="total">إجمالي العبوات: ${totalQty}${totalKg?` — الوزن: ${weight(totalKg)}`:''}</div><div class="dp-actions"><button id="dpPrintReview">طباعة</button><button id="dpCloseReview">إغلاق</button></div></div>`;
+  document.body.appendChild(box);
+  document.getElementById('dpPrintReview').onclick=()=>window.print();
+  document.getElementById('dpCloseReview').onclick=()=>box.remove();
 }
 async function bulkReceiveOrders(){
   const orders=[...window.daftarOrderSel].map(id=>db.orders.find(o=>String(o.id)===id)).filter(o=>o&&!o.received);
@@ -3003,12 +3076,15 @@ function customerHistoryTable(name){
     `<div class="notice history-total"><div class="history-total-grid"><span>إجمالي المطلوب <strong>${money(totalDue)}</strong></span><span>إجمالي المدفوع <strong>${money(totalPaid)}</strong></span><span>إجمالي الباقي <strong>${money(totalRemaining)}</strong></span>${opening>0?`<span>رصيد افتتاحي <strong>${money(opening)}</strong></span>`:''}${unallocated>0&&customerCredit<=0?`<span>دفعات غير موزعة <strong>${money(unallocated)}</strong></span>`:''}${openDeposits>0?`<span title="بيتخصم من الطلبية عند الاستلام — مش داخل في الرصيد">عربون محجوز لطلبيات <strong>${money(openDeposits)}</strong></span>`:''}<span class="history-grand">${balanceLabel} <strong>${money(balanceValue)}</strong></span></div></div>`;
 }
 function initCustomerHistoryResizer(){
-  const root=document.querySelector('#customerHistory'),tableEl=root?.querySelector('table');if(!tableEl)return;
+  // جدول كشف الحساب بالاسم: لو العميل عنده طلبيات مطلوبة، جدولها بييجي الأول في نفس المكان، وكان بياخد
+  // أحجام أعمدة كشف الحساب بالغلط (فيطلع أعرض من إطاره والأعمدة غريبة).
+  const root=document.querySelector('#customerHistory'),tableEl=root?.querySelector('table.customer-ledger-table')||root?.querySelector('.customer-history-table-wrap table');if(!tableEl)return;
   // v2: الأحجام القديمة المحفوظة كانت أعرض من المكان (عمود الأزرار بيتقص)، فبنبدأ بالأحجام الجديدة.
   const key='daftar-customer-history-size-v2',saved=JSON.parse(localStorage.getItem(key)||'{}');
   // عمود الأزرار أعرض (3 أزرار في سطر واحد) والبيان أضيق شوية. لو المستخدم ما غيّرش الأحجام
   // بنفسه، الأعمدة بتتصغّر بنفس النسب عشان الجدول يكفي في المكان من غير ما عمود الأزرار يتقص.
-  const defaults=[100,285,115,115,115,100,265];
+  // أعمدة الفلوس (المطلوب/المدفوع/الباقي) 130 عشان مبلغ زي 150,000.00 ج.م. ياخد في سطره.
+  const defaults=[100,250,130,130,130,100,255];
   let widths=saved.widths||defaults;
   if(!saved.widths){
     const avail=(root.querySelector('.customer-history-table-wrap')?.clientWidth||root.clientWidth)-2;
@@ -3020,7 +3096,7 @@ function initCustomerHistoryResizer(){
   cols.forEach((th,i)=>{th.style.width=(widths[i]||defaults[i])+'px';let g=th.querySelector('.resize-grip');if(!g){g=document.createElement('span');g.className='resize-grip';th.appendChild(g);}
     g.onmousedown=e=>{e.preventDefault();const start=e.clientX,startW=th.getBoundingClientRect().width;const move=ev=>{const w=Math.max(70,startW+(start-ev.clientX));th.style.width=w+'px';tableEl.style.width=Math.max(root.clientWidth,widths.reduce((a,b)=>a+b,0)-startW+w)+'px';};const up=()=>{const ws=[...cols].map(c=>Math.round(c.getBoundingClientRect().width));localStorage.setItem(key,JSON.stringify({widths:ws,rowHeight:saved.rowHeight||46}));document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up);};document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);};
   });
-  const rh=saved.rowHeight||46;root.querySelectorAll('tbody tr').forEach(tr=>{tr.style.height=rh+'px';const cell=tr.lastElementChild;if(cell){let g=document.createElement('span');g.className='row-resize-grip';cell.appendChild(g);g.onmousedown=e=>{e.preventDefault();const start=e.clientY,startH=tr.getBoundingClientRect().height;const move=ev=>{const h=Math.max(36,startH+(ev.clientY-start));tr.style.height=h+'px';};const up=()=>{const h=Math.round(tr.getBoundingClientRect().height);localStorage.setItem(key,JSON.stringify({widths:[...cols].map(c=>Math.round(c.getBoundingClientRect().width)),rowHeight:h}));document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up);};document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);};}});
+  const rh=saved.rowHeight||46;tableEl.querySelectorAll('tbody tr').forEach(tr=>{tr.style.height=rh+'px';const cell=tr.lastElementChild;if(cell){let g=document.createElement('span');g.className='row-resize-grip';cell.appendChild(g);g.onmousedown=e=>{e.preventDefault();const start=e.clientY,startH=tr.getBoundingClientRect().height;const move=ev=>{const h=Math.max(36,startH+(ev.clientY-start));tr.style.height=h+'px';};const up=()=>{const h=Math.round(tr.getBoundingClientRect().height);localStorage.setItem(key,JSON.stringify({widths:[...cols].map(c=>Math.round(c.getBoundingClientRect().width)),rowHeight:h}));document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up);};document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);};}});
   root.querySelector('#historyResetSizes')?.addEventListener('click',()=>{localStorage.removeItem(key);customerHistoryTableCurrentRefresh();});
 }
 function customerHistoryTableCurrentRefresh(){const form=document.querySelector('#balanceForm');const name=form?.dataset.customer;if(!name)return;document.querySelector('#customerHistory').innerHTML=customerHistoryTable(name);initCustomerHistoryResizer();}
@@ -3963,7 +4039,9 @@ async function renderDocumentToImageBlob(box){
   // تفضل بحجمها الطبيعي على مساحة صفحة كاملة، وفي نفس الوقت لو الأصناف كتير
   // ومحتاجة مساحة أكبر، الصندوق بيكبر عادي من غير ما الحد الأدنى ده يقصّ حاجة.
   const dp5PageMinHeight=Math.round(840*(210/148));
-  box.style.cssText=`position:relative;max-width:840px;margin:0 auto;min-height:${dp5PageMinHeight}px;`;
+  // العرض ثابت 840 هنا (مش من تنسيق #daftarShareBox اللي عرضه «عرض الشاشة − 40»): على الموبايل
+  // كان بيبقى 350 بس، فالمستند كله كان بيطلع في حتة على يمين الصورة. ومن غير left/transform بتوع النافذة.
+  box.style.cssText=`position:relative;left:auto;top:auto;transform:none;width:840px;max-width:840px;margin:0 auto;min-height:${dp5PageMinHeight}px;`;
   const styleTag=document.createElement('style');
   styleTag.textContent=`
     #daftarShareBox *{box-sizing:border-box}
@@ -3982,7 +4060,8 @@ async function renderDocumentToImageBlob(box){
   wrap.appendChild(box);
   document.body.appendChild(wrap);
   try{
-    const canvas=await html2canvas(wrap,{backgroundColor:'#ffffff',scale:2,useCORS:true});
+    // windowWidth: الصورة بتترسم كإنها على شاشة كمبيوتر، فتنسيقات الموبايل (الشاشات الضيقة) متأثرش عليها.
+    const canvas=await html2canvas(wrap,{backgroundColor:'#ffffff',scale:2,useCORS:true,windowWidth:Math.max(1200,window.innerWidth),windowHeight:Math.max(900,window.innerHeight)});
     const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png',0.95));
     if(!blob)throw new Error('تعذر إنشاء ملف الصورة.');
     return blob;
@@ -4520,7 +4599,7 @@ document.querySelector('#invoiceForm').addEventListener('submit',async e=>{
   if(transport>0)inv.transport=transport;
   const creditApplied=Math.min(creditBefore,inv.remaining);
   if(creditApplied>0)inv.creditApplied=creditApplied;
-  db.invoices.push(inv);
+  db.invoices.push(inv);markJustSaved('invoices',inv.id);
   if(paidExtra>0)addCustomerAdvance(customer,paidExtra,inv.date,`زيادة مدفوعة مع فاتورة #${displayNo('invoices',inv.id)} (رصيد للعميل)`,inv.paymentMethod);
   const pendingOrderId=window.daftarPendingOrderInvoiceId;
   // صنف محجوز لنفس العميل من طلبية لسه ما اتفوترتش، واتباع في فاتورة عادية (مش «عمل فاتورة»
@@ -4676,7 +4755,7 @@ document.querySelector('#quoteForm').addEventListener('submit',e=>{
  const transport=formTransport('#quoteForm');
  const q={id:daftarNextId(),customer,whatsapp:(f.get('whatsapp')||'').trim(),date:f.get('date')||today(),items:quoteCart.map(x=>({...x})),total:quoteCart.reduce((s,x)=>s+(+x.total||0),0)+transport};
  if(transport>0)q.transport=transport;
- db.quotes??=[];db.quotes.push(q);save();quoteCart=[];e.target.reset();e.target.querySelector('[name=transport]').value=0;e.target.dataset.priceManual='';e.target.querySelector('[name=date]').value=today();e.target.querySelector('[name=quantity]').value=1;e.target.querySelector('[name=liveUnitPrice]').value=0;e.target.querySelector('[name=liveLineTotal]').value=money(0);e.target.querySelector('[name=quoteTotal]').value=money(0);updateQuoteUnitLabels();renderQuoteCart();scheduleRender();if(saveWithoutPrint)daftarToast(`تم حفظ عرض السعر #${displayNo('quotes',q.id)}.`);else printQuote(q.id);
+ db.quotes??=[];db.quotes.push(q);markJustSaved('quotes',q.id);save();quoteCart=[];e.target.reset();e.target.querySelector('[name=transport]').value=0;e.target.dataset.priceManual='';e.target.querySelector('[name=date]').value=today();e.target.querySelector('[name=quantity]').value=1;e.target.querySelector('[name=liveUnitPrice]').value=0;e.target.querySelector('[name=liveLineTotal]').value=money(0);e.target.querySelector('[name=quoteTotal]').value=money(0);updateQuoteUnitLabels();renderQuoteCart();scheduleRender();if(saveWithoutPrint)daftarToast(`تم حفظ عرض السعر #${displayNo('quotes',q.id)}.`);else printQuote(q.id);
 });
 function submitQuoteForm(withPrint){const form=document.querySelector('#quoteForm');const customer=(form.querySelector('[name=customer]').value||'').trim();if(!customer)return daftarAlert('اكتب اسم العميل.');if(!quoteCart.length)return daftarAlert('أضف صنفًا واحدًا على الأقل إلى عرض السعر.');window.daftarQuoteSaveWithoutPrint=!withPrint;form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));}
 document.querySelector('#saveQuotePrint').onclick=()=>submitQuoteForm(true);
@@ -5161,7 +5240,7 @@ document.querySelector('#orderForm').onsubmit=async e=>{
   const first=orderCart[0];
   const fields={customer,items:orderCart.map(x=>({...x})),factoryProductId:first.factoryProductId,productName:first.productName,sku:first.sku,quantity:first.quantity,factoryPrice:first.factoryPrice,salePrice:first.salePrice,unitPrice:first.salePrice,packageWeight:first.packageWeight,batchNo:first.batchNo,pebble:first.pebble||'',total,deposit,cashDeposit:typedDeposit,depositUsed:0,creditUsed,remaining:total-deposit,date:f.get('date')||today(),received:false};
   if(editing){Object.assign(editing,fields);editing.editedDate=today();}
-  else{db.orders.push({id,whatsapp:(f.get('whatsapp')||'').trim(),...fields});markQuoteConverted('order',id,customer);}
+  else{db.orders.push({id,whatsapp:(f.get('whatsapp')||'').trim(),...fields});markQuoteConverted('order',id,customer);markJustSaved('orders',id);}
   if(depositExtra>0)addCustomerAdvance(customer,depositExtra,f.get('date')||today(),`زيادة عن قيمة طلبية #${displayNo('orders',id)}${editing?' بعد التعديل':''} (رصيد للعميل)`);
   setOrderEditMode(null);
   save();orderCart=[];e.target.reset();e.target.querySelector('[name=date]').value=today();e.target.querySelector('[name=deposit]').value=0;renderOrderCart();scheduleRender();
@@ -5262,6 +5341,9 @@ document.querySelectorAll('#nav [data-page]').forEach(btn=>btn.addEventListener(
     const ok=await ensureReportsPin();
     if(!ok)return;
   }
+  // خرجت من تبويب الطلبيات/الفواتير/العروض: قايمة «اتسجلت دلوقتي» بتاعته بتفضى (هي في «السابقة»).
+  const prevPage=document.querySelector('.page:not(.hidden)')?.id;
+  if(prevPage&&prevPage!==page)clearJustSaved(prevPage);
   document.querySelectorAll('.page').forEach(el=>el.classList.add('hidden'));
   document.querySelectorAll('#nav [data-page]').forEach(b=>b.classList.remove('active'));
   const target=document.getElementById(page);
@@ -5296,6 +5378,9 @@ document.querySelectorAll('.page-views').forEach(bar=>{
 // العميل) يقف تحته مش وراه.
 function updateNavHeight(){const n=document.querySelector('#nav');if(n)document.documentElement.style.setProperty('--nav-h',n.offsetHeight+'px');}
 updateNavHeight();window.addEventListener('resize',updateNavHeight);
+// تصغير معاينة الطباعة على الموبايل: ورقة A5 بعرض 560 وA4 (كشف الحساب) بعرض 720، على قد الشاشة.
+function updatePrintFit(){const w=Math.min(window.innerWidth,document.documentElement.clientWidth||window.innerWidth)-28,root=document.documentElement.style;root.setProperty('--dp-fit',String(Math.min(1,w/560)));root.setProperty('--dp-fit-a4',String(Math.min(1,w/720)));}
+updatePrintFit();window.addEventListener('resize',updatePrintFit);
 
 function backupStamp(){return new Date().toISOString().replace(/[:.]/g,'-').slice(0,19)}
 function downloadBackup(data,suffix){
@@ -5699,6 +5784,31 @@ button.danger:disabled{opacity:.5;cursor:not-allowed}
 .quote-multi-row{border-bottom:1px solid var(--line)}.quote-multi-row:last-child{border-bottom:0}
 /* الطلبيات اللي لسه ما اتفوترتش في حساب العميل: صندوق لوحدها فوق الكشف، وسطرها في الكشف باهت (مش داخل في الحساب). */
 .open-orders-box{margin:0 0 12px}.open-orders-box table{margin-top:8px}
+/* ورقة مراجعة الطلبيات المحددة (A4): الصنف وإجمالي عدده على اليمين، وتحته أصحابه سطر سطر، وخانة ✓ للقلم. */
+#daftarPrintBox.review-print .review-meta{text-align:center;color:#475569;margin:0 0 6px}
+#daftarPrintBox.review-print td{vertical-align:middle}
+#daftarPrintBox.review-print tr.review-first td{border-top:2px solid #94a3b8}
+#daftarPrintBox.review-print .review-sum{font-size:1.25em;font-weight:bold;text-align:center}
+#daftarPrintBox.review-print .review-qty{font-weight:bold;text-align:center}
+#daftarPrintBox.review-print .review-check{width:48px}
+@media print{@page reviewA4{size:A4;margin:10mm}#daftarPrintBox.review-print{page:reviewA4;min-height:0!important}#daftarPrintBox.review-print tr{break-inside:avoid}}
+/* «اتسجلت دلوقتي» تحت فورم الطلبية/الفاتورة/العرض */
+.just-saved:empty{display:none}.just-saved{margin-top:22px;padding-top:6px;border-top:1px dashed var(--line)}.just-saved .just-saved-note{margin:0 0 10px}
+/* ===== الكلام ميطلعش برّه إطاره ===== */
+/* أزرار جوه الجداول (فتح الملف، رقم الموبايل): سطر واحد دايمًا، والعمود بيوسع على قدها بدل ما الكلام يلف ويطلع تحت الزرار. */
+td>button,.phone-edit-btn{white-space:nowrap}
+/* طلبيات العميل المطلوبة في ملفه: الأعمدة على قد الكلام (مش متساوية زي جدول الحساب اللي فوقها). */
+#customerProfile #customerHistory .open-orders-box table{table-layout:auto}
+.open-orders-box table{font-size:13px}#customerProfile .open-orders-box th,#customerProfile .open-orders-box td{padding:8px 6px}
+/* شاشة كمبيوتر ضيقة: أزرار سطر كشف الحساب (طباعة/واتساب) على قد كلامها عشان متطلعش برّه عمودها. */
+@media (max-width:1050px) and (min-width:701px){#customerProfile .customer-ledger-table td:last-child button{min-width:0!important}}
+/* الأرقام الكبيرة في الكروت (الأرصدة والتقارير): خط أصغر شوية على شاشة الكمبيوتر الضيقة بدل ما الرقم يطلع برّه الكارت. */
+@media (max-width:1250px) and (min-width:701px){.card strong{font-size:21px}}
+/* كروت الشهور وإجماليات الجرد: لو الكلام مش واخد في سطر بينزل تحت بعض. */
+.month-card .mini{flex-wrap:wrap}.history-total-grid span{flex-wrap:wrap}
+/* إعدادات النسخ التلقائي والمظهر: الزرار في سطر لوحده لما المربع يضيق. */
+@media (max-width:1180px){#autoBackupForm>button,#appearanceForm>button{grid-column:1/-1;justify-self:start}}
+.arrival-token{height:auto!important;white-space:normal}
 .customer-ledger-table tr.history-order-pending>td{color:var(--muted);font-style:normal}
 /* عمود الأزرار في كشف حساب العميل: لو الأزرار مش واخدة في سطر بتنزل تحت بعض، بدل ما الجدول يعرض ويطلع شريط تمرير */
 #customerProfile .customer-ledger-table td:last-child{white-space:normal!important}
