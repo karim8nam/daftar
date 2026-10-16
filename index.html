@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.5.4";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.6.0";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -227,7 +227,7 @@ html,body{background:#fff!important}
     <p class="notice">هذا هو الرصيد الموجود فعليًا الآن. أما تفاصيل كل شهر فتُعرض من خلال حركة الشهر المختار.</p>
     <div id="stockReport"></div>
   </article></div></section>
-<section id="settings" class="page hidden"><div class="page-views" data-page-views="settings"><button type="button" data-view="data">💾 النسخ الاحتياطي والبيانات</button><button type="button" data-view="print">🖨️ الطباعة</button><button type="button" data-view="security">🔐 الأمان</button><button type="button" data-view="look">🎨 المظهر والاختبارات</button><button type="button" data-view="health">🩺 فحص وصيانة <span class="badge hidden" id="healthTabBadge"></span></button></div><div data-view="data"><p class="notice">النسخة الاحتياطية تشمل جميع بيانات البرنامج، بما فيها الأصناف والمخزون والطلبيات والفواتير والعملاء والدفعات والمرتجعات والمشتريات وخلفيات الطباعة.</p><div class="two settings-grid"><article class="panel" style="margin-bottom:0">
+<section id="settings" class="page hidden"><div class="page-views" data-page-views="settings"><button type="button" data-view="data">💾 النسخ الاحتياطي والبيانات</button><button type="button" data-view="print">🖨️ الطباعة</button><button type="button" data-view="security">🔐 الأمان</button><button type="button" data-view="look">🎨 المظهر والاختبارات</button><button type="button" data-view="health">🩺 فحص وصيانة <span class="badge hidden" id="healthTabBadge"></span></button><button type="button" data-view="factory">🏭 ربط المصنع</button></div><div data-view="data"><p class="notice">النسخة الاحتياطية تشمل جميع بيانات البرنامج، بما فيها الأصناف والمخزون والطلبيات والفواتير والعملاء والدفعات والمرتجعات والمشتريات وخلفيات الطباعة.</p><div class="two settings-grid"><article class="panel" style="margin-bottom:0">
         <h2>إنشاء نسخة احتياطية</h2>
         <p class="notice">سيتم تنزيل ملف JSON على جهازك. احتفظ به في مكان آمن.</p>
         <button type="button" class="primary" id="exportBackup">تحميل نسخة احتياطية</button>
@@ -332,7 +332,7 @@ html,body{background:#fff!important}
         <p class="notice">لو حصل أي خطأ في البرنامج بيتسجل هنا. لو ظهرلك إيرور، اضغط «نسخ السجل» وابعته، عشان سببه يتعرف بالظبط.</p>
         <div id="errorLogList"></div>
         <div class="form-actions" style="margin-top:10px"><button type="button" class="secondary-btn" id="copyErrorLogBtn">📋 نسخ السجل</button><button type="button" class="secondary-btn" id="openErrorLogBtn">📂 فتح فولدر السجل</button><button type="button" class="secondary-btn" id="clearErrorLogBtn">مسح السجل</button></div>
-      </article></div></div></section>
+      </article></div></div><div data-view="factory"><article class="panel" id="factoryLinkPanel"></article></div></section>
 </main>
 <!-- مكتبة توليد الباركود (QR) لروابط الواتساب والفيسبوك في الطباعة — متضمنة جوه البرنامج عشان تشتغل من غير نت. -->
 <script src="qrcode.js"></script>
@@ -742,7 +742,9 @@ function orderRowHtml(o,orderNo,withSel,withStatus){
   const sel=withSel?`<td><input type="checkbox" class="order-sel" value="${esc(String(o.id))}"${window.daftarOrderSel?.has(String(o.id))?' checked':''} onchange="toggleOrderSel(this.value,this.checked)" title="تحديد للترحيل المجمّع"></td>`:'';
   // كل أوامر الطلبية في قايمة ⋮ (زي المخزون). الطلبيات المترحّلة ليها خانة «الحالة» بس.
   const status=o.received?`<td><span class="badge badge-status">✓ ${o.invoiced?'اتفوترت':'تم الترحيل'}</span></td>`:withStatus?'<td>⏳ لسه ما اترحّلتش</td>':'';
-  return `<tr>${sel}<td>#${orderNo.get(String(o.id))}</td><td>${o.date}${!o.received&&o.expectedPickupDate?`<br><small class="pickup-date" title="ميعاد الاستلام الجديد">الاستلام: ${esc(o.expectedPickupDate)}</small>`:''}${o.splitFrom&&orderNo.get(String(o.splitFrom))?`<br><small class="pickup-date" title="الجزء اللي لسه ما وصلش من طلبية اترحّل منها جزء">باقي طلبية #${orderNo.get(String(o.splitFrom))}</small>`:''}${o.splitTo&&orderNo.get(String(o.splitTo))?`<br><small class="pickup-date" title="اترحّل منها جزء بس">الباقي في #${orderNo.get(String(o.splitTo))}</small>`:''}</td><td>${esc(o.customer)||'المخزون العام'}</td><td>${items.map(i=>`${esc(i.productName)}${i.sku?` <small>(${esc(i.sku)})</small>`:''} × ${i.quantity}`).join('، ')}</td><td>${money(o.total)}</td><td>${money(o.deposit||0)}</td>${status}<td><div class="row-actions">${rowMenuButton(`openOrderMenu('${o.id}',this)`,'أوامر الطلبية')}</div></td></tr>`;
+  // طلبية اتبعتت للمصنع (49-factory-link.js): باتش كل سطر، وحالتها في المصنع ورقم إذن الخروج
+  const fl=o.factory&&typeof factoryNoteHtml==='function';
+  return `<tr>${sel}<td>#${orderNo.get(String(o.id))}</td><td>${o.date}${!o.received&&o.expectedPickupDate?`<br><small class="pickup-date" title="ميعاد الاستلام الجديد">الاستلام: ${esc(o.expectedPickupDate)}</small>`:''}${o.splitFrom&&orderNo.get(String(o.splitFrom))?`<br><small class="pickup-date" title="الجزء اللي لسه ما وصلش من طلبية اترحّل منها جزء">باقي طلبية #${orderNo.get(String(o.splitFrom))}</small>`:''}${o.splitTo&&orderNo.get(String(o.splitTo))?`<br><small class="pickup-date" title="اترحّل منها جزء بس">الباقي في #${orderNo.get(String(o.splitTo))}</small>`:''}</td><td>${esc(o.customer)||'المخزون العام'}</td><td>${items.map(i=>`${esc(i.productName)}${i.sku?` <small>(${esc(i.sku)})</small>`:''} × ${i.quantity}${fl&&i.batchNo?` <small>(باتش ${esc(i.batchNo)})</small>`:''}`).join('، ')}${fl?factoryNoteHtml(o):''}</td><td>${money(o.total)}</td><td>${money(o.deposit||0)}</td>${status}<td><div class="row-actions">${rowMenuButton(`openOrderMenu('${o.id}',this)`,'أوامر الطلبية')}</div></td></tr>`;
 }
 function rowMenuButton(onclick,label){return `<button type="button" class="secondary-btn row-menu-btn" title="الأوامر" aria-label="${label}" aria-haspopup="menu" onclick="${onclick}">⋮</button>`;}
 // أعمدة وسطور قوايم الطلبيات والفواتير وعروض الأسعار (نفس السطر في «السابقة» وفي «اتسجلت دلوقتي» تحت الفورم).
@@ -770,6 +772,9 @@ function renderJustSaved(kind){
 }
 function orderMenuActions(o){
   const acts=[];
+  // ربط المصنع (49-factory-link.js): الطلبية اللي لسه ما اترحّلتش تتبعت (أو تتبعت تاني لو المصنع رفضها أو لغاها)
+  const fst=typeof factoryStageOf==='function'?factoryStageOf(o):'';
+  if(typeof openSendToFactory==='function'&&!o.received&&!o.invoiced&&(!factoryLinked(o)||fst==='sending'))acts.push({label:fst==='sending'?'📤 ابعت للمصنع تاني (لسه موصلتش)':fst==='error'||fst==='cancelled'?'📤 ابعت للمصنع تاني':'📤 ابعت للمصنع',run:()=>openSendToFactory(o.id)});
   if(!o.received)acts.push({label:'📦 ترحيل للمخزون (كله أو جزء)',run:()=>openReceiveOrder(o.id)});
   if(!o.invoiced)acts.push({label:'✏️ تعديل',run:()=>editOrder(o.id)});
   acts.push({label:'📄 إرسال الطلبية على واتساب',run:()=>sendOrderWhatsApp(o.id)});
@@ -1184,7 +1189,8 @@ async function fixPurchasesInventory(){
 function factoryRebuildPlan(){
   const settlements=(db.factoryLedger||[]).filter(x=>x.type==='debit'&&String(x.note||'').startsWith('تسوية: مطابقة'));
   const withDebit=new Set((db.factoryLedger||[]).filter(x=>x.type==='debit'&&x.orderId!=null&&x.orderId!=='').map(x=>String(x.orderId)));
-  const missingOrders=db.orders.filter(o=>o.received&&!withDebit.has(String(o.id))).map(o=>({order:o,amount:orderItemsOf(o).reduce((s,i)=>s+(+i.factoryPrice||0)*(+i.quantity||0),0)})).filter(x=>x.amount>0);
+  // (الطلبية اللي اتبعتت للمصنع قيدها فواتير المصنع نفسها — مش ترحيلها)
+  const missingOrders=db.orders.filter(o=>o.received&&!withDebit.has(String(o.id))&&!orderSentToFactory(o)).map(o=>({order:o,amount:orderItemsOf(o).reduce((s,i)=>s+(+i.factoryPrice||0)*(+i.quantity||0),0)})).filter(x=>x.amount>0);
   return {settlements,missingOrders};
 }
 async function rebuildFactoryAccount(){
@@ -1515,7 +1521,7 @@ function renderNow(){
    cards('#factoryAccountSummary',[['رصيد المصنع الحالي (المديونية)',money(factoryBalance())],['إجمالي الطلبات من المصنع',money(db.factoryLedger.filter(x=>x.type==='debit').reduce((s,x)=>s+(+x.amount||0),0))],['إجمالي المدفوع للمصنع',money(db.factoryLedger.filter(x=>x.type==='payment').reduce((s,x)=>s+(+x.amount||0),0))],['إجمالي المرتجع للمصنع',money(db.factoryLedger.filter(x=>x.type==='return').reduce((s,x)=>s+(+x.amount||0),0))]]);
    const sortedLedger=db.factoryLedger.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'')||String(b.id).localeCompare(String(a.id)));
    const ledgerRowFn=x=>{
-     const typeLabel=x.type==='debit'?'<span class="badge">طلب من المصنع</span>':x.type==='return'?'<span class="badge">مرتجع صنف</span>':'<span class="badge">دفعة</span>';
+     const typeLabel=x.type==='debit'?`<span class="badge">${x.factoryInvoiceId?'🏭 فاتورة المصنع':'طلب من المصنع'}</span>`:x.type==='return'?'<span class="badge">مرتجع صنف</span>':'<span class="badge">دفعة</span>';
      let detail=esc(x.note)||'—';
      if(x.type==='payment'){
        const methodLabel=x.method==='transfer'?(x.transferType==='wallet'?'تحويل محفظة':'تحويل بنكي'):'كاش';
@@ -1680,8 +1686,8 @@ async function deleteFactory(id){const x=db.factoryItems.find(x=>String(x.id)===
 async function deleteFactoryLedgerEntry(id){
   const entry=db.factoryLedger.find(x=>String(x.id)===String(id));
   if(!entry)return daftarAlert('لم يتم العثور على القيد.');
-  const typeLabel=entry.type==='debit'?'طلب من المصنع':entry.type==='return'?'مرتجع صنف':'دفعة';
-  const ok=await daftarConfirm(`حذف قيد «${typeLabel}» بقيمة ${money(entry.amount)} بتاريخ ${esc(entry.date)}؟\nسيتم إرجاع تأثير هذا القيد من رصيد حساب المصنع.`);
+  const typeLabel=entry.type==='debit'?(entry.factoryInvoiceId?'فاتورة المصنع':'طلب من المصنع'):entry.type==='return'?'مرتجع صنف':'دفعة';
+  const ok=await daftarConfirm(`حذف قيد «${typeLabel}» بقيمة ${money(entry.amount)} بتاريخ ${esc(entry.date)}؟\nسيتم إرجاع تأثير هذا القيد من رصيد حساب المصنع.${entry.factoryInvoiceId?'\n\nالقيد ده فاتورة جت من المصنع (ربط المصنع). لو حذفته مش هيرجع تاني لوحده — احذفه بس لو الفاتورة دي اتسجلت عندك بطريقة تانية.':''}`);
   if(!ok)return;
   // قيد المرتجع للمصنع بيخصم قيمته من المشتريات. لو اتحذف والكمية ما رجعتش للمخزون،
   // المشتريات بتبقى أكبر من المخزون (ده اللي عمل الفرق قبل كده). فالحذف بيرجّع
@@ -1752,6 +1758,7 @@ async function editOrder(id){
   const o=db.orders.find(x=>String(x.id)===String(id));if(!o)return daftarAlert('لم يتم العثور على الطلبية.');
   if(o.invoiced||o.invoiceId)return daftarAlert('الطلبية دي اتعملها فاتورة، فمينفعش تتعدّل. لو فيه غلط، ألغِ الفاتورة الأول من ملف العميل.');
   if(o.received)return openReceivedOrderEdit(o.id);
+  if(orderSentToFactory(o))return daftarAlert(`الطلبية دي اتبعتت للمصنع${o.factory.number?` (طلب ${o.factory.number})`:''} — التعديل من المصنع (كلّم المبيعات يلغوها وابعتها تاني بعد التعديل).\nالباتشات والحالة بتتحدّث هنا لوحدها.`);
   if(orderCart.length&&String(window.daftarEditingOrderId)!==String(o.id)&&!await daftarConfirm('سلة الطلبية فيها أصناف لسه ما اتحفظتش، وهتتمسح. تكمّل؟'))return;
   orderCart=orderItemsOf(o).map(i=>({...i,quantity:+i.quantity||0,salePrice:+(i.salePrice??i.unitPrice)||0,total:(+i.quantity||0)*(+(i.salePrice??i.unitPrice)||0)}));
   document.querySelector('[data-page=orders]').click();showPageView('orders','new');
@@ -1799,6 +1806,8 @@ async function cancelOrder(id){
   const o=db.orders.find(x=>String(x.id)===String(id));
   if(!o)return daftarAlert('لم يتم العثور على الطلبية.');
   if(o.received)return daftarAlert('لا يمكن إلغاء طلبية تم ترحيلها للمخزون.');
+  // اتبعتت للمصنع: الإلغاء من المصنع — إلا لو المصنع قفل الباقي (الباقي مش جاي)
+  if(orderSentToFactory(o)&&o.factory.stage!=='closed')return daftarAlert(`الطلبية دي اتبعتت للمصنع${o.factory.number?` (طلب ${o.factory.number})`:''} — الإلغاء من المصنع (كلّم المبيعات).\nأول ما المصنع يلغيها هتقدر تلغيها هنا.`);
   const no=displayNo('orders',o.id);
   // عربون الطلبية نوعين: كاش دفعه العميل، وجزء جه من رصيد مرتجعاته. قبل كده إلغاء الطلبية
   // كان بيمسح العربون من حساب العميل خالص (الفلوس بتختفي). دلوقتي الكاش بنسأل عنه (يفضل
@@ -1824,10 +1833,13 @@ async function cancelOrder(id){
   if(customer)refreshOpenCustomerProfile(customer);
   daftarAlert('تم إلغاء ومسح الطلبية بنجاح.'+(keepAsCredit?` والعربون ${money(cash)} بقى رصيد للعميل.`:(cash>0&&customer?` والعربون ${money(cash)} متسجل إنه اترجع للعميل.`:''))+(fromReturns>0&&customer?` و${money(fromReturns)} رجعت رصيد مرتجعات.`:''));
 }
+// طلبية اتبعتت للمصنع (49-factory-link.js) ولسه مربوطة: فاتورة المصنع هي اللي بتتسجل في حساب المصنع
+function orderSentToFactory(o){return typeof factoryLinked==='function'&&factoryLinked(o);}
+const factoryAccountText=o=>orderSentToFactory(o)?'وفاتورة المصنع بتتسجل في «حساب المصنع» لوحدها':'وتسجيل قيمتها في حساب المصنع';
 function receiveOrder(id){
   const o=db.orders.find(x=>String(x.id)===String(id));if(!o)return;if(o.received)return daftarAlert('هذه الطلبية تم ترحيلها بالفعل.');
   const err=receiveOrderCore(o);if(err)return daftarAlert(err);
-  afterOrderReceived(o,'تم ترحيل الطلبية إلى المخزون بكل أصنافها وكمياتها، وتسجيل قيمتها في حساب المصنع.');
+  afterOrderReceived(o,`تم ترحيل الطلبية إلى المخزون بكل أصنافها وكمياتها، ${factoryAccountText(o)}.`);
 }
 function afterOrderReceived(o,msg){
   save();scheduleRender();document.querySelector('[data-page=products]').click();
@@ -1877,8 +1889,8 @@ function openReceiveOrder(id){
     close();
     if(items.every((it,i)=>rec[i]===(+it.quantity||0)))return receiveOrder(o.id);
     const res=receiveOrderPartial(o,rec);if(res.err)return daftarAlert(res.err);
-    if(!res.rest)return afterOrderReceived(o,'تم ترحيل الطلبية إلى المخزون بكل أصنافها وكمياتها، وتسجيل قيمتها في حساب المصنع.');
-    afterOrderReceived(o,`تم ترحيل اللي وصل من طلبية #${displayNo('orders',o.id)} للمخزون وتسجيل قيمته في حساب المصنع.\nالباقي بقى طلبية #${displayNo('orders',res.rest.id)} لسه ما اترحّلتش${res.rest.deposit>0?` (ومعاها ${money(res.rest.deposit)} من العربون)`:''} — تلاقيها في «الطلبيات السابقة».`);
+    if(!res.rest)return afterOrderReceived(o,`تم ترحيل الطلبية إلى المخزون بكل أصنافها وكمياتها، ${factoryAccountText(o)}.`);
+    afterOrderReceived(o,`تم ترحيل اللي وصل من طلبية #${displayNo('orders',o.id)} للمخزون ${orderSentToFactory(o)?'(وفاتورة المصنع بتتسجل في «حساب المصنع» لوحدها)':'وتسجيل قيمته في حساب المصنع'}.\nالباقي بقى طلبية #${displayNo('orders',res.rest.id)} لسه ما اترحّلتش${res.rest.deposit>0?` (ومعاها ${money(res.rest.deposit)} من العربون)`:''} — تلاقيها في «الطلبيات السابقة».`);
   };
 }
 function receiveOrderPartial(o,rec){
@@ -1900,6 +1912,7 @@ function receiveOrderPartial(o,rec){
     deposit:Math.round((dep-keep)*100)/100,cashDeposit:Math.round((cash-keepCash)*100)/100,creditUsed:Math.round(Math.max(0,credit-keepCredit)*100)/100,depositUsed:0,
     date:o.date||today(),received:false,splitFrom:o.id};
   if(o.expectedPickupDate)r.expectedPickupDate=o.expectedPickupDate;
+  if(o.factory)r.factory=structuredClone(o.factory);   // (الباقي لسه جاي من نفس طلب المصنع — الباتشات بتتحدّث عليه)
   r.remaining=orderOutstanding(r);
   Object.assign(o,{items:got,...mirror(got),total:totalGot,deposit:keep,cashDeposit:keepCash,creditUsed:keepCredit,splitTo:r.id});
   o.remaining=orderOutstanding(o);
@@ -1936,7 +1949,8 @@ function receiveOrderCore(o){
   // ده منفصل عن حساب "المشتريات" (اللي بيتحسب فيه تلقائيًا برضو لغرض الأرباح)،
   // لأن الاتنين مقاييس مختلفة: المشتريات لحساب الربح، وحساب المصنع لمتابعة
   // مديونيتك الفعلية كعميل عند المصنع.
-  const factoryDebitAmount=items.reduce((s,it)=>s+(+it.factoryPrice||0)*(+it.quantity||0),0);
+  // الطلبية اتبعتت للمصنع: فاتورة المصنع هي اللي بتتسجل في حساب المصنع (49-factory-link.js) — مفيش قيد هنا عشان متتحسبش مرتين.
+  const factoryDebitAmount=orderSentToFactory(o)?0:items.reduce((s,it)=>s+(+it.factoryPrice||0)*(+it.quantity||0),0);
   if(factoryDebitAmount>0){
     db.factoryLedger.push({id:daftarNextId(),type:'debit',amount:factoryDebitAmount,date:o.date||today(),note:`ترحيل طلبية #${displayNo('orders',o.id)} للمخزون`,orderId:o.id});
   }
@@ -1997,7 +2011,7 @@ function printSelectedOrders(){
 async function bulkReceiveOrders(){
   const orders=[...window.daftarOrderSel].map(id=>db.orders.find(o=>String(o.id)===id)).filter(o=>o&&!o.received);
   if(!orders.length)return daftarAlert('حدد طلبية واحدة على الأقل لسه ما اترحّلتش.');
-  if(!await daftarConfirm(`ترحيل ${orders.length} طلبية للمخزون مرة واحدة؟\n${orders.map(o=>`- #${displayNo('orders',o.id)} ${o.customer||'المخزون العام'} (${money(o.total||0)})`).join('\n')}\n\nكل طلبية هتدخل المخزون وتتسجل في حساب المصنع، زي الترحيل العادي بالظبط.`))return;
+  if(!await daftarConfirm(`ترحيل ${orders.length} طلبية للمخزون مرة واحدة؟\n${orders.map(o=>`- #${displayNo('orders',o.id)} ${o.customer||'المخزون العام'} (${money(o.total||0)})`).join('\n')}\n\nكل طلبية هتدخل المخزون وتتسجل في حساب المصنع، زي الترحيل العادي بالظبط${orders.some(orderSentToFactory)?' (اللي اتبعتت للمصنع: فاتورة المصنع هي اللي بتتسجل)':''}.`))return;
   const done=[],failed=[];
   for(const o of orders){const err=receiveOrderCore(o);err?failed.push(`#${displayNo('orders',o.id)}: ${err}`):done.push(o);}
   window.daftarOrderSel.clear();
@@ -5352,6 +5366,7 @@ document.querySelector('#orderForm').onsubmit=async e=>{
   const editId=window.daftarEditingOrderId;
   const editing=editId?db.orders.find(o=>String(o.id)===String(editId)):null;
   if(editId&&(!editing||editing.received)){setOrderEditMode(null);return daftarAlert('الطلبية دي اترحّلت للمخزون أو اتمسحت، فمينفعش تتعدّل من هنا.');}
+  if(editing&&orderSentToFactory(editing)){setOrderEditMode(null);return daftarAlert('الطلبية دي اتبعتت للمصنع وانت بتعدّلها — التعديل بقى من المصنع، والتعديل ده متحفظش.');}
   const total=orderCart.reduce((s,x)=>s+x.total,0),paidDeposit=+f.get('deposit')||0;
   // عربون أكبر من قيمة الطلبية: العربون بيبقى قيمة الطلبية بالظبط، والزيادة بتتسجل
   // رصيد للعميل (لازم يكون فيه عميل — طلبية "المخزون العام" مالهاش حساب تترحّل له).
@@ -5972,6 +5987,8 @@ td>button,.phone-edit-btn{white-space:nowrap}
 .order-bulk-bar button:disabled{opacity:.5;cursor:not-allowed}
 .order-bulk-actions{display:flex;gap:8px;flex-wrap:wrap}.order-bulk-actions button{white-space:nowrap}
 .pickup-date{display:inline-block;margin-top:3px;padding:1px 6px;border-radius:6px;background:var(--soft);color:var(--ink);white-space:nowrap}
+.factory-link-note{display:inline-block;margin-top:3px;padding:1px 6px;border-radius:6px;background:var(--soft);color:var(--ink);line-height:1.6;max-width:100%;overflow-wrap:anywhere}.factory-link-note.bad{color:var(--danger)}
+.fl-chosen{display:none;margin-top:4px;color:var(--muted);font-size:12px;line-height:1.5}
 #ordersTable td>input.order-sel{width:18px;height:18px;cursor:pointer}
 .arrival-list{display:grid;gap:8px;max-height:55vh;overflow:auto;margin:6px 0 4px}
 .arrival-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
@@ -7466,6 +7483,7 @@ function onSettingsView(v){
     if(v==='health'){showDataCheckResult(runDataCheck());renderDevicesPanel();renderErrorLog();renderUpdatePanel();}
     if(v==='security')renderAutoLockSettings();
     if(v==='data')renderMirrorPanel();
+    if(v==='factory')renderFactoryLinkPanel();
   }catch(err){daftarLogError('settings-view',err);}
 }
 document.querySelector('#nav [data-page=settings]')?.addEventListener('click',()=>setTimeout(()=>onSettingsView(daftarPageView.settings),0));
@@ -7490,6 +7508,358 @@ if(!window.daftarElectron&&/^https?:$/.test(location.protocol)){
     document.body.appendChild(box);
   },2500));
 }
+// ===== ربط المصنع (دفتر اميك) — البرنامج ده «فرع» عند المصنع =====
+// «الإعدادات ← 🏭 ربط المصنع»: اسم الدخول والباسورد اللي المصنع عمله للفرع (في دفتر اميك: «الإعدادات ← الفروع ← 🔗 ربط البرنامج»).
+// - «📤 ابعت للمصنع» (من ⋮ في كل طلبية): الطلبية بتبقى «طلب» معتمد في المصنع بأسعار القائمة باسم العميل.
+//   كل صنف بيتربط بصنف من قائمة أسعار المصنع (الاختيار بيتحفظ على صنف الكتالوج للمرة الجاية)، وسعر المصنع للصنف بيبقى سعر القائمة.
+// - أول ما البرنامج يفتح وكل 3 دقايق (وزرار «🔄 حدّث دلوقتي»): بيجيب من المصنع الباتشات اللي اتحطت لكل صنف (السطر بيتقسم
+//   لو أكتر من باتش)، حالة الطلبية، رقم إذن الخروج، وفواتير المصنع ← «حساب المصنع» (قيد لكل فاتورة، وبيتعدّل لو الفاتورة اتعدّلت).
+// - الطلبية اللي اتبعتت: الترحيل للمخزون مبيسجلش قيد في حساب المصنع (فاتورة المصنع بتيجي بدل كده)، ومبتتعدّلش ولا تتلغي من هنا
+//   (من المصنع) — إلا لو المصنع رفضها أو لغاها.
+// الدخول متخزن على الجهاز ده بس (مش بيتزامن). الطلبيات وبيانات المصنع اللي عليها بتتزامن عادي مع باقي البيانات.
+const FACTORY_LINK_URL='https://lrpdkdrenfagfhfdndlx.supabase.co';
+const FACTORY_LINK_KEY='sb_publishable_OUVANQN7w2LyoWSC2o20iw_7IAOtmFm';
+const FACTORY_LINK_DOMAIN='daftar.local';
+const FACTORY_LINK_STORE='daftar-factory-link-v1';
+// قيد فاتورة المصنع في «حساب المصنع» ليه رقم ثابت (الأساس + رقم الفاتورة في المصنع): نفس القيد على كل الأجهزة، فمبيتكررش مع المزامنة.
+const FACTORY_LEDGER_ID_BASE=8e15;
+const FACTORY_STAGE_LABEL={sending:'⏳ في الطريق للمصنع',error:'⚠️ المصنع مقبلهاش',waiting:'🏭 اتسجلت في المصنع — مستنية التصنيع',making:'🏭 بتتصنع',ready:'✅ جاهزة في المصنع',part_out:'🚚 خرج جزء من المصنع',out:'🚚 خرجت كلها من المصنع',closed:'🔒 المصنع قفل الباقي',cancelled:'🚫 اتلغت في المصنع'};
+let factoryLinkState=null,factoryLinkBusy=false,factoryLinkTimer=null;
+
+// (الاختبارات بس: سيرفر محلي على 127.0.0.1 بدل السحابة — سياسة الأمان مبتسمحش بغير كده)
+function flBase(){try{const t=localStorage.getItem('daftar-factory-link-test-url');if(t&&/^http:\/\/127\.0\.0\.1:\d+$/.test(t))return t;}catch(e){}return FACTORY_LINK_URL;}
+function flStore(){try{return JSON.parse(localStorage.getItem(FACTORY_LINK_STORE)||'null')}catch(e){return null}}
+function flSave(x){try{if(x)localStorage.setItem(FACTORY_LINK_STORE,JSON.stringify(x));else localStorage.removeItem(FACTORY_LINK_STORE);}catch(e){}}
+const factoryLinkOn=()=>!!flStore()?.refresh;
+async function flFetch(path,body,token){
+  const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),20000);
+  let res;
+  try{res=await fetch(flBase()+path,{method:'POST',signal:ctl.signal,headers:{apikey:FACTORY_LINK_KEY,'content-type':'application/json',...(token?{authorization:'Bearer '+token}:{})},body:JSON.stringify(body||{})});}
+  catch(e){throw Object.assign(new Error('مفيش نت (أو المصنع مش بيرد) — جرّب تاني بعد شوية'),{network:true});}
+  finally{clearTimeout(timer);}
+  const text=await res.text();let j=null;try{j=text?JSON.parse(text):null}catch(e){}
+  if(!res.ok)throw Object.assign(new Error((j&&(j.message||j.error_description||j.msg||j.error))||('خطأ '+res.status)),{status:res.status});
+  return j;
+}
+async function flToken(){
+  const s=flStore();
+  if(!s?.refresh)throw Object.assign(new Error('ربط المصنع مش متجهز — ادخل من «الإعدادات ← 🏭 ربط المصنع»'),{unset:true});
+  if(s.access&&(+s.exp||0)-Date.now()>120e3)return s.access;
+  let r;
+  try{r=await flFetch('/auth/v1/token?grant_type=refresh_token',{refresh_token:s.refresh});}
+  catch(e){
+    if(e.network)throw e;
+    flSave({...s,access:null,refresh:null,lastError:'دخول المصنع انتهى — ادخل تاني'});
+    throw Object.assign(new Error('دخول المصنع انتهى (أو الباسورد اتغيّر) — ادخل تاني من «الإعدادات ← 🏭 ربط المصنع»'),{unset:true});
+  }
+  flSave({...flStore(),access:r.access_token,refresh:r.refresh_token,exp:Date.now()+(+r.expires_in||3600)*1000});
+  return r.access_token;
+}
+async function flRpc(name,args){
+  try{return await flFetch('/rest/v1/rpc/'+name,args,await flToken());}
+  catch(e){
+    if(e.status!==401)throw e;
+    flSave({...flStore(),exp:0});                       // (الدخول خلص: دخول جديد مرة)
+    return flFetch('/rest/v1/rpc/'+name,args,await flToken());
+  }
+}
+
+// ---------- الدخول والخروج
+async function factoryLinkLogin(user,pass){
+  user=String(user||'').trim();
+  if(!user||!pass)throw new Error('اكتب اسم الدخول والباسورد اللي المصنع إداهملك.');
+  const email=user.includes('@')?user:user.toLowerCase()+'@'+FACTORY_LINK_DOMAIN;
+  let r;
+  try{r=await flFetch('/auth/v1/token?grant_type=password',{email,password:pass});}
+  catch(e){if(e.network)throw e;throw new Error('اسم الدخول أو الباسورد غلط.');}
+  flSave({username:user.toLowerCase(),access:r.access_token,refresh:r.refresh_token,exp:Date.now()+(+r.expires_in||3600)*1000});
+  try{
+    const me=await flRpc('branch_link_me',{});
+    flSave({...flStore(),branch:{id:me.branch_id,name:me.name}});
+  }catch(e){flSave(null);throw e;}
+  await factoryLinkPull({quiet:true});
+}
+async function factoryLinkLogout(){
+  const s=flStore();
+  if(s?.access)flFetch('/auth/v1/logout?scope=local',{},s.access).catch(()=>{});
+  flSave(null);factoryLinkState=null;renderFactoryLinkPanel();scheduleRender();
+}
+
+// ---------- حالة الطلبية
+function factoryLinked(o){const f=o&&o.factory;return !!f&&(f.state==='sending'||f.state==='in')&&f.stage!=='cancelled';}
+function factoryStageOf(o){const f=o&&o.factory;if(!f)return '';if(f.state==='error')return 'error';if(f.state==='sending')return 'sending';return f.stage||'waiting';}
+function factoryNoteHtml(o){
+  const f=o&&o.factory;if(!f)return '';
+  const st=factoryStageOf(o);
+  return `<br><small class="factory-link-note${st==='error'||st==='cancelled'?' bad':''}">${FACTORY_STAGE_LABEL[st]||''}${f.track&&st!=='cancelled'?` (${esc(f.track)})`:''}${f.number?` — طلب ${esc(f.number)}`:''}${(f.exits||[]).length?` — إذن خروج ${f.exits.map(esc).join('، ')}`:''}${st==='error'&&f.error?`: ${esc(f.error)}`:''}${st==='cancelled'&&f.reason?`: ${esc(f.reason)}`:''}</small>`;
+}
+// المرحلة من بيانات المصنع: اتلغى / اتقفل / خرج كله / خرج جزء / جاهز / بيتصنع / مستني
+function factoryStage(fo){
+  if(fo.status==='cancelled'||fo.status==='rejected')return 'cancelled';
+  if(fo.closed_at)return 'closed';
+  const inv=(fo.invoices||[]).filter(i=>i.status==='approved'||i.status==='pending');
+  if(fo.full&&inv.length&&inv.every(i=>i.exit_no))return 'out';
+  if(inv.some(i=>i.exit_no))return 'part_out';
+  const lines=fo.lines||[],any=lines.some(l=>(l.batches||[]).length);
+  if(any&&lines.every(l=>{const need=l.unit==='ton'?+l.kg:+l.count;return (l.batches||[]).filter(b=>b.status==='done').reduce((s,b)=>s+(+b.qty||0),0)>=need-1e-6;}))return 'ready';
+  return any?'making':'waiting';
+}
+const cairoDate=iso=>{try{return new Date(iso).toLocaleDateString('en-CA',{timeZone:'Africa/Cairo'});}catch(e){return String(iso||'').slice(0,10)||today();}};
+
+// ---------- اللي جاي من المصنع
+async function factoryLinkPull({quiet=true}={}){
+  if(factoryLinkBusy||!factoryLinkOn()||!daftarStorageReady||daftarStorageBlocked)return false;
+  factoryLinkBusy=true;
+  try{
+    await factoryLinkResendPending();
+    const res=await flRpc('branch_link_state',{});
+    factoryLinkState=res;
+    const changed=applyFactoryState(res);
+    flSave({...flStore(),lastPullAt:new Date().toISOString(),lastError:null,branch:res.branch||flStore()?.branch});
+    if(changed){save();scheduleRender();}
+    renderFactoryLinkPanel();
+    return true;
+  }catch(e){
+    flSave(flStore()?{...flStore(),lastError:e.message,lastErrorAt:new Date().toISOString()}:null);
+    renderFactoryLinkPanel();
+    if(!quiet)daftarAlert(e.message);
+    else if(!e.network&&!e.unset)daftarLogError?.('factory-link',e);
+    return false;
+  }finally{factoryLinkBusy=false;}
+}
+// طلبيات اتبعتت والنت قطع قبل ما توصل: بتتبعت تاني بنفس الرقم (المصنع مبيكررهاش)
+async function factoryLinkResendPending(){
+  let changed=false;
+  for(const o of db.orders){
+    const f=o.factory;if(!f||f.state!=='sending'||!f.payload||f.submitted)continue;
+    try{const r=await flRpc('branch_link_submit',{p_uid:f.uid,p_kind:'branch_order',p_payload:f.payload});Object.assign(f,{submitted:true},r.delivered?{state:'in'}:{});changed=true;}
+    catch(e){if(e.network||e.unset)throw e;Object.assign(f,{state:'error',error:e.message,payload:undefined});changed=true;}
+  }
+  if(changed)save();
+}
+function applyFactoryState(res){
+  let changed=false;
+  const inbox=new Map((res.inbox||[]).map(i=>[String(i.uid),i]));
+  const st=res.state||null;
+  const remote=new Map((st?.orders||[]).map(x=>[String(x.uid),x]));
+  const groups=new Map();
+  for(const o of db.orders){const u=o.factory?.uid;if(!u)continue;if(!groups.has(String(u)))groups.set(String(u),[]);groups.get(String(u)).push(o);}
+  for(const [uid,list] of groups){
+    const fo=remote.get(uid),ib=inbox.get(uid);
+    for(const o of list){
+      const f=o.factory,before=JSON.stringify(f);
+      if(fo){
+        Object.assign(f,{state:'in',number:fo.number,stage:factoryStage(fo),track:fo.track||'',customer:fo.customer,
+          exits:[...new Set((fo.invoices||[]).filter(i=>i.exit_no&&(i.status==='approved'||i.status==='pending')).map(i=>i.exit_no))],
+          reason:fo.status==='cancelled'||fo.status==='rejected'?(fo.cancel_reason||''):fo.closed_at?(fo.close_reason||''):''});
+        delete f.payload;delete f.error;
+      }else if(ib&&ib.error&&!ib.delivered&&f.state!=='in'){Object.assign(f,{state:'error',error:ib.error});delete f.payload;}
+      else if(ib&&ib.delivered&&f.state==='sending'){f.state='in';delete f.payload;}
+      if(JSON.stringify(f)!==before)changed=true;
+    }
+    if(fo&&fo.status==='approved')changed=applyFactoryBatches(list,fo)||changed;
+  }
+  if(st)changed=syncFactoryInvoices(st)||changed;
+  return changed;
+}
+// الباتشات لكل صنف: الطلبية اللي لسه ما اترحّلتش بتتقسم سطور (سطر لكل باتش بكميته، والباقي من غير باتش المصنع).
+// اللي اترحّل قبل كده (ترحيل جزء) واخد باتشاته خلاص — بيتخصم من الباتش ومبيتغيّرش.
+function applyFactoryBatches(list,fo){
+  const open=list.find(o=>!o.received&&!o.invoiced);
+  if(!open||!Array.isArray(open.items)||!open.items.length)return false;
+  let changed=false;
+  for(const line of fo.lines||[]){
+    if(!line.key)continue;
+    const idx=open.items.map((it,i)=>it.flk===line.key?i:-1).filter(i=>i>=0);if(!idx.length)continue;
+    const items=idx.map(i=>open.items[i]),tmpl=items[0],pw=+tmpl.packageWeight||0;
+    const openQty=items.reduce((s,i)=>s+(+i.quantity||0),0);
+    const toPk=q=>line.unit==='ton'?(pw>0?Math.round((+q||0)/pw):0):Math.round(+q||0);
+    const avail=new Map();
+    for(const b of line.batches||[]){const q=toPk(b.qty);if(q>0&&b.number)avail.set(String(b.number),(avail.get(String(b.number))||0)+q);}
+    for(const o of list){if(o===open)continue;for(const it of o.items||[]){const k=String(it.batchNo||'');if(it.flk===line.key&&avail.has(k))avail.set(k,Math.max(0,avail.get(k)-(+it.quantity||0)));}}
+    // (fb = الباتش ده جه من المصنع) الباتش اللي كان مكتوب بإيدك قبل ما المصنع يحط باتشاته بيفضل على الباقي
+    const manual=String((items.find(i=>i.batchNo&&!i.fb)||{}).batchNo||'');
+    const want=[];let left=openQty;
+    for(const [n,q0] of avail){const q=Math.min(left,q0);if(q>0){want.push([n,q,true]);left-=q;}}
+    if(left>0)want.push([manual,left,false]);
+    if(JSON.stringify(items.map(i=>[String(i.batchNo||''),+i.quantity||0,!!i.fb]))===JSON.stringify(want))continue;
+    const price=+(tmpl.salePrice??tmpl.unitPrice)||0;
+    const fresh=want.map(([b,q,fb])=>({...tmpl,batchNo:b,quantity:q,total:q*price,fb}));
+    const rest=open.items.filter(it=>it.flk!==line.key);
+    rest.splice(Math.min(idx[0],rest.length),0,...fresh);
+    open.items=rest;changed=true;
+  }
+  if(changed){const f0=open.items[0];Object.assign(open,{productName:f0.productName,factoryProductId:f0.factoryProductId,salePrice:f0.salePrice,unitPrice:f0.salePrice,sku:f0.sku,batchNo:f0.batchNo,pebble:f0.pebble||''});}
+  return changed;
+}
+// فواتير المصنع (المعتمدة) ← قيد «طلب من المصنع» لكل فاتورة. الفاتورة اتعدّلت ← القيد بيتعدّل. اتلغت ← القيد بيتشال.
+// قيد اتمسح بإيدك (أو «تصفير حساب المصنع») مبيرجعش لوحده.
+function syncFactoryInvoices(st){
+  let changed=false;
+  const tomb=db.deletedIds?.factoryLedger||{};
+  for(const fo of st.orders||[]){
+    const local=db.orders.find(o=>String(o.factory?.uid)===String(fo.uid));
+    for(const inv of fo.invoices||[]){
+      const id=FACTORY_LEDGER_ID_BASE+Number(inv.id);
+      const ex=db.factoryLedger.find(x=>String(x.id)===String(id));
+      if(inv.status!=='approved'){
+        if(ex&&(inv.status==='cancelled'||inv.status==='rejected')){markDeleted('factoryLedger',id);db.factoryLedger=db.factoryLedger.filter(x=>x!==ex);changed=true;}
+        continue;
+      }
+      const amount=Math.round((+inv.total||0)*100)/100;
+      if(ex){if(+ex.amount!==amount){ex.amount=amount;changed=true;}continue;}
+      if(tomb[String(id)])continue;
+      db.factoryLedger.push({id,type:'debit',amount,date:cairoDate(inv.created_at),factoryInvoiceId:Number(inv.id),factoryOrderUid:String(fo.uid),
+        note:`فاتورة المصنع ${inv.number}${local?` — طلبية #${displayNo('orders',local.id)}`:''} — ${fo.customer||''}${inv.exit_no?` — إذن خروج ${inv.exit_no}`:''}`});
+      changed=true;
+    }
+  }
+  return changed;
+}
+
+// ---------- «📤 ابعت للمصنع»
+const flNorm=s=>String(s||'').trim().replace(/\s+/g,' ').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').toLowerCase();
+const flNum=n=>String(+(+n).toFixed(3));
+function factoryPriceOptions(products){
+  const out=[];
+  for(const p of products||[]){
+    for(const k of p.packages||[])out.push({v:`${p.id}|package|${k.type}|${flNum(k.weight)}`,label:`${p.name} — ${k.type} ${flNum(k.weight)} كجم`,pid:p.id,name:p.name,unit:'package',type:k.type,weight:+k.weight,price:+k.price});
+    if(p.ton)out.push({v:`${p.id}|ton`,label:`${p.name} — بالطن`,pid:p.id,name:p.name,unit:'ton',price:+p.ton.price});
+  }
+  return out;
+}
+function guessFactoryOption(it,opts){
+  const fi=(db.factoryItems||[]).find(x=>String(x.id)===String(it.factoryProductId));
+  if(fi?.factoryLink?.v&&opts.some(o=>o.v===fi.factoryLink.v))return fi.factoryLink.v;
+  const n=flNorm(it.productName),w=+it.packageWeight||0,same=opts.filter(o=>flNorm(o.name)===n);
+  return (same.find(o=>o.unit==='package'&&w>0&&Math.abs(o.weight-w)<1e-6)||(same.length===1?same[0]:null)||(w>0?same.find(o=>o.unit==='ton'):null)||{v:''}).v;
+}
+// سعر القائمة للعبوة الواحدة من الصنف (عشان سعر المصنع عندك = سعر القائمة)
+function factoryLinePrice(opt,it){return opt.unit==='ton'?opt.price*(+it.packageWeight||0)/1000:opt.price;}
+async function openSendToFactory(id){
+  const o=db.orders.find(x=>String(x.id)===String(id));if(!o)return daftarAlert('لم يتم العثور على الطلبية.');
+  if(o.received)return daftarAlert('الطلبية دي اترحّلت للمخزون — مينفعش تتبعت للمصنع.');
+  if(o.invoiced||o.invoiceId)return daftarAlert('الطلبية دي اتفوترت — مينفعش تتبعت للمصنع.');
+  const f=o.factory;
+  if(f&&f.state==='sending'){
+    if(!await daftarConfirm('الطلبية دي اتبعتت للمصنع ولسه موصلتش (غالبًا النت كان قاطع). تحاول تبعتها تاني دلوقتي؟\nمش هتتكرر في المصنع.'))return;
+    if(f.payload)delete f.submitted;
+    await factoryLinkPull({quiet:false});
+    return renderFactoryLinkPanel();
+  }
+  if(factoryLinked(o))return daftarAlert(`الطلبية دي اتبعتت للمصنع قبل كده${f.number?` (طلب ${f.number})`:''}.\nحالتها: ${FACTORY_STAGE_LABEL[factoryStageOf(o)]||''}.`);
+  if(!factoryLinkOn())return daftarAlert('ربط المصنع مش متجهز على الجهاز ده.\nادخل الأول من «الإعدادات ← 🏭 ربط المصنع» باسم الدخول والباسورد اللي المصنع عملهولك.');
+  await factoryLinkPull({quiet:true});
+  const st=factoryLinkState?.state;
+  if(!st)return daftarAlert(flStore()?.lastError||'الربط لسه متشغّلش من ناحية المصنع (أو سيرفر المصنع مش متصل). كلّم المصنع وجرّب تاني.');
+  const items=orderItemsForReceive(o);
+  if(items.some(it=>!Number.isInteger(+it.quantity)||+it.quantity<=0))return daftarAlert('كميات الطلبية لازم تبقى عدد عبوات صحيح أكبر من صفر — عدّلها الأول.');
+  const opts=factoryPriceOptions(st.products);
+  if(!opts.length)return daftarAlert('قائمة أسعار المصنع فاضية — كلّم المصنع.');
+  const customer=(o.customer||'').trim()||'المخزون العام';
+  let old=document.getElementById('daftarFactorySendModal');if(old)old.remove();
+  const box=document.createElement('div');box.id='daftarFactorySendModal';
+  const optHtml=sel=>`<option value="">— اختار صنف المصنع —</option>${opts.map(x=>`<option value="${esc(x.v)}"${x.v===sel?' selected':''}>${esc(x.label)}</option>`).join('')}`;
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:900px"><div class="settlement-title"><div><small>📤 ابعت للمصنع${flStore()?.branch?.name?` — ${esc(flStore().branch.name)}`:''}</small><h3>طلبية #${displayNo('orders',o.id)} — ${esc(customer)}</h3></div><button type="button" class="settlement-close" data-close>×</button></div>
+    <div style="line-height:1.8;margin-bottom:8px">الطلبية هتتسجل في المصنع «طلب» معتمد باسم <strong>${esc(customer)}</strong> بأسعار القائمة. اختار لكل صنف صنفه في قائمة أسعار المصنع (الاختيار بيتحفظ للمرة الجاية)، وسعر المصنع للصنف عندك هيبقى سعر القائمة. بعد الإرسال الطلبية بتتعدّل أو تتلغي من المصنع بس.</div>
+    ${table(['الصنف عندك','الكمية','صنف المصنع','سعر القائمة','الإجمالي'],items.map((it,i)=>`<tr><td><strong>${esc(it.productName)}</strong>${it.sku?` <small>(${esc(it.sku)})</small>`:''}</td><td>${+it.quantity} عبوة${+it.packageWeight?`<br><small>${flNum(it.packageWeight)} كجم</small>`:''}</td><td><select class="fl-opt" data-i="${i}" style="width:100%;min-width:170px">${optHtml(guessFactoryOption(it,opts))}</select><small class="fl-chosen" data-i="${i}"></small></td><td class="fl-price" data-i="${i}">—</td><td class="fl-total" data-i="${i}">—</td></tr>`))}
+    <label style="margin-top:10px">ملاحظة للمصنع (اختياري)<input id="flSendNote" maxlength="300" autocomplete="off"></label>
+    <div class="notice" id="flSendSum" style="margin-top:10px"></div>
+    <div class="settlement-actions"><button type="button" class="primary" data-send>📤 ابعت للمصنع</button><button type="button" class="secondary-btn" data-close>إلغاء</button></div></div>`;
+  document.body.appendChild(box);
+  const close=()=>box.remove();
+  box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);
+  box.querySelector('.settlement-backdrop').onclick=close;
+  const pick=i=>opts.find(x=>x.v===box.querySelector(`.fl-opt[data-i="${i}"]`).value)||null;
+  const lineTotal=(opt,it)=>opt.unit==='ton'?opt.price*(+it.quantity||0)*(+it.packageWeight||0)/1000:opt.price*(+it.quantity||0);
+  const sum=()=>{
+    let tot=0,miss=0;
+    items.forEach((it,i)=>{const opt=pick(i);const pc=box.querySelector(`.fl-price[data-i="${i}"]`),tc=box.querySelector(`.fl-total[data-i="${i}"]`);
+      box.querySelector(`.fl-chosen[data-i="${i}"]`).textContent=opt?opt.label:'';
+      if(!opt){miss++;pc.textContent='—';tc.textContent='—';return;}
+      pc.textContent=opt.unit==='ton'?`${money(opt.price)} للطن`:money(opt.price);
+      if(opt.unit==='ton'&&!(+it.packageWeight>0)){tc.textContent='الصنف ملوش وزن عبوة';miss++;return;}
+      const t=lineTotal(opt,it);tot+=t;tc.textContent=money(t);});
+    box.querySelector('#flSendSum').innerHTML=miss?`فاضل <strong>${miss}</strong> صنف محتاج تختارله صنف المصنع.`:`الإجمالي بأسعار القائمة: <strong>${money(tot)}</strong> (من غير ضريبة).`;
+    return {miss,tot};
+  };
+  box.querySelectorAll('.fl-opt').forEach(s=>s.addEventListener('change',sum));
+  sum();
+  box.querySelector('[data-send]').onclick=async e=>{
+    const btn=e.currentTarget;
+    const s=sum();if(s.miss)return daftarAlert('اختار صنف المصنع لكل الأصناف الأول (ولو الصنف بالطن لازم يبقى ليه وزن عبوة).');
+    btn.disabled=true;
+    try{
+      const lines=items.map((it,i)=>{const opt=pick(i),key='L'+(i+1),code=String(it.sku||'').trim()||null;
+        return opt.unit==='ton'?{key,product_id:opt.pid,unit:'ton',quantity_kg:flNum((+it.quantity)*(+it.packageWeight)),code}
+          :{key,product_id:opt.pid,unit:'package',package_type:opt.type,weight:flNum(opt.weight),count:String(+it.quantity),code};});
+      const payload={ext_ref:String(displayNo('orders',o.id)),customer,phone:o.customer?(getCustomerPhone(o.customer)||null):null,
+        note:box.querySelector('#flSendNote').value.trim()||null,is_tax:false,phone_at:new Date().toISOString(),lines};
+      // الطلبية نفسها: مفتاح لكل سطر (عشان الباتشات ترجع لنفس السطر)، وسعر المصنع = سعر القائمة، وصنف المصنع بيتحفظ على صنف الكتالوج
+      if(!o.items?.length)o.items=items.map(it=>({...it}));
+      o.items.forEach((it,i)=>{const opt=pick(i);it.flk='L'+(i+1);it.factoryPrice=Math.round(factoryLinePrice(opt,it)*100)/100;
+        const fi=(db.factoryItems||[]).find(x=>String(x.id)===String(it.factoryProductId));if(fi&&fi.factoryLink?.v!==opt.v)fi.factoryLink={v:opt.v,label:opt.label};});
+      const f0=o.items[0];Object.assign(o,{factoryPrice:f0.factoryPrice});
+      o.factory={uid:crypto.randomUUID(),sentAt:new Date().toISOString(),state:'sending',payload};
+      save();
+      let r=null,err=null;
+      try{r=await flRpc('branch_link_submit',{p_uid:o.factory.uid,p_kind:'branch_order',p_payload:payload});}catch(ex){err=ex;}
+      if(err&&!err.network){Object.assign(o.factory,{state:'error',error:err.message});delete o.factory.payload;}
+      else if(r){o.factory.submitted=true;if(r.delivered){o.factory.state='in';delete o.factory.payload;}}
+      save();close();scheduleRender();
+      if(err&&!err.network)return daftarAlert(`المصنع مقبلش الطلبية:\n${err.message}\n\nلما المشكلة تتحل ابعتها تاني من ⋮ ← «📤 ابعت للمصنع».`);
+      if(err)return daftarAlert('مفيش نت دلوقتي — الطلبية متسجلة إنها هتتبعت، وهتتبعت لوحدها أول ما النت يرجع (مش هتتكرر).');
+      daftarToast(r.delivered?'✅ الطلبية اتسجلت في المصنع':'✅ الطلبية اتبعتت — هتتسجل في المصنع أول ما سيرفر المصنع يتصل');
+      factoryLinkPull({quiet:true});
+    }finally{btn.disabled=false;}
+  };
+}
+
+// ---------- «الإعدادات ← 🏭 ربط المصنع»
+function renderFactoryLinkPanel(){
+  const el=document.getElementById('factoryLinkPanel');if(!el)return;
+  const s=flStore();
+  if(!s?.refresh){
+    el.innerHTML=`<h2>🏭 ربط المصنع (دفتر اميك)</h2>
+      <p class="notice">البرنامج ده يقدر يبعت الطلبيات للمصنع على طول («📤 ابعت للمصنع» من ⋮ في كل طلبية) — وبيرجعلك منه الباتشات اللي اتحطت لكل صنف، وحالة الطلبية، ورقم إذن الخروج، وفواتير المصنع في «حساب المصنع».<br>اسم الدخول والباسورد بيعملهم صاحب المصنع من «الإعدادات ← الفروع ← 🔗 ربط البرنامج».</p>
+      ${s?.lastError?`<div class="notice tone-danger">${esc(s.lastError)}</div>`:''}
+      <form id="factoryLinkForm" class="form" autocomplete="off"><label>اسم الدخول<input name="user" dir="ltr" autocomplete="off" spellcheck="false" value="${esc(s?.username||'')}"></label><label>الباسورد<input name="pass" type="password" dir="ltr" autocomplete="off"></label>
+      <div class="form-actions" style="grid-column:1/-1"><button type="submit" class="primary">دخول</button></div></form>`;
+    el.querySelector('#factoryLinkForm').onsubmit=async e=>{
+      e.preventDefault();const fd=new FormData(e.currentTarget),btn=e.currentTarget.querySelector('[type=submit]');
+      btn.disabled=true;
+      try{await factoryLinkLogin(fd.get('user'),fd.get('pass'));daftarToast('✅ اتربط البرنامج بالمصنع');renderFactoryLinkPanel();}
+      catch(ex){daftarAlert(ex.message);}
+      finally{if(btn.isConnected)btn.disabled=false;}
+    };
+    return;
+  }
+  const res=factoryLinkState,st=res?.state;
+  const sent=db.orders.filter(o=>o.factory).sort((a,b)=>String(b.factory.sentAt||'').localeCompare(String(a.factory.sentAt||''))).slice(0,30);
+  const fromFactory=db.factoryLedger.filter(x=>x.factoryInvoiceId).reduce((t,x)=>t+(+x.amount||0),0);
+  el.innerHTML=`<h2>🏭 ربط المصنع (دفتر اميك)</h2>
+    <div class="kv-list" style="line-height:2">
+      <div>الفرع: <strong>${esc(s.branch?.name||'—')}</strong> — اسم الدخول: <strong dir="ltr">${esc(s.username||'')}</strong></div>
+      <div>آخر تحديث من المصنع: <strong>${s.lastPullAt?esc(new Date(s.lastPullAt).toLocaleString('ar-EG')):'—'}</strong>${res&&res.mode==='bridge'&&res.factory_seen_at?` — سيرفر المصنع آخر اتصال: <strong>${esc(new Date(res.factory_seen_at).toLocaleString('ar-EG'))}</strong>`:''}</div>
+      ${res&&!st?'<div class="notice tone-danger">الربط لسه متشغّلش من ناحية المصنع (أو متقفل) — كلّم المصنع.</div>':''}
+      ${st?`<div>فواتير المصنع في «حساب المصنع» عندك: <strong>${money(fromFactory)}</strong> — المصنع شايف على عملاء الفرع: <strong>${money(st.balance)}</strong></div>`:''}
+    </div>
+    ${s.lastError?`<div class="notice tone-danger">${esc(s.lastError)}</div>`:''}
+    <div class="form-actions" style="margin:10px 0"><button type="button" class="secondary-btn" id="factoryLinkPullBtn">🔄 حدّث دلوقتي</button><button type="button" class="danger" id="factoryLinkOutBtn">خروج من الربط</button></div>
+    <h3>الطلبيات اللي اتبعتت للمصنع</h3>
+    ${table(['الطلبية','العميل','في المصنع','الحالة'],sent.map(o=>`<tr><td>#${displayNo('orders',o.id)}<br><small>${esc(o.date||'')}</small></td><td>${esc(o.customer||'المخزون العام')}</td><td>${o.factory.number?esc(o.factory.number):'—'}</td><td>${factoryNoteHtml(o).replace(/^<br>/,'')}</td></tr>`))}`;
+  el.querySelector('#factoryLinkPullBtn').onclick=async e=>{const b=e.currentTarget;b.disabled=true;try{if(await factoryLinkPull({quiet:false}))daftarToast('✅ اتحدّثت بيانات المصنع');}finally{if(b.isConnected)b.disabled=false;}};
+  el.querySelector('#factoryLinkOutBtn').onclick=async()=>{if(await daftarConfirm('خروج من ربط المصنع على الجهاز ده؟\nالطلبيات وبياناتها بتفضل زي ما هي، ومحتاج تدخل تاني عشان تبعت أو تحدّث.'))factoryLinkLogout();};
+}
+
+// أول ما البرنامج يفتح، وكل 3 دقايق، ولما النت يرجع
+function startFactoryLink(){
+  clearInterval(factoryLinkTimer);
+  factoryLinkTimer=setInterval(()=>{if(daftarUnlocked)factoryLinkPull({quiet:true});},3*60*1000);
+  setTimeout(()=>{if(daftarUnlocked)factoryLinkPull({quiet:true});},12000);
+}
+window.addEventListener('online',()=>{if(daftarUnlocked)factoryLinkPull({quiet:true});});
+startFactoryLink();
 </script>
 <style>
 #daftarA2hs{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:9000;display:flex;gap:10px;align-items:center;background:var(--surface,#fff);color:var(--ink,#111);border:1px solid var(--line,#ddd);border-radius:14px;padding:12px 14px;box-shadow:0 8px 28px rgba(0,0,0,.18);direction:rtl;max-width:560px;margin:0 auto}
@@ -7538,6 +7908,9 @@ if(!window.daftarElectron&&/^https?:$/.test(location.protocol)){
   .page table td button,.settlement-card table td button{margin:2px!important}
   .page table td>div[style*="flex"]{flex-wrap:wrap;justify-content:flex-end}
   .page table td input,.page table td select,.settlement-card table td input,.settlement-card table td select{max-width:60%!important;min-width:0!important}
+  /* «📤 ابعت للمصنع»: اسم صنف المصنع طويل فبيتقص جوه الاختيار — بيتكتب كامل تحته */
+  .settlement-card table td select.fl-opt{max-width:100%!important;width:100%!important}
+  .fl-chosen{display:block!important}
   .panel table:not(.customer-ledger-table) tbody tr:nth-child(even)>td{background:transparent!important}
   .customer-history-table-wrap,.order-cart-wrap{overflow:visible}
   #customerHistory .customer-ledger-table col{width:auto!important}
