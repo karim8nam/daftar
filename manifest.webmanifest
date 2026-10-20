@@ -1,16 +1,14 @@
 {
-  "name": "دفتر — إدارة المبيعات والمخزون",
-  "short_name": "دفتر",
+  "name": "مناديب اميك للدهانات",
+  "short_name": "مناديب اميك",
   "lang": "ar",
   "dir": "rtl",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#FBF7F0",
-  "theme_color": "#C2185B",
+  "background_color": "#f5f7fb",
+  "theme_color": "#14213d",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" }
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
   ]
 }
