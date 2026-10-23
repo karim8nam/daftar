@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.9.0";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.10.0";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -776,6 +776,8 @@ function orderMenuActions(o){
   // ربط المصنع (49-factory-link.js): الطلبية اللي لسه ما اترحّلتش تتبعت (أو تتبعت تاني لو المصنع رفضها أو لغاها)
   const fst=typeof factoryStageOf==='function'?factoryStageOf(o):'';
   if(typeof openSendToFactory==='function'&&!o.received&&!o.invoiced&&(!factoryLinked(o)||fst==='sending'))acts.push({label:fst==='sending'?'📤 ابعت للمصنع تاني (لسه موصلتش)':fst==='error'||fst==='cancelled'?'📤 ابعت للمصنع تاني':'📤 ابعت للمصنع',run:()=>openSendToFactory(o.id)});
+  // (2.10.0) اتبعتت ولسه مخلصتش: زيادة كمية صنف فيها (على نفس الطلب، والباتش اللي لسه متبدأش بيكبر)
+  if(typeof factoryAddable==='function'&&factoryAddable(o))acts.push({label:'➕ زيادة على الطلبية',run:()=>openFactoryIncrease(o.id)});
   if(!o.received)acts.push({label:'📦 ترحيل للمخزون (كله أو جزء)',run:()=>openReceiveOrder(o.id)});
   if(!o.invoiced)acts.push({label:'✏️ تعديل',run:()=>editOrder(o.id)});
   acts.push({label:'📄 إرسال الطلبية على واتساب',run:()=>sendOrderWhatsApp(o.id)});
@@ -1772,7 +1774,7 @@ async function editOrder(id){
   const o=db.orders.find(x=>String(x.id)===String(id));if(!o)return daftarAlert('لم يتم العثور على الطلبية.');
   if(o.invoiced||o.invoiceId)return daftarAlert('الطلبية دي اتعملها فاتورة، فمينفعش تتعدّل. لو فيه غلط، ألغِ الفاتورة الأول من ملف العميل.');
   if(o.received)return openReceivedOrderEdit(o.id);
-  if(orderSentToFactory(o))return daftarAlert(`الطلبية دي اتبعتت للمصنع${o.factory.number?` (طلب ${o.factory.number})`:''} — التعديل من المصنع (كلّم المبيعات يلغوها وابعتها تاني بعد التعديل).\nالباتشات والحالة بتتحدّث هنا لوحدها.`);
+  if(orderSentToFactory(o))return daftarAlert(`الطلبية دي اتبعتت للمصنع${o.factory.number?` (طلب ${o.factory.number})`:''} — التعديل من المصنع (كلّم المبيعات يلغوها وابعتها تاني بعد التعديل).${typeof factoryAddable==='function'&&factoryAddable(o)?'\nلو عايز تزوّد كمية صنف فيها: ⋮ ← «➕ زيادة على الطلبية» (على نفس الطلب ونفس الباتش لو لسه متبدأش).':''}\nالباتشات والحالة بتتحدّث هنا لوحدها.`);
   if(orderCart.length&&String(window.daftarEditingOrderId)!==String(o.id)&&!await daftarConfirm('سلة الطلبية فيها أصناف لسه ما اتحفظتش، وهتتمسح. تكمّل؟'))return;
   orderCart=orderItemsOf(o).map(i=>({...i,quantity:+i.quantity||0,salePrice:+(i.salePrice??i.unitPrice)||0,total:(+i.quantity||0)*(+(i.salePrice??i.unitPrice)||0)}));
   document.querySelector('[data-page=orders]').click();showPageView('orders','new');
@@ -7923,6 +7925,8 @@ if(!window.daftarElectron&&/^https?:$/.test(location.protocol)){
 //   (من المصنع) — إلا لو المصنع رفضها أو لغاها.
 // - «📦 الجاهز في المصنع» (2.7.0 — من «تسجيل طلبية» أو صفحة الربط): الباتشات الجاهزة باسم المصنع أو باسم الفرع ← طلبية من الجاهز
 //   على طول، كل سطر محجوز في المصنع من باتشه (مبيتصنعش ومبيتباعش لحد تاني).
+// - «➕ زيادة على الطلبية» (2.10.0 — من ⋮): الطلبية اللي اتبعتت ولسه مخلصتش — زيادة كمية صنف فيها على نفس الطلب في المصنع ونفس السعر،
+//   والباتش اللي لسه بيتعمل ومتبعتش «جاري التنفيذ» بيكبر لوحده بنفس رقمه (دفتر اميك sql/037). الكمية هنا بتزيد لما المصنع يسجّلها.
 // الدخول متخزن على الجهاز ده بس (مش بيتزامن). الطلبيات وبيانات المصنع اللي عليها بتتزامن عادي مع باقي البيانات.
 const FACTORY_LINK_URL='https://lrpdkdrenfagfhfdndlx.supabase.co';
 const FACTORY_LINK_KEY='sb_publishable_OUVANQN7w2LyoWSC2o20iw_7IAOtmFm';
@@ -7998,8 +8002,13 @@ function factoryStageOf(o){const f=o&&o.factory;if(!f)return '';if(f.state==='er
 function factoryNoteHtml(o){
   const f=o&&o.factory;if(!f)return '';
   const st=factoryStageOf(o);
-  return `<br><small class="factory-link-note${st==='error'||st==='cancelled'?' bad':''}">${FACTORY_STAGE_LABEL[st]||''}${f.track&&st!=='cancelled'?` (${esc(f.track)})`:''}${f.number?` — طلب ${esc(f.number)}`:''}${(f.exits||[]).length?` — إذن خروج ${f.exits.map(esc).join('، ')}`:''}${st==='error'&&f.error?`: ${esc(f.error)}`:''}${st==='cancelled'&&f.reason?`: ${esc(f.reason)}`:''}</small>`;
+  // (2.10.0) الزيادة اللي لسه موصلتش المصنع، أو آخر زيادة المصنع مقبلهاش (بالسبب)
+  const adds=f.adds||[],wait=adds.filter(a=>a.state==='sending'),lastAdd=adds[adds.length-1];
+  const addNote=wait.length?`<br><small class="factory-link-note">⏳ زيادة في الطريق للمصنع (${wait.map(a=>esc(factoryAddText(a))).join('، ')})</small>`
+    :lastAdd&&lastAdd.state==='error'?`<br><small class="factory-link-note bad">⚠️ المصنع مقبلش الزيادة (${esc(factoryAddText(lastAdd))}): ${esc(lastAdd.error||'')}</small>`:'';
+  return `<br><small class="factory-link-note${st==='error'||st==='cancelled'?' bad':''}">${FACTORY_STAGE_LABEL[st]||''}${f.track&&st!=='cancelled'?` (${esc(f.track)})`:''}${f.number?` — طلب ${esc(f.number)}`:''}${(f.exits||[]).length?` — إذن خروج ${f.exits.map(esc).join('، ')}`:''}${st==='error'&&f.error?`: ${esc(f.error)}`:''}${st==='cancelled'&&f.reason?`: ${esc(f.reason)}`:''}</small>${addNote}`;
 }
+const factoryAddText=a=>(a.lines||[]).map(l=>`${l.name||''} ⁦+${l.n}⁩`).join('، ');
 // المرحلة من بيانات المصنع: اتلغى / اتقفل / خرج كله / خرج جزء / جاهز / بيتصنع / مستني
 function factoryStage(fo){
   if(fo.status==='cancelled'||fo.status==='rejected')return 'cancelled';
@@ -8034,13 +8043,20 @@ async function factoryLinkPull({quiet=true}={}){
     return false;
   }finally{factoryLinkBusy=false;}
 }
-// طلبيات اتبعتت والنت قطع قبل ما توصل: بتتبعت تاني بنفس الرقم (المصنع مبيكررهاش)
+// طلبيات (وزيادات) اتبعتت والنت قطع قبل ما توصل: بتتبعت تاني بنفس الرقم (المصنع مبيكررهاش)
 async function factoryLinkResendPending(){
   let changed=false;
   for(const o of db.orders){
-    const f=o.factory;if(!f||f.state!=='sending'||!f.payload||f.submitted)continue;
-    try{const r=await flRpc('branch_link_submit',{p_uid:f.uid,p_kind:'branch_order',p_payload:f.payload});Object.assign(f,{submitted:true},r.delivered?{state:'in'}:{});changed=true;}
-    catch(e){if(e.network||e.unset)throw e;Object.assign(f,{state:'error',error:e.message,payload:undefined});changed=true;}
+    const f=o.factory;if(!f)continue;
+    if(f.state==='sending'&&f.payload&&!f.submitted){
+      try{const r=await flRpc('branch_link_submit',{p_uid:f.uid,p_kind:'branch_order',p_payload:f.payload});Object.assign(f,{submitted:true},r.delivered?{state:'in'}:{});changed=true;}
+      catch(e){if(e.network||e.unset)throw e;Object.assign(f,{state:'error',error:e.message,payload:undefined});changed=true;}
+    }
+    for(const a of f.adds||[]){
+      if(a.state!=='sending'||!a.payload||a.submitted)continue;
+      try{const r=await flRpc('branch_link_submit',{p_uid:a.uid,p_kind:'branch_order_add',p_payload:a.payload});a.submitted=true;if(r.delivered){a.state='in';delete a.payload;}changed=true;}
+      catch(e){if(e.network||e.unset)throw e;Object.assign(a,{state:'error',error:e.message});delete a.payload;changed=true;}
+    }
   }
   if(changed)save();
 }
@@ -8062,12 +8078,43 @@ function applyFactoryState(res){
         delete f.payload;delete f.error;
       }else if(ib&&ib.error&&!ib.delivered&&f.state!=='in'){Object.assign(f,{state:'error',error:ib.error});delete f.payload;}
       else if(ib&&ib.delivered&&f.state==='sending'){f.state='in';delete f.payload;}
+      // (2.10.0) الزيادات: اتسجلت في المصنع ولا مقبلهاش (بالسبب)
+      for(const a of f.adds||[]){
+        const ai=inbox.get(String(a.uid));if(!ai)continue;
+        if(ai.error&&!ai.delivered&&a.state!=='error'){Object.assign(a,{state:'error',error:ai.error});delete a.payload;}
+        else if(ai.delivered&&a.state!=='in'){a.state='in';delete a.payload;delete a.error;}
+      }
       if(JSON.stringify(f)!==before)changed=true;
     }
-    if(fo&&fo.status==='approved')changed=applyFactoryBatches(list,fo)||changed;
+    if(fo&&fo.status==='approved'){changed=applyFactoryQuantities(list,fo)||changed;changed=applyFactoryBatches(list,fo)||changed;}
   }
   if(st)changed=syncFactoryInvoices(st)||changed;
   return changed;
+}
+// (2.10.0) «➕ زيادة على الطلبية»: الكمية في المصنع بقت أكتر من اللي هنا ← الطلبية اللي لسه ما اترحّلتش بتزيد بالفرق (نفس السعر).
+// المصنع هو اللي بيحدد (الزيادة بتبان هنا لما تتسجل هناك بس) — ومبتقلّش من هنا أبدًا.
+function applyFactoryQuantities(list,fo){
+  const open=list.find(o=>!o.received&&!o.invoiced);
+  if(!open||!Array.isArray(open.items)||!open.items.length)return false;
+  let changed=false;
+  for(const line of fo.lines||[]){
+    if(!line.key)continue;
+    const mine=list.flatMap(o=>(o.items||[]).filter(it=>it.flk===line.key));if(!mine.length)continue;
+    const pw=+mine[0].packageWeight||0;
+    const need=line.unit==='ton'?(pw>0?Math.round((+line.kg||0)/pw):0):Math.round(+line.count||0);
+    const have=mine.reduce((s,it)=>s+(+it.quantity||0),0);
+    if(!(need>have))continue;
+    const own=open.items.filter(it=>it.flk===line.key),it=own.find(x=>!x.fb)||own[own.length-1];
+    if(it)it.quantity=(+it.quantity||0)+(need-have);
+    else{const t=mine[0];open.items.push({...t,quantity:need-have,batchNo:'',fb:false,invoicedQty:0,movedQty:0});}
+    changed=true;
+  }
+  if(!changed)return false;
+  const price=it=>+(it.salePrice??it.unitPrice)||0;
+  for(const it of open.items)it.total=(+it.quantity||0)*price(it);
+  open.total=open.items.reduce((s,it)=>s+Math.max(0,(+it.quantity||0)-(+it.movedQty||0)-(+it.invoicedQty||0))*price(it),0);
+  open.remaining=orderOutstanding(open);open.quantity=open.items[0].quantity;
+  return true;
 }
 // الباتشات لكل صنف: الطلبية اللي لسه ما اترحّلتش بتتقسم سطور (سطر لكل باتش بكميته، والباقي من غير باتش المصنع).
 // اللي اترحّل قبل كده (ترحيل جزء) واخد باتشاته خلاص — بيتخصم من الباتش ومبيتغيّرش.
@@ -8219,6 +8266,71 @@ async function openSendToFactory(id){
       if(err)return daftarAlert('مفيش نت دلوقتي — الطلبية متسجلة إنها هتتبعت، وهتتبعت لوحدها أول ما النت يرجع (مش هتتكرر).');
       daftarToast(r.delivered?'✅ الطلبية اتسجلت في المصنع':'✅ الطلبية اتبعتت — هتتسجل في المصنع أول ما سيرفر المصنع يتصل');
       factoryLinkPull({quiet:true});
+    }finally{btn.disabled=false;}
+  };
+}
+
+// ---------- (2.10.0) «➕ زيادة على الطلبية»: الطلبية اللي اتبعتت ولسه مخلصتش — زيادة كمية صنف فيها (من غير المبيعات)
+// الزيادة بتتسجل في المصنع على نفس الطلب ونفس السطر وبنفس السعر، ولو الصنف ليه باتش لسه بيتعمل ومتبعتش «جاري التنفيذ» بيكبر لوحده
+// (نفس رقم الباتش). الكمية هنا بتزيد لما المصنع يسجّلها (أول ما تتحدّث بيانات المصنع).
+const FACTORY_ADD_STAGES=['waiting','making','ready','part_out'];
+function factoryAddable(o){return !!o&&!o.received&&!o.invoiced&&!o.fromFactoryReady&&o.factory?.state==='in'&&FACTORY_ADD_STAGES.includes(factoryStageOf(o));}
+async function openFactoryIncrease(id){
+  const o=db.orders.find(x=>String(x.id)===String(id));if(!o)return daftarAlert('لم يتم العثور على الطلبية.');
+  if(o.fromFactoryReady)return daftarAlert('الطلبية دي من الجاهز في المصنع (محجوزة من باتشاتها) — الزيادة تبقى طلبية جديدة.');
+  if(!factoryAddable(o))return daftarAlert(`مينفعش تزوّد على الطلبية دي دلوقتي (${FACTORY_STAGE_LABEL[factoryStageOf(o)]||'مش في المصنع'}) — اعمل طلبية جديدة بالزيادة.`);
+  if(!factoryLinkOn())return daftarAlert('ربط المصنع مش متجهز على الجهاز ده.\nادخل الأول من «الإعدادات ← 🏭 ربط المصنع».');
+  await factoryLinkPull({quiet:true});
+  const fo=(factoryLinkState?.state?.orders||[]).find(x=>String(x.uid)===String(o.factory.uid));
+  if(!fo)return daftarAlert(flStore()?.lastError||'بيانات الطلبية دي لسه موصلتش من المصنع (أو سيرفر المصنع مش متصل) — جرّب تاني بعد شوية.');
+  if(!factoryAddable(o))return daftarAlert(`الطلبية دي حالتها اتغيّرت في المصنع (${FACTORY_STAGE_LABEL[factoryStageOf(o)]||''}) — مينفعش تزوّد عليها. اعمل طلبية جديدة بالزيادة.`);
+  const list=db.orders.filter(x=>String(x.factory?.uid)===String(o.factory.uid));
+  const rows=(fo.lines||[]).filter(l=>l.key).map(l=>{
+    const mine=list.flatMap(x=>(x.items||[]).filter(it=>it.flk===l.key));if(!mine.length)return null;
+    const t=mine[0],pw=+t.packageWeight||0,now=l.unit==='ton'?(pw>0?Math.round((+l.kg||0)/pw):0):Math.round(+l.count||0);
+    return {key:l.key,unit:l.unit,pw,now:Math.max(now,mine.reduce((s,it)=>s+(+it.quantity||0),0)),name:t.productName,sku:t.sku||'',pebble:t.pebble||'',
+      batches:(l.batches||[]).map(b=>b.number).filter(Boolean)};
+  }).filter(Boolean);
+  if(!rows.length)return daftarAlert('أصناف الطلبية دي مش متربطة بسطور المصنع — اعمل طلبية جديدة بالزيادة.');
+  let old=document.getElementById('daftarFactoryAddModal');if(old)old.remove();
+  const box=document.createElement('div');box.id='daftarFactoryAddModal';
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:820px"><div class="settlement-title"><div><small>➕ زيادة على الطلبية — ${esc(fo.number||'')}</small><h3>طلبية #${displayNo('orders',o.id)} — ${esc(o.customer||'المخزون العام')}</h3></div><button type="button" class="settlement-close" data-close>×</button></div>
+    <div style="line-height:1.8;margin-bottom:8px">اكتب الزيادة على كل صنف (بالعبوة). بتتسجل في المصنع على <strong>نفس الطلب وبنفس السعر</strong> على طول، ولو الصنف ليه باتش لسه بيتعمل ومتبعتش «جاري التنفيذ» <strong>الباتش بيكبر لوحده</strong> بنفس رقمه — غير كده الزيادة بتتصنع لوحدها. الكمية هنا بتزيد أول ما المصنع يسجّلها.</div>
+    ${table(['الصنف','دلوقتي','الزيادة (عبوة)','هتبقى'],rows.map((r,i)=>`<tr><td><strong>${esc(r.name)}</strong>${r.sku?` <small>(<bdi>${esc(r.sku)}</bdi>)</small>`:''}${r.pebble?` <small>حصوة ${esc(r.pebble)}</small>`:''}${r.batches.length?`<br><small>باتش ${r.batches.map(esc).join('، ')}</small>`:''}</td>
+      <td>${r.now} عبوة${r.pw?`<br><small>${flNum(r.pw)} كجم</small>`:''}</td>
+      <td><input type="number" class="fla-qty" data-i="${i}" min="0" step="1" value="0" style="max-width:110px" aria-label="الزيادة على ${esc(r.name)}"></td><td class="fla-new" data-i="${i}">${r.now}</td></tr>`))}
+    <div class="settlement-actions"><button type="button" class="primary" data-send>➕ ابعت الزيادة للمصنع</button><button type="button" class="secondary-btn" data-close>إلغاء</button></div></div>`;
+  document.body.appendChild(box);
+  const close=()=>box.remove();
+  box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);
+  box.querySelector('.settlement-backdrop').onclick=close;
+  const read=()=>rows.map((r,i)=>({r,n:+box.querySelector(`.fla-qty[data-i="${i}"]`).value||0}));
+  // (الإشارة تفضل لازقة في الرقم من الشمال جوه الكلام العربي)
+  const paint=()=>read().forEach(({r,n},i)=>{box.querySelector(`.fla-new[data-i="${i}"]`).textContent=n>0?`${r.now+n} عبوة (⁦+${n}⁩)`:String(r.now);});
+  box.querySelectorAll('.fla-qty').forEach(e=>{e.addEventListener('input',paint);e.addEventListener('change',paint);});
+  box.querySelector('[data-send]').onclick=async e=>{
+    const btn=e.currentTarget;
+    const picked=read().filter(x=>x.n!==0);
+    if(!picked.length)return daftarAlert('اكتب الزيادة على صنف واحد على الأقل.');
+    const bad=picked.find(x=>!Number.isInteger(x.n)||x.n<0);
+    if(bad)return daftarAlert(`الزيادة على «${bad.r.name}» لازم تبقى عدد عبوات صحيح.`);
+    if(picked.some(x=>x.r.unit==='ton'&&!(x.r.pw>0)))return daftarAlert('صنف بالطن من غير وزن عبوة — اعمل طلبية جديدة بالزيادة.');
+    btn.disabled=true;
+    try{
+      const payload={order_uid:o.factory.uid,ext_ref:String(displayNo('orders',o.id)),phone_at:new Date().toISOString(),
+        lines:picked.map(({r,n})=>r.unit==='ton'?{key:r.key,quantity_kg:flNum(n*r.pw)}:{key:r.key,count:String(n)})};
+      const a={uid:crypto.randomUUID(),at:new Date().toISOString(),state:'sending',lines:picked.map(({r,n})=>({key:r.key,name:r.name,n})),payload};
+      o.factory.adds=[...(o.factory.adds||[]),a];
+      save();
+      let r=null,err=null;
+      try{r=await flRpc('branch_link_submit',{p_uid:a.uid,p_kind:'branch_order_add',p_payload:payload});}catch(ex){err=ex;}
+      if(err&&!err.network){Object.assign(a,{state:'error',error:err.message});delete a.payload;}
+      else if(r){a.submitted=true;if(r.delivered){a.state='in';delete a.payload;}}
+      save();close();scheduleRender();
+      if(err&&!err.network)return daftarAlert(`المصنع مقبلش الزيادة:\n${err.message}`);
+      if(err)return daftarAlert('مفيش نت دلوقتي — الزيادة متسجلة إنها هتتبعت، وهتتبعت لوحدها أول ما النت يرجع (مش هتتكرر).');
+      daftarToast(r.delivered?'✅ الزيادة اتسجلت في المصنع':'✅ الزيادة اتبعتت — هتتسجل في المصنع أول ما سيرفر المصنع يتصل');
+      await factoryLinkPull({quiet:true});
     }finally{btn.disabled=false;}
   };
 }
