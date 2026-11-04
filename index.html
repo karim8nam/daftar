@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.12.0";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.13.0";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -179,7 +179,7 @@ html,body{background:#fff!important}
 
 <header class="brand"><div class="mark">د</div><div><h1>دفتر</h1><p>إدارة المبيعات والمخزون والمشتريات <span id="appVersionTag" class="app-version"></span></p></div><div class="brand-status"><div id="supabaseStatus">☁️ لم تتم المزامنة بعد</div><div id="daftarAccountBar" style="display:none"><span id="daftarAccountText"></span><button type="button" id="daftarLogoutBtn">تسجيل الخروج</button></div></div></header><nav id="nav"><button class="active" data-page="dashboard">الرئيسية</button><button data-page="factory">كتالوج المصنع</button><button data-page="products">المخزون</button><button data-page="invoices">فواتير المبيعات</button><button data-page="quotes">عرض أسعار</button><button data-page="orders">الطلبيات</button><button data-page="customers">العملاء</button><button data-page="balances">الأرصدة والمشتريات</button><button data-page="treasury">الخزنة</button><button data-page="reports">التقارير</button><button data-page="settings">الإعدادات</button></nav><datalist id="customerNamesList"></datalist>
 <section id="dashboard" class="page"><div class="grid" id="summary"></div><div class="two" style="margin-top:16px"><article class="panel"><h2>نظرة سريعة</h2><div id="lowStock"></div></article><article class="panel"><h2>معلومات</h2><p class="notice">الطلبية لا تدخل المخزون إلا عند الاستلام. سعر المصنع هو تكلفة الشراء، وسعر البيع منفصل.</p></article></div><article class="panel" style="margin-top:16px"><h2>تنبيهات صلاحية أصناف المصنع</h2><p class="notice">بتظهر بس للأصناف الجايه من طلبية مصنع، بناءً على تاريخ الإنتاج (تقدر تعدّله من صفحة المخزون). عدّل تاريخ الإنتاج أو اضغط "المنتج سليم" لو مش عايز التنبيه ده يتكرر.</p><div id="expiryAlerts"></div></article></section>
-<section id="factory" class="page hidden"><article class="panel"><h2 id="factoryFormTitle">إضافة صنف في كتالوج المصنع</h2><form id="factoryForm" class="form"><input type="hidden" name="id"><label>اسم الصنف<input required name="name"></label><label>النوع<select name="packageType"><option value="شكارة">شكارة</option><option value="بستلة">بستلة</option></select></label><label>طريقة التسعير<select name="pricing"><option value="ton">بالطن (سعر العبوة بيتحسب من وزنها)</option><option value="unit">بالعبوة (سعر ثابت)</option></select></label><label><span id="factoryPriceLabel">سعر شراء الطن من المصنع</span><input required name="factoryPrice" type="number" min="0" step="0.01"></label><label><span id="salePriceLabel">سعر بيع الطن</span><input required name="salePrice" type="number" min="0" step="0.01"></label><label>الوزن الافتراضي للعبوة (كجم)<input name="packageWeight" type="number" min="0" step="0.001"></label><label>أوزان العبوات المتاحة (اختياري)<input name="weightOptions" placeholder="مثال: 20, 25"></label><details class="variant-editor" id="variantEditor"><summary>🎨 أكواد الألوان وأسعارها (للأصناف اللي كل لون فيها ليه سعر، زي المحارة الجاهزة) <span class="badge" id="variantCount">0</span></summary><p class="notice" style="margin:8px 0">كل كود ليه سعره. لما تعمل طلبية للصنف ده وتكتب الكود، السعر بيتحط لوحده. الأسعار هنا <strong id="variantUnitNote">بالطن</strong> زي سعر الصنف فوق. لو سبت سعر فاضي، بيتاخد سعر الصنف العادي.</p><div id="variantRows"></div><datalist id="colorSkuAllList"></datalist><div class="form-actions" style="margin-top:8px"><button type="button" class="secondary-btn" id="addVariantRow">➕ إضافة كود</button></div><details class="color-bulk" style="margin-top:10px"><summary>لصق أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر: الكود، سعر الشراء، سعر البيع (أو الكود وسعر البيع بس). مثال:<br><span dir="ltr">C-100, 9000, 11000</span></p><textarea id="variantBulkInput" rows="4" dir="ltr" placeholder="C-100, 9000, 11000"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="variantBulkAdd">إضافة للقايمة</button></div></details></details><button type="submit" class="primary">حفظ</button><button type="button" class="danger" id="cancelFactoryEdit">إلغاء التعديل</button></form></article><article class="panel"><h2>كتالوج المصنع</h2><div id="factoryTable"></div></article><article class="panel" id="colorCodesPanel"><h2 id="colorFormTitle">🎨 درجات الألوان</h2><p class="notice">سجّل كود كل لون ودرجته. أي صنف في المخزون بنفس الكود هتظهر جنبه دايرة باللون ده لوحدها، وبتتزامن على كل الأجهزة. تقدر تختار أي درجة من مربع الألوان، أو تكتب كودها (#RRGGBB) لو معاك.</p><form id="colorCodeForm" class="form"><input type="hidden" name="id"><label>كود اللون<input required name="code" list="colorSkuList" autocomplete="off" dir="ltr" placeholder="مثلاً C-100"></label><label>اسم اللون (اختياري)<input name="name" placeholder="مثلاً أبيض ثلجي"></label><label>درجة اللون<span class="color-pick"><input type="color" name="hex" value="#c8102e" aria-label="اختيار درجة اللون"><input name="hexText" dir="ltr" maxlength="7" placeholder="#RRGGBB" aria-label="كود الدرجة"></span></label><button type="submit" class="primary" id="colorSaveBtn">حفظ اللون</button><button type="button" class="secondary-btn hidden" id="cancelColorEdit">إلغاء التعديل</button></form><datalist id="colorSkuList"></datalist><div id="colorMissing"></div><details class="color-bulk"><summary>إضافة أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر لون: الكود، واسم اللون (اختياري)، والدرجة — مفصولين بفاصلة. مثال:<br><span dir="ltr">C-100, أبيض ثلجي, #F4F4F0</span></p><textarea id="colorBulkInput" rows="5" dir="auto" placeholder="C-100, أبيض ثلجي, #F4F4F0"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="colorBulkSave">إضافة الأكواد</button></div></details><div class="color-search"><input id="colorSearch" type="search" placeholder="🔎 ابحث بالكود أو اسم اللون..." autocomplete="off"></div><div id="colorCodesTable"></div></article></section>
+<section id="factory" class="page hidden"><article class="panel"><h2 id="factoryFormTitle">إضافة صنف في كتالوج المصنع</h2><form id="factoryForm" class="form"><input type="hidden" name="id"><label>اسم الصنف<input required name="name"></label><label>النوع<select name="packageType"><option value="شكارة">شكارة</option><option value="بستلة">بستلة</option></select></label><label>طريقة التسعير<select name="pricing"><option value="ton">بالطن (سعر العبوة بيتحسب من وزنها)</option><option value="unit">بالعبوة (سعر ثابت)</option></select></label><label><span id="factoryPriceLabel">سعر شراء الطن من المصنع</span><input required name="factoryPrice" type="number" min="0" step="0.01"></label><label><span id="salePriceLabel">سعر بيع الطن</span><input required name="salePrice" type="number" min="0" step="0.01"></label><label>الوزن الافتراضي للعبوة (كجم)<input name="packageWeight" type="number" min="0" step="0.001"></label><label>أوزان العبوات المتاحة (اختياري)<input name="weightOptions" placeholder="مثال: 20, 25"></label><details class="variant-editor" id="variantEditor"><summary>🎨 أكواد الألوان وأسعارها (للأصناف اللي كل لون فيها ليه سعر، زي المحارة الجاهزة) <span class="badge" id="variantCount">0</span></summary><p class="notice" style="margin:8px 0">كل كود ليه سعره. لما تعمل طلبية للصنف ده وتكتب الكود، السعر بيتحط لوحده. الأسعار هنا <strong id="variantUnitNote">بالطن</strong> زي سعر الصنف فوق. لو سبت سعر فاضي، بيتاخد سعر الصنف العادي.</p><div id="variantRows"></div><datalist id="colorSkuAllList"></datalist><div class="form-actions" style="margin-top:8px"><button type="button" class="secondary-btn" id="addVariantRow">➕ إضافة كود</button></div><details class="color-bulk" style="margin-top:10px"><summary>لصق أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر: الكود، سعر الشراء، سعر البيع (أو الكود وسعر البيع بس). مثال:<br><span dir="ltr">C-100, 9000, 11000</span></p><textarea id="variantBulkInput" rows="4" dir="ltr" placeholder="C-100, 9000, 11000"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="variantBulkAdd">إضافة للقايمة</button></div></details></details><button type="submit" class="primary">حفظ</button><button type="button" class="danger" id="cancelFactoryEdit">إلغاء التعديل</button></form></article><article class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">كتالوج المصنع</h2><button type="button" class="secondary-btn hidden" id="factoryPriceReviewBtn" style="flex:none;white-space:nowrap" onclick="openFactoryPriceReview()">💲 مراجعة أسعار المصنع</button></div><div id="factoryTable" style="margin-top:16px"></div></article><article class="panel" id="colorCodesPanel"><h2 id="colorFormTitle">🎨 درجات الألوان</h2><p class="notice">سجّل كود كل لون ودرجته. أي صنف في المخزون بنفس الكود هتظهر جنبه دايرة باللون ده لوحدها، وبتتزامن على كل الأجهزة. تقدر تختار أي درجة من مربع الألوان، أو تكتب كودها (#RRGGBB) لو معاك.</p><form id="colorCodeForm" class="form"><input type="hidden" name="id"><label>كود اللون<input required name="code" list="colorSkuList" autocomplete="off" dir="ltr" placeholder="مثلاً C-100"></label><label>اسم اللون (اختياري)<input name="name" placeholder="مثلاً أبيض ثلجي"></label><label>درجة اللون<span class="color-pick"><input type="color" name="hex" value="#c8102e" aria-label="اختيار درجة اللون"><input name="hexText" dir="ltr" maxlength="7" placeholder="#RRGGBB" aria-label="كود الدرجة"></span></label><button type="submit" class="primary" id="colorSaveBtn">حفظ اللون</button><button type="button" class="secondary-btn hidden" id="cancelColorEdit">إلغاء التعديل</button></form><datalist id="colorSkuList"></datalist><div id="colorMissing"></div><details class="color-bulk"><summary>إضافة أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر لون: الكود، واسم اللون (اختياري)، والدرجة — مفصولين بفاصلة. مثال:<br><span dir="ltr">C-100, أبيض ثلجي, #F4F4F0</span></p><textarea id="colorBulkInput" rows="5" dir="auto" placeholder="C-100, أبيض ثلجي, #F4F4F0"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="colorBulkSave">إضافة الأكواد</button></div></details><div class="color-search"><input id="colorSearch" type="search" placeholder="🔎 ابحث بالكود أو اسم اللون..." autocomplete="off"></div><div id="colorCodesTable"></div></article></section>
 <section id="products" class="page hidden"><article class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">الأصناف الموجودة في المخزون</h2><div style="display:flex;gap:10px;align-items:center;flex:1;justify-content:flex-end;flex-wrap:wrap"><button type="button" class="secondary-btn" style="flex:none;white-space:nowrap" onclick="openStockAdjustLog()">📋 سجل تسويات الجرد</button><div style="min-width:280px;flex:1;max-width:430px"><input id="productSearch" type="search" placeholder="🔎 ابحث بالاسم أو الكود أو الباتش أو صاحب الطلبية..." autocomplete="off" style="width:100%"></div></div></div><p class="notice">الأصناف تدخل المخزون عن طريق استلام الطلبيات، وتُحذف تلقائيًا عند بيع آخر كمية. لو العدد الفعلي مختلف (تالف، ضايع، فرق جرد): ⋮ جنب الصنف ← «⚖️ تسوية الكمية».</p><div id="productsTable" style="margin-top:16px"></div></article></section>
 <section id="invoices" class="page hidden"><div class="page-views" data-page-views="invoices"><button type="button" data-view="new">➕ فاتورة جديدة</button><button type="button" data-view="list">📄 الفواتير السابقة</button></div><article class="panel" data-view="new"><h2>إنشاء فاتورة مبيعات</h2><form id="invoiceForm" class="form"><div class="form-step"><div class="form-step-title"><b>1</b> العميل</div><label class="span-2">العميل<input required name="customer" list="customerNamesList" autocomplete="off"></label><div class="customer-phone-hint span-2" id="invoicePhoneHint"></div></div><div class="form-step"><div class="form-step-title"><b>2</b> الأصناف</div><label class="span-2">بحث واختيار الصنف
   <div class="factory-order-picker" id="invoiceProductPicker">
@@ -1552,18 +1552,21 @@ function renderNow(){
      let detail=esc(x.note)||'—';
      if(x.type==='payment'){
        const methodLabel=x.method==='transfer'?(x.transferType==='wallet'?'تحويل محفظة':'تحويل بنكي'):'كاش';
-       detail=`${methodLabel}${x.accountDetail?' — '+esc(x.accountDetail):''}${x.note?'<br><small>'+esc(x.note)+'</small>':''}`;
+       detail=`${methodLabel}${x.accountDetail?' — '+esc(x.accountDetail):''}${x.note?'<br><small>'+esc(x.note)+'</small>':''}${typeof ftNoteHtml==='function'?ftNoteHtml(x):''}`;
      }else if(x.type==='return'){
        detail=`${esc(x.productName)||''} (${x.quantity||0} وحدة)`;
      }
      const effect=factoryLedgerEffect(x);
-     return `<tr><td>${esc(x.date)}</td><td>${typeLabel}</td><td>${detail}</td><td>${money(x.amount)}</td><td>${effect>=0?'+':''}${money(effect)}</td><td><button type="button" class="danger" onclick="deleteFactoryLedgerEntry('${x.id}')">حذف</button></td></tr>`;
+     // (2.13.0) الدفعة اللي ينفع تتبعت: «📤 ابعت لخزنة الشركة» واختيار كذا دفعة
+     const actions=typeof factoryLedgerActionsHtml==='function'?factoryLedgerActionsHtml(x):`<button type="button" class="danger" onclick="deleteFactoryLedgerEntry('${x.id}')">حذف</button>`;
+     return `<tr><td>${esc(x.date)}</td><td>${typeLabel}</td><td>${detail}</td><td>${money(x.amount)}</td><td>${effect>=0?'+':''}${money(effect)}</td><td>${actions}</td></tr>`;
    };
    const suspiciousFactory=factoryLedgerSuspiciousEntries();
    const suspiciousHtml=suspiciousFactory.length?`<div class="notice tone-danger" style="margin-bottom:12px">⚠️ فيه <strong>${suspiciousFactory.length}</strong> قيد زيادة في حساب المصنع بإجمالي <strong>${money(suspiciousFactory.reduce((s,x)=>s+(+x.entry.amount||0),0))}</strong> (قيود مكررة أو اتضافت تلقائيًا بالغلط). <button type="button" class="danger" onclick="cleanFactoryLedgerSuspicious()">مراجعة وحذف القيود الزيادة</button></div>`:'';
    const rebuild=factoryRebuildPlan();
    const rebuildHtml=rebuild.settlements.length?`<div class="notice tone-danger" style="margin-bottom:12px">⚠️ حساب المصنع فيه قيد «تسوية» قديم (${money(rebuild.settlements.reduce((s,x)=>s+(+x.amount||0),0))}) بدل قيود الطلبيات الفعلية، فالمديونية مش دقيقة. المفروض: المديونية = الطلبات من المصنع − المرتجع − المدفوع. <button type="button" class="danger" onclick="rebuildFactoryAccount()">إعادة بناء حساب المصنع من الطلبيات</button></div>`:'';
-   document.querySelector('#factoryLedgerTable').innerHTML=rebuildHtml+suspiciousHtml+(db.factoryLedger.length
+   const payBar=typeof factoryPayBarHtml==='function'?factoryPayBarHtml():'';
+   document.querySelector('#factoryLedgerTable').innerHTML=rebuildHtml+suspiciousHtml+payBar+(db.factoryLedger.length
      ?pagedTable('factoryLedger',['التاريخ','النوع','التفاصيل','القيمة','تأثيره على الرصيد',''],sortedLedger,ledgerRowFn,'')
      :'<div class="empty">لا يوجد أي قيد في حساب المصنع حتى الآن.</div>');
  }
@@ -1595,6 +1598,7 @@ function renderNow(){
    // سعر شراء المصنع مش بيظهر في الجدول (بيظهر بس في فورم التعديل).
    document.querySelector('#factoryTable').innerHTML=pagedTable('factory',['الصنف','النوع','سعر البيع','الوزن',''],db.factoryItems,x=>`<tr><td>${esc(x.name)}${isTonPriced(x)?' <span class="badge">بالطن</span>':''}${(x.variants||[]).length?` <span class="badge" title="أكواد ألوان بأسعار خاصة">🎨 ${x.variants.length} كود</span>`:''}</td><td>${esc(x.packageType)||'—'}</td><td>${isTonPriced(x)?`${money(x.tonSalePrice)} / طن<br><small>العبوة ${weight(x.packageWeight)}: ${money(x.salePrice)}</small>`:money(x.salePrice)}</td><td>${weight(x.packageWeight)}${catalogWeightOptions(x).length>1?`<br><small>${catalogWeightOptions(x).join(' / ')} كجم</small>`:''}</td><td><div class="row-actions">${rowMenuButton(`openFactoryMenu('${x.id}',this)`,'أوامر صنف الكتالوج')}</div></td></tr>`,'');
    renderColorCodes();
+   if(typeof renderFactoryPriceBadge==='function')renderFactoryPriceBadge();   // (2.13.0) «💲 مراجعة أسعار المصنع»
  }
  if(pageVisible('products'))renderProductsTable();
  if(pageVisible('orders')){
@@ -1719,6 +1723,10 @@ async function deleteFactory(id){const x=db.factoryItems.find(x=>String(x.id)===
 async function deleteFactoryLedgerEntry(id){
   const entry=db.factoryLedger.find(x=>String(x.id)===String(id));
   if(!entry)return daftarAlert('لم يتم العثور على القيد.');
+  // (2.13.0) الدفعة اللي اتبعتت لخزنة الشركة مبتتمسحش من هنا (عشان الحسابين يفضلوا زي بعض)
+  if(typeof ftLocked==='function'&&ftLocked(entry))return daftarAlert(entry.ft.state==='received'
+    ?'خزنة الشركة استلمت الدفعة دي — مينفعش تتمسح من هنا. لو فيها غلط كلّم المصنع.'
+    :'الدفعة دي اتبعتت لخزنة الشركة ومستنية التأكيد — مينفعش تتمسح دلوقتي.\nلو فيها غلط: خلّي الخزنة تقول «مش واصل»، وبعدين امسحها وسجّلها صح.');
   const typeLabel=entry.type==='debit'?(entry.factoryInvoiceId?'فاتورة المصنع':'طلب من المصنع'):entry.type==='return'?'مرتجع صنف':'دفعة';
   const ok=await daftarConfirm(`حذف قيد «${typeLabel}» بقيمة ${money(entry.amount)} بتاريخ ${esc(entry.date)}؟\nسيتم إرجاع تأثير هذا القيد من رصيد حساب المصنع.${entry.factoryInvoiceId?'\n\nالقيد ده فاتورة جت من المصنع (ربط المصنع). لو حذفته مش هيرجع تاني لوحده — احذفه بس لو الفاتورة دي اتسجلت عندك بطريقة تانية.':''}`);
   if(!ok)return;
@@ -5765,7 +5773,8 @@ document.querySelector('#resetFactoryAccount')?.addEventListener('click',async()
   if(!toDelete.length && !(+db.factoryOpeningBalance||0))return daftarAlert('حساب المصنع أصلاً صفر، مفيش حاجة تتصفر.');
   // دفعات اتصرفت من الخزنة: الفلوس خرجت فعلاً، فبتفضل حركة في حسابها حتى بعد ما قيدها يتشال من حساب المصنع.
   const paidFromTreasury=toDelete.filter(x=>x.type==='payment'&&x.accountId);
-  const ok=await daftarConfirm(`هيتم حذف ${toDelete.length} قيد من حساب المصنع نهائيًا (طلبات ودفعات) وتصفير الرصيد الافتتاحي.${kept?`\nقيود المرتجع للمصنع (${kept}) هتفضل زي ما هي، عشان المشتريات تفضل مطابقة للمخزون.`:''}${paidFromTreasury.length?`\nالدفعات اللي اتصرفت من الخزنة (${paidFromTreasury.length}) هتفضل في حركات حساباتها.`:''}\nده مش هيأثر على المخزون أو الفواتير أو الطلبيات.\nمتأكد؟`);
+  const sentToCompany=toDelete.filter(x=>x.type==='payment'&&x.ft&&x.ft.state!=='error');   // (2.13.0)
+  const ok=await daftarConfirm(`هيتم حذف ${toDelete.length} قيد من حساب المصنع نهائيًا (طلبات ودفعات) وتصفير الرصيد الافتتاحي.${kept?`\nقيود المرتجع للمصنع (${kept}) هتفضل زي ما هي، عشان المشتريات تفضل مطابقة للمخزون.`:''}${paidFromTreasury.length?`\nالدفعات اللي اتصرفت من الخزنة (${paidFromTreasury.length}) هتفضل في حركات حساباتها.`:''}${sentToCompany.length?`\nالدفعات اللي اتبعتت لخزنة الشركة (${sentToCompany.length}) هتتمسح من هنا بس — في الشركة هتفضل زي ما هي.`:''}\nده مش هيأثر على المخزون أو الفواتير أو الطلبيات.\nمتأكد؟`);
   if(!ok)return;
   for(const x of paidFromTreasury)treasuryAddEntry(x.accountId,-(+x.amount||0),x.date,`دفعة للمصنع${x.note?' — '+x.note:''} (قبل تصفير حساب المصنع)`);
   for(const x of toDelete)markDeleted('factoryLedger',x.id);
@@ -6624,6 +6633,16 @@ td>button,.phone-edit-btn{white-space:nowrap}
 .arrival-row.is-late{border-color:var(--danger)}
 #daftarDebtFollowModal .arrival-actions{flex-wrap:wrap;justify-content:flex-end}
 #customerDebtInfo{margin:0 0 12px}
+/* (2.13.0) دفعات «حساب المصنع» لخزنة الشركة، ومراجعة أسعار المصنع */
+.ft-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.ft-bar-actions,.ft-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ft-pick{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.ft-pick input{width:18px;height:18px;margin:0;cursor:pointer}
+.fp-change{height:auto;min-height:0;padding:2px 8px;font-size:12px;margin-top:4px}
+#factoryPriceModal select{max-width:220px}
+#factoryPriceModal .fp-diff.up{color:var(--danger)}#factoryPriceModal .fp-diff.down{color:var(--good)}
+#factoryPriceModal tr.price-loss td{background:#fef2f2}
+body.dark #factoryPriceModal tr.price-loss td{background:rgba(248,113,113,.12)}
 /* إعداد نص رسالة الوصول: أزرار الكلمات، والنص جنب المعاينة (بشكل فقاعة واتساب). */
 .arrival-tokens{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 12px}
 .arrival-token{display:inline-flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;font-size:13px;line-height:1.3}
@@ -8302,6 +8321,12 @@ async function factoryLinkResendPending(){
       catch(e){if(e.network||e.unset)throw e;Object.assign(a,{state:'error',error:e.message});delete a.payload;changed=true;}
     }
   }
+  // (2.13.0) دفعات اتبعتت لخزنة الشركة والنت قطع قبل ما توصل
+  for(const x of db.factoryLedger){
+    const f=x.ft;if(!f||f.state!=='sending'||!f.payload||f.submitted)continue;
+    try{const r=await flRpc('branch_link_submit',{p_uid:f.uid,p_kind:'branch_payment',p_payload:f.payload});f.submitted=true;if(r.delivered){f.state='pending';delete f.payload;}changed=true;}
+    catch(e){if(e.network||e.unset){if(changed)save();throw e;}Object.assign(f,{state:'error',error:e.message});delete f.payload;changed=true;}
+  }
   if(changed)save();
 }
 function applyFactoryState(res){
@@ -8333,6 +8358,26 @@ function applyFactoryState(res){
     if(fo&&fo.status==='approved'){changed=applyFactoryQuantities(list,fo)||changed;changed=applyFactoryBatches(list,fo)||changed;}
   }
   if(st)changed=syncFactoryInvoices(st)||changed;
+  changed=applyFactoryTransfers(st,inbox)||changed;
+  return changed;
+}
+// (2.13.0) الدفعات اللي اتبعتت لخزنة الشركة: مستنية / الخزنة استلمتها / مش واصلة (بالسبب) / المصنع مقبلهاش
+function applyFactoryTransfers(st,inbox){
+  let changed=false;
+  const trs=new Map(((st&&st.transfers)||[]).map(t=>[String(t.uid),t]));
+  for(const x of db.factoryLedger){
+    const f=x.ft;if(!f||x.type!=='payment')continue;
+    const before=JSON.stringify(f),t=trs.get(String(f.uid)),ib=inbox.get(String(f.uid));
+    if(t){
+      f.state=t.status==='received'?'received':t.status==='rejected'?'rejected':'pending';
+      if(t.at)f.at=t.at;else delete f.at;
+      if(t.status==='rejected'&&t.note)f.reason=t.note;else delete f.reason;
+      if(t.reversed)f.reversed=true;else delete f.reversed;
+      delete f.payload;delete f.error;
+    }else if(ib&&ib.error&&!ib.delivered&&(f.state==='sending'||f.state==='error')){Object.assign(f,{state:'error',error:ib.error});delete f.payload;}
+    else if(ib&&ib.delivered&&f.state==='sending'){f.state='pending';delete f.payload;}
+    if(JSON.stringify(f)!==before)changed=true;
+  }
   return changed;
 }
 // (2.10.0) «➕ زيادة على الطلبية»: الكمية في المصنع بقت أكتر من اللي هنا ← الطلبية اللي لسه ما اترحّلتش بتزيد بالفرق (نفس السعر).
@@ -8696,9 +8741,200 @@ async function openFactoryReady(){
   };
 }
 
+// ---------- (2.13.0) «📤 ابعت لخزنة الشركة» (دفعات «حساب المصنع»): بتتبعت بإيدك بعد ما تراجعها — مفيش حاجة بتتبعت لوحدها.
+// بس الدفعات من «تاريخ بداية الإرسال» (صفحة الربط) وبعده: اللي قبله متسجل في المصنع بإيدهم. كل دفعة برقم ثابت (ft.uid) فمبتتكررش.
+// في المصنع بتستنى الخزنة: «استلمت» (بتتسجل على حساب الفرع هناك) أو «مش واصل» بالسبب — والحالة بترجع هنا مع كل تحديث.
+// الدفعة اللي اتبعتت متتمسحش من هنا (إلا لو الخزنة قالت مش واصلة، أو المصنع مقبلهاش) — عشان الحسابين يفضلوا زي بعض.
+const FT_LABEL={sending:'⏳ في الطريق لخزنة الشركة',pending:'🕓 مستنية تأكيد خزنة الشركة',received:'✅ خزنة الشركة استلمتها',rejected:'❌ خزنة الشركة قالت مش واصلة',error:'⚠️ المصنع مقبلهاش'};
+function factoryPayFrom(){const d=String((db.printSettings||{}).factoryPayFrom||'');return /^\d{4}-\d{2}-\d{2}$/.test(d)?d:'';}
+const ftState=x=>(x&&x.ft&&x.ft.state)||'';
+// تتبعت؟ دفعة، والربط شغال، وتاريخها من تاريخ البداية أو بعده، ولسه متبعتتش (أو الخزنة قالت مش واصلة / المصنع مقبلهاش)
+function ftCanSend(x){
+  if(!x||x.type!=='payment'||!factoryLinkOn())return false;
+  const from=factoryPayFrom();if(!from||String(x.date||'')<from)return false;
+  const s=ftState(x);return !s||s==='rejected'||s==='error';
+}
+function ftLocked(x){const s=ftState(x);return s==='sending'||s==='pending'||s==='received';}
+const ftMethod=x=>x.method==='transfer'?(x.transferType==='wallet'?'wallet':'bank'):'cash';
+function ftNoteHtml(x){
+  const f=x&&x.ft;if(!f||!FT_LABEL[f.state])return '';
+  const s=f.state,bad=s==='rejected'||s==='error'||f.reversed;
+  const extra=s==='received'?(f.at?` (<bdi style="white-space:nowrap">${esc(cairoDate(f.at))}</bdi>)`:'')+(f.reversed?' — ⚠️ المصنع صحّح التوريد، كلّم المصنع':'')
+    :s==='rejected'&&f.reason?`: ${esc(f.reason)}`:s==='error'&&f.error?`: ${esc(f.error)}`:'';
+  return `<br><small class="factory-link-note${bad?' bad':''}">${FT_LABEL[s]}${extra}</small>`;
+}
+async function factorySendPayments(ids){
+  const list=(ids||[]).map(id=>db.factoryLedger.find(x=>String(x.id)===String(id))).filter(ftCanSend);
+  if(!list.length)return daftarAlert(factoryPayFrom()?'مفيش دفعات تتبعت (اتبعتت قبل كده، أو تاريخها قبل تاريخ بداية الإرسال).':'حدد «تاريخ بداية الإرسال» الأول من «الإعدادات ← 🏭 ربط المصنع».');
+  const total=list.reduce((s,x)=>s+(+x.amount||0),0);
+  if(!await daftarConfirm(`هتتبعت ${list.length===1?'الدفعة دي':list.length+' دفعات'} لخزنة الشركة بإجمالي ${money(total)}:\n${list.slice(0,12).map(x=>`• ${x.date} — ${money(x.amount)}${x.note?' — '+x.note:''}`).join('\n')}${list.length>12?'\n• …':''}\n\nبعد ما تتبعت مش هتقدر تمسحها من هنا (إلا لو الخزنة قالت مش واصلة). متأكد؟`))return;
+  let sent=0,failed=0,lastErr='',offline=null;
+  for(const x of list){
+    const payload={amount:(Math.round((+x.amount||0)*100)/100).toFixed(2),date:x.date,method:ftMethod(x),detail:x.accountDetail||'',note:x.note||'',phone_at:new Date().toISOString()};
+    x.ft={uid:crypto.randomUUID(),state:'sending',sentAt:new Date().toISOString(),payload};
+    save();
+    if(offline)continue;                                          // (النت قطع: الباقي متعلّم «في الطريق» وهيتبعت لوحده)
+    try{const r=await flRpc('branch_link_submit',{p_uid:x.ft.uid,p_kind:'branch_payment',p_payload:payload});x.ft.submitted=true;if(r.delivered){x.ft.state='pending';delete x.ft.payload;}sent++;}
+    catch(e){if(e.network||e.unset)offline=e;else{Object.assign(x.ft,{state:'error',error:e.message});delete x.ft.payload;failed++;lastErr=e.message;}}
+    save();
+  }
+  scheduleRender();renderFactoryLinkPanel();
+  if(offline)return daftarAlert(`${offline.unset?offline.message:'مفيش نت دلوقتي'} — ${sent?`اتبعت ${sent}، و`:''}الباقي متسجل إنه هيتبعت، وهيتبعت لوحده أول ما ${offline.unset?'تدخل تاني':'النت يرجع'} (مش هيتكرر).`);
+  if(failed)return daftarAlert(`المصنع مقبلش ${failed===list.length?'':failed+' من '}الدفعات:\n${lastErr}\n\nصحّحها وابعتها تاني من «حساب المصنع».`);
+  daftarToast(`📤 اتبعت ${sent===1?'الدفعة':sent+' دفعات'} لخزنة الشركة — مستنية تأكيد الخزنة.`);
+}
+// اختيار كذا دفعة من سجل «حساب المصنع»
+function ftPickedIds(){return [...document.querySelectorAll('#factoryLedgerTable [data-ftpick]:checked')].map(c=>c.dataset.ftpick);}
+function ftPaintPicked(){
+  const b=document.getElementById('ftSendPicked');if(!b)return;
+  const ids=ftPickedIds();b.disabled=!ids.length;b.textContent=ids.length?`📤 ابعت المحدد (${ids.length})`:'📤 ابعت المحدد';
+}
+document.getElementById('factoryLedgerTable')?.addEventListener('change',e=>{if(e.target.matches('[data-ftpick]'))ftPaintPicked();});
+// شريط فوق سجل «حساب المصنع»
+function factoryPayBarHtml(){
+  if(!factoryLinkOn())return '';
+  const from=factoryPayFrom();
+  if(!from)return `<div class="notice" style="margin-bottom:12px">📤 تقدر تبعت دفعاتك لخزنة الشركة من هنا — حدد «تاريخ بداية الإرسال» الأول من «الإعدادات ← 🏭 ربط المصنع».</div>`;
+  const ready=db.factoryLedger.filter(ftCanSend),sum=ready.reduce((s,x)=>s+(+x.amount||0),0);
+  if(!ready.length)return '';
+  return `<div class="notice ft-bar" style="margin-bottom:12px"><span>📤 <strong>${ready.length}</strong> دفعة (من <bdi style="white-space:nowrap">${esc(from)}</bdi>) لسه متبعتتش لخزنة الشركة — ${money(sum)}</span>`+
+    `<span class="ft-bar-actions"><button type="button" class="secondary-btn" id="ftSendPicked" disabled onclick="factorySendPayments(ftPickedIds())">📤 ابعت المحدد</button>`+
+    `<button type="button" class="primary" onclick="factorySendPayments(db.factoryLedger.filter(ftCanSend).map(x=>x.id))">📤 ابعت الكل (${ready.length})</button></span></div>`;
+}
+// خانة الأوامر جنب كل قيد في سجل «حساب المصنع»
+function factoryLedgerActionsHtml(x){
+  const del=`<button type="button" class="danger" onclick="deleteFactoryLedgerEntry('${x.id}')">حذف</button>`;
+  if(!ftCanSend(x))return del;
+  return `<div class="ft-actions"><label class="ft-pick" title="اختار الدفعة دي"><input type="checkbox" data-ftpick="${esc(String(x.id))}" aria-label="اختار الدفعة دي"></label><button type="button" class="secondary-btn" onclick="factorySendPayments(['${x.id}'])">📤 ابعت لخزنة الشركة</button>${del}</div>`;
+}
+// «⚖️ مطابقة الحساب مع المصنع»: رصيدك هنا جنب اللي المصنع شايفه على الفرع، والفرق متفصّل
+function factoryReconcileHtml(st){
+  if(!st)return '';
+  const pays=db.factoryLedger.filter(x=>x.type==='payment'),sum=a=>a.reduce((s,x)=>s+(+x.amount||0),0);
+  const unsent=pays.filter(x=>ftCanSend(x)&&!ftState(x)),waiting=pays.filter(x=>['sending','pending'].includes(ftState(x))),refused=pays.filter(x=>['rejected','error'].includes(ftState(x)));
+  const here=factoryBalance(),there=+st.balance||0,other=Math.round((there-here-sum(unsent)-sum(waiting)-sum(refused))*100)/100;
+  const row=(l,v,n)=>`<tr><td>${l}${n!=null?` <small>(${n})</small>`:''}</td><td>${money(v)}</td></tr>`;
+  return `<h3>⚖️ مطابقة الحساب مع المصنع</h3>`+table(['البيان','المبلغ'],[row('رصيدك للمصنع هنا («حساب المصنع»)',here),row('المصنع شايف على الفرع',there),
+      ...(unsent.length?[row('دفعات لسه متبعتتش لخزنة الشركة',sum(unsent),unsent.length)]:[]),
+      ...(waiting.length?[row('دفعات مستنية تأكيد خزنة الشركة',sum(waiting),waiting.length)]:[]),
+      ...(refused.length?[row('دفعات الخزنة قالت مش واصلة (أو المصنع مقبلهاش)',sum(refused),refused.length)]:[])])+
+    (Math.abs(other)<0.01?'<div class="notice tone-success">✅ الحساب مطابق: الفرق كله من الدفعات اللي فوق.</div>'
+      :`<div class="notice tone-danger">⚠️ فيه فرق تاني <strong>${money(Math.abs(other))}</strong> ${other>0?'(المصنع شايف عليك أكتر)':'(المصنع شايف عليك أقل)'}: قيود متسجلة عندك بس (رصيد افتتاحي، طلب من المصنع بإيدك، مرتجع، دفعات قبل تاريخ البداية متسجلتش هناك) أو حاجة في المصنع مش عندك — راجعها مع المصنع.</div>`);
+}
+
+// ---------- (2.13.0) «💲 مراجعة أسعار المصنع» («كتالوج المصنع»): سعر الشراء عندك جنب سعر قائمة المصنع دلوقتي — «تطبيق» لكل صنف أو «تطبيق الكل».
+// مفيش حاجة بتتغيّر لوحدها. التطبيق بيغيّر سعر الشراء بس (سعر البيع قرارك — الصنف اللي مكسبه بقى صفر أو أقل بيطلع بالأحمر).
+// المخزون والفواتير والطلبيات اللي اتسجلت مش بتتأثر (سعر الشراء بيتثبّت عليها). أكواد الألوان اللي ليها سعر شراء خاص بتفضل زي ما هي
+// (المصنع مالوش أسعار بالكود). الصنف بيتربط بصنف المصنع بنفس الاختيار اللي بيتحفظ لما بتبعت طلبية (factoryLink).
+function catalogFactoryOption(fi,opts){
+  if(fi.factoryLink?.v){const o=opts.find(o=>o.v===fi.factoryLink.v);if(o)return {opt:o,linked:true};}
+  const n=flNorm(fi.name),w=+fi.packageWeight||0,same=opts.filter(o=>flNorm(o.name)===n);
+  const byWeight=same.find(o=>o.unit==='package'&&w>0&&Math.abs(o.weight-w)<1e-6),ton=same.find(o=>o.unit==='ton');
+  return {opt:(isTonPriced(fi)?ton||byWeight:byWeight||ton)||(same.length===1?same[0]:null),linked:false};
+}
+// سعر المصنع بنفس وحدة الصنف عندك: بالطن ← سعر الطن، بالعبوة ← سعر العبوة بوزنها
+function catalogFactoryPrice(fi,opt){
+  if(!opt)return null;
+  const w=+fi.packageWeight||0,r=v=>Math.round(v*100)/100;
+  if(isTonPriced(fi))return opt.unit==='ton'?opt.price:(opt.weight>0?r(opt.price*1000/opt.weight):null);
+  return opt.unit==='ton'?(w>0?r(opt.price*w/1000):null):opt.price;
+}
+const catalogOwnPrice=fi=>isTonPriced(fi)?(+fi.tonFactoryPrice||0):(+fi.factoryPrice||0);
+const catalogSaleOf=fi=>isTonPriced(fi)?(+fi.tonSalePrice||0):(+fi.salePrice||0);
+function factoryPriceRow(fi,opt,linked,priceAt){
+  const fac=catalogFactoryPrice(fi,opt),own=catalogOwnPrice(fi);
+  return {fi,opt,linked,fac,own,diff:fac==null?0:Math.round((fac-own)*100)/100,at:opt?priceAt.get(opt.v)||null:null};
+}
+const factoryPriceChanged=r=>!!r.opt&&r.fac!=null&&Math.abs(r.diff)>=0.01;
+function factoryPriceAtMap(st){return new Map((st.price_at||[]).map(x=>[x.u==='ton'?`${x.p}|ton`:`${x.p}|package|${x.t}|${flNum(x.w)}`,x.at]));}
+function factoryPriceRows(){
+  const st=factoryLinkState?.state;if(!st)return null;
+  const opts=factoryPriceOptions(st.products),at=factoryPriceAtMap(st);
+  return (db.factoryItems||[]).map(fi=>{const {opt,linked}=catalogFactoryOption(fi,opts);return factoryPriceRow(fi,opt,linked,at);});
+}
+function renderFactoryPriceBadge(){
+  const b=document.getElementById('factoryPriceReviewBtn');if(!b)return;
+  b.classList.toggle('hidden',!factoryLinkOn());
+  const rows=factoryPriceRows(),n=rows?rows.filter(factoryPriceChanged).length:0;
+  b.textContent=n?`💲 مراجعة أسعار المصنع (${n} اتغيّر)`:'💲 مراجعة أسعار المصنع';
+  b.classList.toggle('primary',!!n);b.classList.toggle('secondary-btn',!n);
+}
+function applyFactoryPrice(fi,opt){
+  const fac=catalogFactoryPrice(fi,opt);if(fac==null)return false;
+  const old=catalogOwnPrice(fi);
+  fi.factoryLink={v:opt.v,label:opt.label};
+  if(Math.abs(fac-old)>=0.01){
+    if(isTonPriced(fi)){fi.tonFactoryPrice=fac;fi.factoryPrice=priceFromTon(fac,fi.packageWeight);}
+    else fi.factoryPrice=fac;
+    fi.factoryPriceSync={at:today(),from:old,to:fac};
+  }
+  return true;
+}
+async function openFactoryPriceReview(){
+  if(!factoryLinkOn())return daftarAlert('ربط المصنع مش متجهز — ادخل من «الإعدادات ← 🏭 ربط المصنع».');
+  if(!factoryLinkState?.state&&!await factoryLinkPull({quiet:false}))return;
+  if(!factoryLinkState?.state)return daftarAlert('الربط لسه متشغّلش من ناحية المصنع (أو متقفل) — كلّم المصنع.');
+  document.getElementById('factoryPriceModal')?.remove();
+  const box=document.createElement('div');box.id='factoryPriceModal';
+  let showAll=false;const chosen=new Map();                       // (صنف الكتالوج ← صنف المصنع اللي اخترته في الشباك ده)
+  const close=()=>box.remove();
+  const render=()=>{
+    const st=factoryLinkState.state,opts=factoryPriceOptions(st.products),at=factoryPriceAtMap(st);
+    const optHtml=`<option value="">— اختار صنف المصنع —</option>`+opts.map(o=>`<option value="${esc(o.v)}">${esc(o.label)} — ${o.unit==='ton'?`${money(o.price)} للطن`:money(o.price)}</option>`).join('');
+    const rows=(db.factoryItems||[]).map(fi=>{
+      const c=chosen.get(String(fi.id));
+      if(c!==undefined)return factoryPriceRow(fi,opts.find(o=>o.v===c)||null,false,at);
+      const {opt,linked}=catalogFactoryOption(fi,opts);return factoryPriceRow(fi,opt,linked,at);
+    });
+    const changed=rows.filter(factoryPriceChanged),toLink=rows.filter(r=>r.opt&&!r.linked&&!factoryPriceChanged(r)&&r.fac!=null);
+    const order=r=>factoryPriceChanged(r)?0:!r.opt?1:2;
+    const shown=(showAll?rows:rows.filter(r=>factoryPriceChanged(r)||(r.opt&&!r.linked))).slice().sort((a,b)=>order(a)-order(b));
+    const unit=fi=>isTonPriced(fi)?' / طن':'';
+    const rowHtml=r=>{
+      const fi=r.fi,id=esc(String(fi.id)),sale=catalogSaleOf(fi),margin=r.fac!=null?Math.round((sale-r.fac)*100)/100:null;
+      const special=(fi.variants||[]).filter(v=>+v.factoryPrice>0).length;
+      const pickSel=`<select data-fpick="${id}" aria-label="صنف المصنع">${optHtml}</select>`;
+      const facCell=r.linked&&!chosen.has(String(fi.id))
+        ?`${esc(r.opt.label)}<br><button type="button" class="secondary-btn fp-change" data-fchange="${id}">تغيير</button>`
+        :`${pickSel}${r.opt?'<br><small>اقتراح — اتأكد إنه الصنف الصح</small>':''}`;
+      const diff=!r.opt?'—':r.fac==null?'<small>محتاج وزن العبوة</small>':Math.abs(r.diff)<0.01?'✅ زي بعض':`<strong class="fp-diff ${r.diff>0?'up':'down'}">${r.diff>0?'زاد':'قلّ'} ${money(Math.abs(r.diff))}</strong>`;
+      const act=factoryPriceChanged(r)?`<button type="button" class="primary" data-fapply="${id}">تطبيق</button>`:r.opt&&!r.linked&&r.fac!=null?`<button type="button" class="secondary-btn" data-fapply="${id}">✔ ربط</button>`:'';
+      return `<tr${margin!=null&&margin<=0?' class="price-loss"':''}><td>${esc(fi.name)} <small>${isTonPriced(fi)?'بالطن':esc(weight(fi.packageWeight))}</small>${special?`<br><small>🎨 ${special} كود بسعر شراء خاص — مبيتغيّرش</small>`:''}</td>`+
+        `<td>${facCell}</td><td>${money(r.own)}${unit(fi)}${fi.factoryPriceSync?.at?`<br><small>اتحدّث <bdi style="white-space:nowrap">${esc(fi.factoryPriceSync.at)}</bdi></small>`:''}</td>`+
+        `<td>${r.fac!=null?money(r.fac)+unit(fi):'—'}${r.at?`<br><small>اتغيّر في المصنع <bdi style="white-space:nowrap">${esc(cairoDate(r.at))}</bdi></small>`:''}</td><td>${diff}</td>`+
+        `<td>${margin==null?'—':`${money(margin)}${unit(fi)}${margin<=0?'<br><small>⚠️ سعر البيع أقل من الشراء</small>':''}`}</td><td>${act}</td></tr>`;
+    };
+    box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="width:min(1100px,100%);max-width:1100px"><div class="settlement-title"><div><small>${changed.length?`${changed.length} صنف سعره اتغيّر في المصنع`:'كل الأسعار المربوطة زي المصنع'}${toLink.length?` — ${toLink.length} محتاج تأكيد ربط`:''}</small><h3>💲 مراجعة أسعار المصنع</h3></div><button type="button" class="settlement-close" data-close>×</button></div>`+
+      `<div style="line-height:1.8;margin-bottom:8px">سعر الشراء عندك جنب سعر قائمة المصنع دلوقتي (من غير ضريبة). «تطبيق» بيغيّر <strong>سعر الشراء بس</strong> — سعر البيع قرارك. الطلبيات والمخزون والفواتير اللي اتسجلت مش بتتأثر.</div>`+
+      `<label class="ft-pick" style="margin-bottom:8px"><input type="checkbox" id="fpShowAll"${showAll?' checked':''}> عرض كل أصناف الكتالوج (${rows.length})</label>`+
+      (shown.length?table(['الصنف','صنف المصنع','سعر الشراء عندك','سعر المصنع دلوقتي','الفرق','المكسب بسعر البيع عندك',''],shown.map(rowHtml)):`<div class="empty">✅ كل أسعار الشراء عندك زي قائمة المصنع.</div>`)+
+      `<div class="settlement-actions">${changed.length?`<button type="button" class="primary" data-fall>تطبيق الكل (${changed.length})</button>`:''}<button type="button" class="secondary-btn" data-close>قفل</button></div></div>`;
+    box.querySelectorAll('[data-fpick]').forEach(s=>{const k=s.dataset.fpick,r=rows.find(x=>String(x.fi.id)===k);s.value=r&&r.opt?r.opt.v:'';s.onchange=()=>{chosen.set(k,s.value);render();};});
+    box.querySelectorAll('[data-fchange]').forEach(b=>b.onclick=()=>{const r=rows.find(x=>String(x.fi.id)===b.dataset.fchange);chosen.set(b.dataset.fchange,r&&r.opt?r.opt.v:'');render();});
+    box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);
+    box.querySelector('.settlement-backdrop').onclick=close;
+    box.querySelector('#fpShowAll').onchange=e=>{showAll=e.target.checked;render();};
+    box.querySelectorAll('[data-fapply]').forEach(b=>b.onclick=()=>{
+      const r=rows.find(x=>String(x.fi.id)===b.dataset.fapply);if(!r||!r.opt)return;
+      if(!applyFactoryPrice(r.fi,r.opt))return daftarAlert('مقدرتش أحسب السعر — اكتب وزن العبوة للصنف ده الأول.');
+      chosen.delete(String(r.fi.id));save();scheduleRender();renderFactoryPriceBadge();render();
+      daftarToast(factoryPriceChanged(r)?`تم تحديث سعر شراء «${r.fi.name}» لـ ${money(r.fac)}${unit(r.fi)}.`:`تم ربط «${r.fi.name}» بصنف المصنع.`);
+    });
+    box.querySelector('[data-fall]')?.addEventListener('click',async()=>{
+      const guess=changed.filter(r=>!r.linked).length;
+      if(!await daftarConfirm(`هيتغيّر سعر الشراء لـ ${changed.length} صنف بسعر المصنع دلوقتي${guess?`\n(منهم ${guess} بربط مقترح — اتأكد إنهم الأصناف الصح)`:''}.\nسعر البيع مش هيتغيّر. متأكد؟`))return;
+      let n=0;for(const r of changed)if(applyFactoryPrice(r.fi,r.opt)){n++;chosen.delete(String(r.fi.id));}
+      save();scheduleRender();renderFactoryPriceBadge();render();
+      daftarToast(`تم تحديث سعر الشراء لـ ${n} صنف.`);
+    });
+  };
+  document.body.appendChild(box);render();
+}
+
 // ---------- «الإعدادات ← 🏭 ربط المصنع»
 function renderFactoryLinkPanel(){
   renderFactoryReadyEntry();
+  renderFactoryPriceBadge();
   const el=document.getElementById('factoryLinkPanel');if(!el)return;
   const s=flStore();
   if(!s?.refresh){
@@ -8724,12 +8960,25 @@ function renderFactoryLinkPanel(){
       <div>الفرع: <strong>${esc(s.branch?.name||'—')}</strong> — اسم الدخول: <strong dir="ltr">${esc(s.username||'')}</strong></div>
       <div>آخر تحديث من المصنع: <strong>${s.lastPullAt?esc(new Date(s.lastPullAt).toLocaleString('ar-EG')):'—'}</strong>${res&&res.mode==='bridge'&&res.factory_seen_at?` — سيرفر المصنع آخر اتصال: <strong>${esc(new Date(res.factory_seen_at).toLocaleString('ar-EG'))}</strong>`:''}</div>
       ${res&&!st?'<div class="notice tone-danger">الربط لسه متشغّلش من ناحية المصنع (أو متقفل) — كلّم المصنع.</div>':''}
-      ${st?`<div>فواتير المصنع في «حساب المصنع» عندك: <strong>${money(fromFactory)}</strong> — المصنع شايف على عملاء الفرع: <strong>${money(st.balance)}</strong></div>`:''}
+      ${st?`<div>فواتير المصنع في «حساب المصنع» عندك: <strong>${money(fromFactory)}</strong></div>`:''}
     </div>
     ${s.lastError?`<div class="notice tone-danger">${esc(s.lastError)}</div>`:''}
     <div class="form-actions" style="margin:10px 0">${st?`<button type="button" class="primary" id="factoryLinkReadyBtn">📦 الجاهز في المصنع (${(st.ready||[]).length})</button>`:''}<button type="button" class="secondary-btn" id="factoryLinkPullBtn">🔄 حدّث دلوقتي</button><button type="button" class="danger" id="factoryLinkOutBtn">خروج من الربط</button></div>
+    <h3>📤 الدفعات لخزنة الشركة</h3>
+    <form id="ftFromForm" class="form" autocomplete="off"><label>تاريخ بداية الإرسال<input type="date" name="from" value="${esc(factoryPayFrom())}"></label>
+      <div class="form-actions" style="align-self:end"><button type="submit" class="secondary-btn">حفظ التاريخ</button></div></form>
+    <p class="notice">الدفعات اللي تاريخها من اليوم ده وبعده بس هي اللي ينفع تتبعتها لخزنة الشركة («حساب المصنع» ← جنب كل دفعة «📤 ابعت لخزنة الشركة»). اختار يوم التشغيل الفعلي: اللي قبله متسجل في المصنع بإيدهم خلاص.${factoryPayFrom()?'':' <strong>لسه مش متحدد — مفيش دفعات بتتبعت.</strong>'}</p>
+    ${factoryReconcileHtml(st)}
     <h3>الطلبيات اللي اتبعتت للمصنع</h3>
     ${table(['الطلبية','العميل','في المصنع','الحالة'],sent.map(o=>`<tr><td>#${displayNo('orders',o.id)}<br><small>${esc(o.date||'')}</small></td><td>${esc(o.customer||'المخزون العام')}</td><td>${o.factory.number?esc(o.factory.number):'—'}</td><td>${factoryNoteHtml(o).replace(/^<br>/,'')}</td></tr>`))}`;
+  el.querySelector('#ftFromForm').onsubmit=async e=>{
+    e.preventDefault();const v=String(new FormData(e.currentTarget).get('from')||'');
+    if(v&&!/^\d{4}-\d{2}-\d{2}$/.test(v))return daftarAlert('اختار التاريخ صح.');
+    const old=factoryPayFrom();if(v===old)return daftarToast('التاريخ زي ما هو.');
+    if(v&&!old&&!await daftarConfirm(`الدفعات للمصنع من ${v} وبعده هيبقى ينفع تتبعتها لخزنة الشركة.\nاتأكد إن الدفعات دي متسجلتش في المصنع بإيدهم (عشان متتسجلش مرتين). تمام؟`))return;
+    db.printSettings={...(db.printSettings||{}),factoryPayFrom:v,updatedAt:new Date().toISOString()};save();scheduleRender();renderFactoryLinkPanel();
+    daftarToast(v?`تاريخ بداية الإرسال: ${v}`:'اتشال تاريخ بداية الإرسال — مفيش دفعات بتتبعت.');
+  };
   const rb=el.querySelector('#factoryLinkReadyBtn');if(rb)rb.onclick=()=>openFactoryReady();
   el.querySelector('#factoryLinkPullBtn').onclick=async e=>{const b=e.currentTarget;b.disabled=true;try{if(await factoryLinkPull({quiet:false}))daftarToast('✅ اتحدّثت بيانات المصنع');}finally{if(b.isConnected)b.disabled=false;}};
   el.querySelector('#factoryLinkOutBtn').onclick=async()=>{if(await daftarConfirm('خروج من ربط المصنع على الجهاز ده؟\nالطلبيات وبياناتها بتفضل زي ما هي، ومحتاج تدخل تاني عشان تبعت أو تحدّث.'))factoryLinkLogout();};
