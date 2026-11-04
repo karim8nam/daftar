@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.10.0";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.11.0";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -188,7 +188,7 @@ html,body{background:#fff!important}
     <div id="invoiceProductResults" class="factory-product-results hidden"></div>
     <div id="invoiceProductSelected" class="notice factory-product-selected">لم يتم اختيار صنف بعد.</div>
   </div>
-</label><label>الكمية<input name="quantity" type="number" min="1" step="1" value="1"></label><label>سعر الوحدة (قابل للتعديل)<input name="liveUnitPrice" type="number" min="0" step="0.01" value="0"></label><label>قيمة الصنف<input name="liveLineTotal" type="text" value="0.00 ج.م" readonly></label><button type="button" class="primary" id="addInvoiceItem">إضافة صنف للفاتورة</button><div id="invoiceCart" class="span-all"></div></div><div class="form-step pay-step"><div class="form-step-title"><b>3</b> الدفع والحفظ</div><label>مصاريف النقل (على العميل)<input name="transport" type="number" min="0" step="0.01" value="0" placeholder="0 لو مفيش نقل"></label><label>قيمة الفاتورة<input name="invoiceTotal" type="text" value="0.00 ج.م" readonly></label><label>المدفوع<input name="paidAmount" type="number" min="0" step="0.01" value="0" placeholder="المبلغ المدفوع الآن"></label><label data-treasury-method>طريقة الدفع<select name="paymentMethod"><option>كاش</option><option>محفظة</option><option>تحويل بنكي</option></select></label><label class="treasury-pick hidden">الحساب<select name="accountId" data-treasury="in"></select></label><label>التاريخ<input required name="date" type="date"></label><div id="invoiceCreditBox" class="notice span-all" style="display:none"></div><div class="form-actions span-all"><button type="button" class="primary" id="saveInvoicePrint">حفظ وطباعة</button><button type="button" class="secondary-btn" id="saveInvoiceOnly">حفظ بس</button></div></div></form><div id="invoicesJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">آخر الفواتير</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="invoiceSearch" type="search" placeholder="🔎 ابحث برقم الفاتورة أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="invoicesTable" style="margin-top:16px"></div></article></section>
+</label><label>الكمية<input name="quantity" type="number" min="1" step="1" value="1"></label><label>سعر الوحدة (قابل للتعديل)<input name="liveUnitPrice" type="number" min="0" step="0.01" value="0"></label><label>قيمة الصنف<input name="liveLineTotal" type="text" value="0.00 ج.م" readonly></label><button type="button" class="primary" id="addInvoiceItem">إضافة صنف للفاتورة</button><div id="invoiceCart" class="span-all"></div></div><div class="form-step pay-step"><div class="form-step-title"><b>3</b> الدفع والحفظ<button type="button" class="secondary-btn discount-toggle" data-discount-toggle>🏷️ خصم</button></div><label>مصاريف النقل (على العميل)<input name="transport" type="number" min="0" step="0.01" value="0" placeholder="0 لو مفيش نقل"></label><label class="hidden" data-discount-field>الخصم (بالجنيه)<input name="discount" type="number" min="0" step="0.01" value="0" placeholder="مبلغ الخصم"></label><label>قيمة الفاتورة<input name="invoiceTotal" type="text" value="0.00 ج.م" readonly></label><label>المدفوع<input name="paidAmount" type="number" min="0" step="0.01" value="0" placeholder="المبلغ المدفوع الآن"></label><label data-treasury-method>طريقة الدفع<select name="paymentMethod"><option>كاش</option><option>محفظة</option><option>تحويل بنكي</option></select></label><label class="treasury-pick hidden">الحساب<select name="accountId" data-treasury="in"></select></label><label>التاريخ<input required name="date" type="date"></label><div id="invoiceCreditBox" class="notice span-all" style="display:none"></div><div class="form-actions span-all"><button type="button" class="primary" id="saveInvoicePrint">حفظ وطباعة</button><button type="button" class="secondary-btn" id="saveInvoiceOnly">حفظ بس</button></div></div></form><div id="invoicesJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">آخر الفواتير</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="invoiceSearch" type="search" placeholder="🔎 ابحث برقم الفاتورة أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="invoicesTable" style="margin-top:16px"></div></article></section>
 <section id="quotes" class="page hidden"><div class="page-views" data-page-views="quotes"><button type="button" data-view="new">➕ عرض سعر جديد</button><button type="button" data-view="list">📄 العروض السابقة</button></div><article class="panel" data-view="new"><h2>إنشاء عرض أسعار</h2><form id="quoteForm" class="form"><div id="quoteEditBanner" class="notice tone-danger span-all hidden" style="grid-column:1/-1"></div><div class="form-step"><div class="form-step-title"><b>1</b> العميل</div><label class="span-2">العميل<input required name="customer" list="customerNamesList" autocomplete="off"></label><div class="customer-phone-hint span-2" id="quotePhoneHint"></div></div><div class="form-step"><div class="form-step-title"><b>2</b> الأصناف</div><label class="span-2">بحث واختيار الصنف
   <div class="factory-order-picker" id="quoteProductPicker">
     <input name="productSearch" id="quoteProductSearch" type="search" autocomplete="off" placeholder="ابحث بالاسم أو الكود...">
@@ -196,7 +196,7 @@ html,body{background:#fff!important}
     <div id="quoteProductResults" class="factory-product-results hidden"></div>
     <div id="quoteProductSelected" class="notice factory-product-selected">لم يتم اختيار صنف بعد.</div>
   </div>
-</label><label>البيع بـ<select name="saleUnit"><option value="pkg">العبوة</option><option value="ton">الطن</option></select></label><label><span id="quoteQtyLabel">الكمية (عبوة)</span><input name="quantity" type="number" min="1" step="1" value="1"></label><label>وزن العبوة (كجم)<input name="itemWeight" type="number" min="0" step="0.001" list="quoteWeightOptions" placeholder="لأصناف المصنع"><datalist id="quoteWeightOptions"></datalist></label><label><span id="quotePriceLabel">سعر العبوة (قابل للتعديل)</span><input name="liveUnitPrice" type="number" min="0" step="0.01" value="0"></label><label>قيمة الصنف<input name="liveLineTotal" type="text" value="0.00 ج.م" readonly></label><button type="button" class="primary" id="addQuoteItem">إضافة صنف للعرض</button><div id="quoteCart" class="span-all"></div></div><div class="form-step"><div class="form-step-title"><b>3</b> الحفظ</div><label>مصاريف النقل (على العميل)<input name="transport" type="number" min="0" step="0.01" value="0" placeholder="0 لو مفيش نقل"></label><label>إجمالي العرض<input name="quoteTotal" type="text" value="0.00 ج.م" readonly></label><label>التاريخ<input required name="date" type="date"></label><div class="form-actions span-all"><button type="button" class="primary" id="saveQuotePrint">حفظ وطباعة</button><button type="button" class="secondary-btn" id="saveQuoteOnly">حفظ بس</button></div><p class="notice span-all" style="margin:0">عرض السعر مستقل تمامًا عن المبيعات والحسابات والمخزون: الحفظ والطباعة لا ينقصان المخزون ولا يضيفان مبيعات ولا يؤثران على حساب العميل.</p></div></form><div id="quotesJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">عروض الأسعار السابقة</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="quoteSearch" type="search" placeholder="🔎 ابحث برقم العرض أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="quotesTable" style="margin-top:16px"></div></article></section>
+</label><label>البيع بـ<select name="saleUnit"><option value="pkg">العبوة</option><option value="ton">الطن</option></select></label><label><span id="quoteQtyLabel">الكمية (عبوة)</span><input name="quantity" type="number" min="1" step="1" value="1"></label><label>وزن العبوة (كجم)<input name="itemWeight" type="number" min="0" step="0.001" list="quoteWeightOptions" placeholder="لأصناف المصنع"><datalist id="quoteWeightOptions"></datalist></label><label><span id="quotePriceLabel">سعر العبوة (قابل للتعديل)</span><input name="liveUnitPrice" type="number" min="0" step="0.01" value="0"></label><label>قيمة الصنف<input name="liveLineTotal" type="text" value="0.00 ج.م" readonly></label><button type="button" class="primary" id="addQuoteItem">إضافة صنف للعرض</button><div id="quoteCart" class="span-all"></div></div><div class="form-step"><div class="form-step-title"><b>3</b> الحفظ<button type="button" class="secondary-btn discount-toggle" data-discount-toggle>🏷️ خصم</button></div><label>مصاريف النقل (على العميل)<input name="transport" type="number" min="0" step="0.01" value="0" placeholder="0 لو مفيش نقل"></label><label class="hidden" data-discount-field>الخصم (بالجنيه)<input name="discount" type="number" min="0" step="0.01" value="0" placeholder="مبلغ الخصم"></label><label>إجمالي العرض<input name="quoteTotal" type="text" value="0.00 ج.م" readonly></label><label>التاريخ<input required name="date" type="date"></label><div class="form-actions span-all"><button type="button" class="primary" id="saveQuotePrint">حفظ وطباعة</button><button type="button" class="secondary-btn" id="saveQuoteOnly">حفظ بس</button></div><p class="notice span-all" style="margin:0">عرض السعر مستقل تمامًا عن المبيعات والحسابات والمخزون: الحفظ والطباعة لا ينقصان المخزون ولا يضيفان مبيعات ولا يؤثران على حساب العميل.</p></div></form><div id="quotesJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">عروض الأسعار السابقة</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="quoteSearch" type="search" placeholder="🔎 ابحث برقم العرض أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="quotesTable" style="margin-top:16px"></div></article></section>
 <section id="orders" class="page hidden"><div class="page-views" data-page-views="orders"><button type="button" data-view="new">➕ طلبية جديدة</button><button type="button" data-view="list">📄 الطلبيات السابقة</button></div><article class="panel" data-view="new"><h2>تسجيل طلبية</h2><div id="factoryReadyEntry" class="hidden"></div><form id="orderForm" class="form"><div id="orderEditBanner" class="notice tone-danger span-all hidden" style="grid-column:1/-1"></div><div class="form-step"><div class="form-step-title"><b>1</b> العميل</div><label class="span-2">العميل (اختياري)<input name="customer" list="customerNamesList" autocomplete="off" placeholder="اكتب اسم العميل أو اختَر من الاقتراحات"></label><div class="customer-phone-hint span-2" id="orderPhoneHint"></div></div><div class="form-step"><div class="form-step-title"><b>2</b> الأصناف</div><label class="span-2">بحث واختيار صنف المصنع
   <div class="factory-order-picker" id="factoryOrderPicker">
     <input name="factoryProductSearch" id="factoryProductSearch" type="search" autocomplete="off" placeholder="ابحث بالكود أو اسم الصنف...">
@@ -1290,8 +1290,15 @@ function salesInvoices(){return db.invoices.filter(x=>!isDebtRecord(x));}
 // ورصيد العميل وكشف حسابه زي باقي الفاتورة. بس هي فلوس بتروح للنقل نفسه، فمش بتتحسب مبيعات
 // أصناف ولا ربح — التقارير بتطرحها من المبيعات وبتعرضها لوحدها.
 function docTransport(x){return Math.max(0,Math.round((+x?.transport||0)*100)/100);}
+// ===== الخصم في الفاتورة وعرض السعر (2.11.0) — بالفلوس مش بالنسبة =====
+// الخصم (discount) بيتطرح من الإجمالي: total = الأصناف + النقل − الخصم، فبيقلّل الباقي ورصيد العميل وكشف حسابه،
+// والمبيعات والربح في التقارير (invoiceSalesValue = total − النقل = الأصناف − الخصم). الأصناف نفسها بأسعارها زي ما هي.
+function docDiscount(x){return Math.max(0,Math.round((+x?.discount||0)*100)/100);}
+function docItemsValue(x){return Math.round(((+x.total||0)-docTransport(x)+docDiscount(x))*100)/100;}
 function invoiceSalesValue(x){return (+x.total||0)-docTransport(x);}
-function transportNote(x){const t=docTransport(x);return t>0?`، 🚚 نقل ${money(t)}`:'';}
+function transportNote(x){const t=docTransport(x),d=docDiscount(x);return (t>0?`، 🚚 نقل ${money(t)}`:'')+(d>0?`، 🏷️ خصم ${money(d)}`:'');}
+// سطور «قيمة الأصناف / الخصم / مصاريف النقل» فوق الإجمالي في الطباعة (لو فيه نقل أو خصم)
+function docExtrasLines(x){const t=docTransport(x),d=docDiscount(x);if(!(t>0)&&!(d>0))return '';return `قيمة الأصناف: ${money(docItemsValue(x))}<br>${d>0?`الخصم: ${money(d)}<br>`:''}${t>0?`مصاريف النقل: ${money(t)}<br>`:''}`;}
 function sales(){const gross=salesInvoices().reduce((s,x)=>s+invoiceSalesValue(x),0);const returns=db.customerReturns.reduce((s,x)=>s+(+x.netAmount||0),0);return gross-returns;}
 // تكلفة البضاعة المباعة: سعر شراء كل صنف في الفاتورة × الكمية. السعر بيتخزن في
 // الفاتورة وقت البيع؛ للفواتير القديمة اللي مفيهاش السعر بنستخدم تكلفة الصنف الحالية.
@@ -1638,10 +1645,10 @@ function renderNow(){
  if(pageVisible('treasury')&&typeof renderTreasury==='function')renderTreasury();
  }finally{daftarRendering=false;}
 }
-function renderCart(){document.querySelector('#invoiceCart').innerHTML=invoiceCart.length?table(['الصنف','الكمية','السعر','الإجمالي',''],invoiceCart.map((x,i)=>`<tr><td>${esc(x.productName)}</td><td>${x.quantity}</td><td>${money(x.unitPrice)}</td><td>${money(x.total)}</td><td><button type="button" class="danger" onclick="invoiceCart.splice(${i},1);renderCart()">إزالة</button></td></tr>`)):'<div class="notice">لم تتم إضافة أصناف.</div>';}
+function renderCart(){document.querySelector('#invoiceCart').innerHTML=invoiceCart.length?table(['الصنف','الكمية','السعر','الإجمالي',''],invoiceCart.map((x,i)=>`<tr><td>${esc(x.productName)}</td><td>${x.quantity}</td><td>${money(x.unitPrice)}</td><td>${money(x.total)}</td><td><button type="button" class="danger" onclick="invoiceCart.splice(${i},1);renderCart();refreshInvoiceCreditBox()">إزالة</button></td></tr>`)):'<div class="notice">لم تتم إضافة أصناف.</div>';}
 function renderQuoteCart(){
  const el=document.querySelector('#quoteCart');if(!el)return;
- const total=quoteCart.reduce((s,x)=>s+(+x.total||0),0)+formTransport('#quoteForm');
+ const total=Math.max(0,Math.round((quoteCart.reduce((s,x)=>s+(+x.total||0),0)+formTransport('#quoteForm')-formDiscount('#quoteForm'))*100)/100);   // (2.11.0 − الخصم)
  const liveTotal=document.querySelector('#quoteForm [name=quoteTotal]');if(liveTotal)liveTotal.value=money(total);
  el.innerHTML=quoteCart.length?table(['الصنف','المصدر','الكمية','السعر','الإجمالي',''],quoteCart.map((x,i)=>`<tr><td>${esc(x.productName)}</td><td>${esc(x.sourceLabel)}</td><td>${quoteQtyText(x,true)}</td><td>${money(x.unitPrice)} / ${x.unit==='ton'?'طن':'عبوة'}</td><td>${money(x.total)}</td><td><button type="button" class="danger" onclick="quoteCart.splice(${i},1);renderQuoteCart()">إزالة</button></td></tr>`)):'<div class="notice">لم تتم إضافة أصناف لعرض السعر.</div>';
 }
@@ -2454,7 +2461,7 @@ function editInventoryBatch(id){
   input.addEventListener('keydown',e=>{if(e.key==='Escape')close();if(e.key==='Enter')modal.querySelector('#saveEditBatch').click();});
   setTimeout(()=>{input.focus();input.select();},0);
 }
-function createInvoiceFromOrder(orderId,productId){const o=orderId?db.orders.find(x=>String(x.id)===String(orderId)):null;if(!o)return daftarAlert('لم يتم العثور على الطلبية المرتبطة بهذا الصنف.');if(!o.received)return daftarAlert('يجب ترحيل الطلبية للمخزون أولاً.');if(o.invoiceId)return daftarAlert('تم إنشاء فاتورة لهذه الطلبية بالفعل.');const linked=db.products.filter(p=>String(p.orderId)===String(o.id)&&(p.customerName||'المخزون العام')!=='المخزون العام'&&(+p.stock||0)>0&&!p.invoiceId);if(!linked.length)return daftarAlert('لا توجد كميات متاحة في المخزون لهذه الطلبية.');invoiceCart=linked.map(p=>{const qty=Math.min(+p.orderQuantity||0,+p.stock||0);return {productId:p.id,productName:p.name,sku:p.sku||'',quantity:qty,unitPrice:+p.price||0,total:qty*(+p.price||0),packageWeight:p.packageWeight||0,batchNo:p.batchNo||'',factoryPrice:p.factoryPrice||p.cost||0,...invoiceItemSourceFields(p)};}).filter(x=>x.quantity>0);if(!invoiceCart.length)return daftarAlert('لا توجد كمية كافية في المخزون لإنشاء الفاتورة.');window.daftarPendingOrderInvoiceId=o.id;document.querySelector('[data-page=invoices]').click();showPageView('invoices','new');const cf=document.querySelector('#invoiceForm');cf.querySelector('[name=customer]').value=o.customer||'';cf.querySelector('[name=date]').value=today();renderCart();refreshInvoiceCreditBox();window.scrollTo({top:0,behavior:'smooth'});daftarAlert('تم تحويل الطلبية بكل أصنافها إلى فاتورة. يمكنك الآن إضافة أصناف أخرى قبل الحفظ والطباعة.');}
+function createInvoiceFromOrder(orderId,productId){const o=orderId?db.orders.find(x=>String(x.id)===String(orderId)):null;if(!o)return daftarAlert('لم يتم العثور على الطلبية المرتبطة بهذا الصنف.');if(!o.received)return daftarAlert('يجب ترحيل الطلبية للمخزون أولاً.');if(o.invoiceId)return daftarAlert('تم إنشاء فاتورة لهذه الطلبية بالفعل.');const linked=db.products.filter(p=>String(p.orderId)===String(o.id)&&(p.customerName||'المخزون العام')!=='المخزون العام'&&(+p.stock||0)>0&&!p.invoiceId);if(!linked.length)return daftarAlert('لا توجد كميات متاحة في المخزون لهذه الطلبية.');invoiceCart=linked.map(p=>{const qty=Math.min(+p.orderQuantity||0,+p.stock||0);return {productId:p.id,productName:p.name,sku:p.sku||'',quantity:qty,unitPrice:+p.price||0,total:qty*(+p.price||0),packageWeight:p.packageWeight||0,batchNo:p.batchNo||'',factoryPrice:p.factoryPrice||p.cost||0,...invoiceItemSourceFields(p)};}).filter(x=>x.quantity>0);if(!invoiceCart.length)return daftarAlert('لا توجد كمية كافية في المخزون لإنشاء الفاتورة.');window.daftarPendingOrderInvoiceId=o.id;document.querySelector('[data-page=invoices]').click();showPageView('invoices','new');const cf=document.querySelector('#invoiceForm');cf.querySelector('[name=customer]').value=o.customer||'';cf.querySelector('[name=date]').value=today();setFormDiscount('#invoiceForm',0);renderCart();refreshInvoiceCreditBox();window.scrollTo({top:0,behavior:'smooth'});daftarAlert('تم تحويل الطلبية بكل أصنافها إلى فاتورة. يمكنك الآن إضافة أصناف أخرى قبل الحفظ والطباعة.');}
 function addReturn(name){
   const invs=db.invoices.filter(x=>x.customer===name&&!isDebtRecord(x));
   if(!invs.length)return daftarAlert('لا توجد فواتير للعميل.');
@@ -2463,7 +2470,7 @@ function addReturn(name){
     '<label>الفاتورة<select name="inv">'+invs.map(x=>`<option value="${x.id}">#${displayNo('invoices',x.id)} — ${x.date}</option>`).join('')+'</select></label>'+
     '<label>الصنف<select name="item"></select></label>'+ 
     '<label>الكمية<input name="quantity" type="number" min="1" value="1"></label>'+ 
-    '<label>خصم المرتجع %<input name="discount" type="number" min="0" max="100" step="0.01" value="0"></label>'+ 
+    '<label>خصم المرتجع %<input name="discount" type="number" min="0" max="100" step="0.01" value="0"><small data-inv-disc></small></label>'+
     '<label>صافي المرتجع<input name="netPreview" type="text" readonly></label>'+ 
     '<label>المبلغ المستحق للعميل<input name="customerDuePreview" type="text" readonly></label>'+ 
     '<label style="display:flex;align-items:center;gap:8px"><input name="paid" type="checkbox" style="width:auto"> تم الدفع للعميل</label>'+
@@ -2480,6 +2487,10 @@ function addReturn(name){
       const available=Math.max(0,(+it.quantity||0)-returned);
       return available>0?`<option value="${i}">${esc(it.productName)} — المتاح: ${available} — ${money(it.unitPrice)}</option>`:'';
     }).join('');
+    // (2.11.0) الفاتورة فيها خصم بالفلوس: المرتجع بياخد نفس نسبته (عشان العميل ميرجعلوش أكتر من اللي دفعه) — وتقدر تغيّرها
+    const disc=docDiscount(inv),iv=docItemsValue(inv),pct=disc>0&&iv>0?Math.round(disc/iv*10000)/100:0;
+    dEl.value=pct;
+    const hint=box.querySelector('[data-inv-disc]');if(hint)hint.textContent=pct?`الفاتورة فيها خصم ${money(disc)} = ${pct}%`:'';
     updatePreview();
   };
   const updatePreview=()=>{
@@ -3730,7 +3741,7 @@ function refreshInvoiceCreditBox(resetPrice){
   const total=invoiceCart.reduce((sum,x)=>sum+(+x.total||0),0);
   // قيمة الفاتورة = الأصناف اللي اتضافت فعلًا + النقل بس. الصنف اللي لسه في خانات الاختيار ومادستش
   // «إضافة» عليه مبيتحسبش (قيمته بتظهر لوحدها في «قيمة الصنف»)، عشان الإجمالي يبقى زي اللي هيتحفظ بالظبط.
-  const invoiceGrandTotal=total+formTransport('#invoiceForm');
+  const invoiceGrandTotal=Math.max(0,Math.round((total+formTransport('#invoiceForm')-formDiscount('#invoiceForm'))*100)/100);   // (2.11.0 − الخصم)
   const orderDeposit=orderDepositAvailable(customer,window.daftarPendingOrderInvoiceId);
   const previousDeposit=Math.min(orderDeposit,invoiceGrandTotal);
   const dueCash=Math.max(0,invoiceGrandTotal-previousDeposit);
@@ -3754,6 +3765,27 @@ function refreshInvoiceCreditBox(resetPrice){
 function refreshInvoiceCreditEditBox(){return refreshInvoiceCreditBox();}
 // قيمة خانة «مصاريف النقل» في فورم الفاتورة أو عرض السعر (مقرّبة لقرشين، ومش أقل من صفر).
 function formTransport(formSel){return docTransport({transport:document.querySelector(formSel+' [name=transport]')?.value});}
+// (2.11.0) خانة «الخصم» بالفلوس: بتظهر بزرار «🏷️ خصم» جنب عنوان الخطوة، ومش بتتحسب لو مستخبية.
+function formDiscount(formSel){const f=document.querySelector(formSel);if(!f||f.querySelector('[data-discount-field]')?.classList.contains('hidden'))return 0;return docDiscount({discount:f.querySelector('[name=discount]')?.value});}
+function showDiscountField(f,on){
+  if(!f)return;
+  f.querySelector('[data-discount-field]')?.classList.toggle('hidden',!on);
+  const b=f.querySelector('[data-discount-toggle]');if(b)b.textContent=on?'✕ بدون خصم':'🏷️ خصم';
+}
+function setFormDiscount(formSel,v){const f=document.querySelector(formSel);if(!f)return;const d=docDiscount({discount:v}),inp=f.querySelector('[name=discount]');if(inp)inp.value=d;showDiscountField(f,d>0);}
+// الزرار: يفتح الخانة (والمؤشر فيها)، أو يقفلها ويصفّرها — onChange بيحدّث الإجمالي
+function bindDiscountToggle(formSel,onChange){
+  const f=document.querySelector(formSel);if(!f)return;
+  f.querySelector('[data-discount-toggle]')?.addEventListener('click',()=>{
+    const on=f.querySelector('[data-discount-field]')?.classList.contains('hidden');
+    if(on){showDiscountField(f,true);const inp=f.querySelector('[name=discount]');if(inp){if(!(+inp.value>0))inp.value='';inp.focus();}}
+    else setFormDiscount(formSel,0);
+    onChange();
+  });
+  f.querySelector('[name=discount]')?.addEventListener('input',onChange);
+}
+// الخصم مينفعش يبقى قد الأصناف أو أكتر (الأصناف هي اللي عليها الخصم، مش النقل)
+function discountProblem(itemsValue,discount){return discount>0&&discount>=itemsValue-0.004?`الخصم (${money(discount)}) لازم يبقى أقل من قيمة الأصناف (${money(itemsValue)}).`:'';}
 // بيانات إيصال الاستلام (دفعة، أو عربون/مدفوع فاتورة أو طلبية) — مشتركة بين
 // الطباعة والإرسال على واتساب، عشان الصورة اللي بتتبعت تطابق الإيصال المطبوع بالظبط.
 function receiptDocData(kind,id){
@@ -3937,8 +3969,7 @@ function salesDocInnerHtml(kind,x){
       const w=+i.packageWeight||0,qty=+i.quantity||0,unit=+(i.unitPrice!=null?i.unitPrice:i.salePrice)||0;totalKg+=w*qty;
       return `<tr><td>${n+1}</td><td>${esc(i.productName)}${i.sku?`<br><small>كود ${esc(i.sku)}</small>`:''}</td><td>${w?weight(w):'—'}</td><td>${qty}</td><td>${w?daftarWeightFmt.format(w*qty/1000):'—'}</td><td>${w?money(unit*1000/w):'—'}</td><td>${money(i.total||0)}</td></tr>`;
     }).join('');
-    const tr=docTransport(x);
-    const tonTotals=`<div class="total">إجمالي الكمية: ${daftarWeightFmt.format(totalKg/1000)} طن<br>${tr>0?`قيمة الأصناف: ${money((+x.total||0)-tr)}<br>مصاريف النقل: ${money(tr)}<br>`:''}إجمالي عرض السعر: ${money(x.total||0)}</div>`+(s.quoteTerms.trim()?`<div class="doc-terms">${esc(s.quoteTerms).replace(/\n/g,'<br>')}</div>`:'');
+    const tonTotals=`<div class="total">إجمالي الكمية: ${daftarWeightFmt.format(totalKg/1000)} طن<br>${docExtrasLines(x)}إجمالي عرض السعر: ${money(x.total||0)}</div>`+(s.quoteTerms.trim()?`<div class="doc-terms">${esc(s.quoteTerms).replace(/\n/g,'<br>')}</div>`:'');
     return salesDocHeaderHtml('عرض أسعار',meta)+`<table><tr><th>#</th><th>الصنف</th><th>وزن العبوة</th><th>عدد العبوات</th><th>الكمية (طن)</th><th>سعر الطن</th><th>الإجمالي</th></tr>${tonRows}</table>`+tonTotals+salesDocContactHtml();
   }
   // أصناف عرض السعر ممكن تكون بالعبوة أو بالطن (كل صنف لوحده): الصنف اللي بالطن كميته بالطن
@@ -3954,8 +3985,8 @@ function salesDocInnerHtml(kind,x){
     return `<tr><td>${n+1}</td><td>${esc(i.productName)}</td><td>${esc(i.sku)||'—'}</td><td>${i.quantity||0}</td><td>${price}</td><td>${total}</td></tr>`;
   }).join('');
   let totals;
-  // مصاريف النقل (لو موجودة) بتظهر سطر لوحدها: قيمة الأصناف + النقل = الإجمالي.
-  const tr=docTransport(x),trLines=tr>0?`قيمة الأصناف: ${money((+x.total||0)-tr)}<br>مصاريف النقل: ${money(tr)}<br>`:'';
+  // مصاريف النقل والخصم (لو موجودين) كل واحد سطر لوحده: قيمة الأصناف − الخصم + النقل = الإجمالي.
+  const trLines=docExtrasLines(x);
   if(isInvoice){
     // المدفوع = كل اللي اندفع في الفاتورة مجمّع (عربون الطلبية + المدفوع + رصيد العميل السابق).
     const credit=+x.creditApplied||0;
@@ -4420,8 +4451,9 @@ async function convertQuoteToInvoice(id){
   document.querySelector('[data-page=invoices]').click();showPageView('invoices','new');
   const f=document.querySelector('#invoiceForm');f.querySelector('[name=customer]').value=q.customer||'';f.querySelector('[name=customer]').dispatchEvent(new Event('input'));f.querySelector('[name=date]').value=today();
   f.querySelector('[name=transport]').value=docTransport(q);
+  setFormDiscount('#invoiceForm',docDiscount(q));                                  // (2.11.0) الخصم بينتقل زي ما هو
   renderCart();refreshInvoiceCreditBox();window.scrollTo({top:0,behavior:'smooth'});
-  daftarAlert(`تم نقل أصناف عرض السعر #${displayNo('quotes',q.id)} للفاتورة بسعر العرض${docTransport(q)>0?`، ومصاريف النقل (${money(docTransport(q))})`:''}. راجعها واكتب المدفوع، وبعدين احفظ.${notes.length?'\n\n'+notes.join('\n'):''}`);
+  daftarAlert(`تم نقل أصناف عرض السعر #${displayNo('quotes',q.id)} للفاتورة بسعر العرض${docTransport(q)>0?`، ومصاريف النقل (${money(docTransport(q))})`:''}${docDiscount(q)>0?`، والخصم (${money(docDiscount(q))})`:''}. راجعها واكتب المدفوع، وبعدين احفظ.${docDiscount(q)>0&&notes.length?'\n\nخلي بالك: فيه أصناف متنقلتش، راجع الخصم.':''}${notes.length?'\n\n'+notes.join('\n'):''}`);
 }
 async function convertQuoteToOrder(id){
   const q=(db.quotes||[]).find(x=>String(x.id)===String(id));if(!q)return daftarAlert('لم يتم العثور على عرض السعر.');
@@ -4444,7 +4476,7 @@ async function convertQuoteToOrder(id){
   document.querySelector('[data-page=orders]').click();showPageView('orders','new');
   const f=document.querySelector('#orderForm');f.querySelector('[name=customer]').value=q.customer||'';f.querySelector('[name=customer]').dispatchEvent(new Event('input'));f.querySelector('[name=date]').value=today();
   renderOrderCart();window.scrollTo({top:0,behavior:'smooth'});
-  daftarAlert(`تم نقل أصناف عرض السعر #${displayNo('quotes',q.id)} للطلبية بسعر العرض.\nاكتب الكود والباتش والحصوة لكل صنف في الجدول تحت، وبعدين احفظ الطلبية.${docTransport(q)>0?`\n\nمصاريف النقل (${money(docTransport(q))}) مش بتتسجل في الطلبية — اكتبها في الفاتورة لما الطلبية تتسلم.`:''}${notes.length?'\n\n'+notes.join('\n'):''}`);
+  daftarAlert(`تم نقل أصناف عرض السعر #${displayNo('quotes',q.id)} للطلبية بسعر العرض.\nاكتب الكود والباتش والحصوة لكل صنف في الجدول تحت، وبعدين احفظ الطلبية.${docTransport(q)>0?`\n\nمصاريف النقل (${money(docTransport(q))}) مش بتتسجل في الطلبية — اكتبها في الفاتورة لما الطلبية تتسلم.`:''}${docDiscount(q)>0?`\n\nالخصم (${money(docDiscount(q))}) مش بيتسجل في الطلبية — اكتبه في الفاتورة («🏷️ خصم») لما الطلبية تتسلم.`:''}${notes.length?'\n\n'+notes.join('\n'):''}`);
 }
 
 // ===== طباعة كشف حساب العميل (A4) =====
@@ -4480,7 +4512,7 @@ function customerStatementData(name){
     const fromOrder=Math.max(0,(+x.orderDepositUsed||0)-alreadyShown);
     const credit=(+x.cashDeposit||0)+fromOrder;
     const parts=[];if(+x.cashDeposit>0)parts.push('مدفوع '+money(x.cashDeposit));if(linked&&+x.orderDepositUsed>0)parts.push('مخصوم منه عربون طلبية #'+displayNo('orders',linked.id)+' '+money(x.orderDepositUsed));
-    ev.push({date:x.date||'',id:+x.id||0,label:`عرض سعر #${displayNo('invoices',x.id)}`,details:itemsText(x.items,true)+(docTransport(x)>0?`<br>مصاريف النقل: ${money(docTransport(x))}`:'')+(parts.length?`<br><small>${parts.join(' — ')}</small>`:''),debit:+x.total||0,credit});
+    ev.push({date:x.date||'',id:+x.id||0,label:`عرض سعر #${displayNo('invoices',x.id)}`,details:itemsText(x.items,true)+(docDiscount(x)>0?`<br>الخصم: ${money(docDiscount(x))}`:'')+(docTransport(x)>0?`<br>مصاريف النقل: ${money(docTransport(x))}`:'')+(parts.length?`<br><small>${parts.join(' — ')}</small>`:''),debit:+x.total||0,credit});
   }
   for(const p of db.customerPayments.filter(x=>x.customer===name&&!x.invoiceId))ev.push({date:p.date||'',id:+p.id||0,label:'دفعة',details:`${esc(p.paymentMethod)||'كاش'}${p.note?' — '+esc(p.note):''}`,debit:0,credit:+p.amount||0});
   for(const r of db.customerReturns.filter(x=>x.customer===name)){
@@ -4734,12 +4766,15 @@ document.querySelector('#invoiceForm [name=product]').addEventListener('change',
 document.querySelector('#invoiceForm [name=quantity]').addEventListener('input',()=>refreshInvoiceCreditBox());
 document.querySelector('#invoiceForm [name=quantity]').addEventListener('change',()=>refreshInvoiceCreditBox());
 document.querySelector('#invoiceForm [name=liveUnitPrice]').addEventListener('input',()=>{document.querySelector('#invoiceForm').dataset.priceManual='1';refreshInvoiceCreditBox();});
+bindDiscountToggle('#invoiceForm',()=>refreshInvoiceCreditBox());                 // (2.11.0) «🏷️ خصم» بالفلوس
 document.querySelector('#invoiceForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const saveWithoutPrint=!!window.daftarSaveWithoutPrint;window.daftarSaveWithoutPrint=false;
-  const f=new FormData(e.target),customer=(f.get('customer')||'').trim(),transport=formTransport('#invoiceForm'),total=invoiceCart.reduce((s,x)=>s+x.total,0)+transport;
+  const f=new FormData(e.target),customer=(f.get('customer')||'').trim(),transport=formTransport('#invoiceForm'),discount=formDiscount('#invoiceForm');
+  const itemsValue=invoiceCart.reduce((s,x)=>s+x.total,0),total=Math.round((itemsValue+transport-discount)*100)/100;
   if(!customer)return daftarAlert('اكتب اسم العميل.');
   if(!invoiceCart.length)return daftarAlert('أضف صنفًا واحدًا على الأقل إلى الفاتورة.');
+  if(discountProblem(itemsValue,discount))return daftarAlert(discountProblem(itemsValue,discount));
   if(total<=0)return daftarAlert('قيمة الفاتورة يجب أن تكون أكبر من صفر.');
   const invoiceQtyByProduct={};
   for(const i of invoiceCart)invoiceQtyByProduct[i.productId]=(invoiceQtyByProduct[i.productId]||0)+(+i.quantity||0);
@@ -4783,6 +4818,7 @@ document.querySelector('#invoiceForm').addEventListener('submit',async e=>{
   const inv={id:daftarNextId(),customer,date:f.get('date')||today(),items:invoiceCart.map(x=>({...x})),total,deposit:totalApplied,cashDeposit:paidNow,creditUsed:0,orderDepositUsed:appliedOrderDeposit,remaining:Math.max(0,total-totalApplied),paymentMethod:tr.method||f.get('paymentMethod')};
   if(tr.acc&&paidNow>0)inv.accountId=tr.acc;
   if(transport>0)inv.transport=transport;
+  if(discount>0)inv.discount=discount;
   const creditApplied=Math.min(creditBefore,inv.remaining);
   if(creditApplied>0)inv.creditApplied=creditApplied;
   db.invoices.push(inv);markJustSaved('invoices',inv.id);
@@ -4816,6 +4852,7 @@ document.querySelector('#invoiceForm').addEventListener('submit',async e=>{
   e.target.querySelector('[name=liveLineTotal]').value=money(0);
   e.target.querySelector('[name=paidAmount]').value=0;
   e.target.querySelector('[name=transport]').value=0;
+  setFormDiscount('#invoiceForm',0);
   render();
   refreshInvoiceCreditBox();
   // زرار «حفظ» لوحده بيسجّل الفاتورة ويخصم من المخزون من غير ما يفتح الطباعة.
@@ -4934,6 +4971,7 @@ document.querySelector('#quoteForm [name=product]').addEventListener('change',()
 document.querySelector('#quoteForm [name=saleUnit]')?.addEventListener('change',()=>{const f=document.querySelector('#quoteForm');f.elements.quantity.value=1;updateQuoteUnitLabels();refreshQuoteLiveTotals(true);});
 document.querySelector('#quoteForm [name=quantity]').addEventListener('input',()=>refreshQuoteLiveTotals());
 document.querySelector('#quoteForm [name=transport]').addEventListener('input',()=>renderQuoteCart());
+bindDiscountToggle('#quoteForm',()=>renderQuoteCart());                         // (2.11.0) «🏷️ خصم» بالفلوس
 document.querySelector('#quoteForm [name=itemWeight]')?.addEventListener('input',()=>refreshQuoteLiveTotals());
 document.querySelector('#quoteForm [name=liveUnitPrice]').addEventListener('input',()=>{document.querySelector('#quoteForm').dataset.priceManual='1';refreshQuoteLiveTotals();});
 // ===== تعديل عرض سعر =====
@@ -4952,6 +4990,7 @@ function resetQuoteForm(){
   const f=document.querySelector('#quoteForm');quoteCart=[];f.reset();
   f.querySelector('[name=transport]').value=0;f.dataset.priceManual='';f.querySelector('[name=date]').value=today();f.querySelector('[name=quantity]').value=1;
   f.querySelector('[name=liveUnitPrice]').value=0;f.querySelector('[name=liveLineTotal]').value=money(0);f.querySelector('[name=quoteTotal]').value=money(0);
+  setFormDiscount('#quoteForm',0);
   updateQuoteUnitLabels();renderQuoteCart();
 }
 function cancelQuoteEdit(){setQuoteEditMode(null);resetQuoteForm();daftarToast('اتلغى التعديل، وعرض السعر فضل زي ما هو.');}
@@ -4966,17 +5005,19 @@ async function editQuote(id){
   f.querySelector('[name=customer]').value=q.customer||'';f.querySelector('[name=customer]').dispatchEvent(new Event('input'));
   f.querySelector('[name=date]').value=q.date||today();
   f.querySelector('[name=transport]').value=Math.max(0,+q.transport||0);
+  setFormDiscount('#quoteForm',docDiscount(q));
   setQuoteEditMode(q);renderQuoteCart();window.scrollTo({top:0,behavior:'smooth'});
 }
 document.querySelector('#quoteForm').addEventListener('submit',e=>{
  e.preventDefault();const saveWithoutPrint=!!window.daftarQuoteSaveWithoutPrint;window.daftarQuoteSaveWithoutPrint=false;const f=new FormData(e.target),customer=(f.get('customer')||'').trim();if(!customer)return daftarAlert('اكتب اسم العميل.');if(!quoteCart.length)return daftarAlert('أضف صنفًا واحدًا على الأقل إلى عرض السعر.');
  const editId=window.daftarEditingQuoteId,editing=editId?(db.quotes||[]).find(x=>String(x.id)===String(editId)):null;
  if(editId&&!editing){setQuoteEditMode(null);return daftarAlert('عرض السعر ده اتمسح، فمينفعش يتعدّل من هنا.');}
- const transport=formTransport('#quoteForm');
- const fields={customer,date:f.get('date')||today(),items:quoteCart.map(x=>({...x})),total:quoteCart.reduce((s,x)=>s+(+x.total||0),0)+transport};
+ const transport=formTransport('#quoteForm'),discount=formDiscount('#quoteForm'),itemsValue=quoteCart.reduce((s,x)=>s+(+x.total||0),0);
+ if(discountProblem(itemsValue,discount))return daftarAlert(discountProblem(itemsValue,discount));
+ const fields={customer,date:f.get('date')||today(),items:quoteCart.map(x=>({...x})),total:Math.round((itemsValue+transport-discount)*100)/100};
  let q;
- if(editing){q=editing;Object.assign(q,fields);if(transport>0)q.transport=transport;else delete q.transport;q.editedDate=today();}
- else{q={id:daftarNextId(),whatsapp:(f.get('whatsapp')||'').trim(),...fields};if(transport>0)q.transport=transport;db.quotes??=[];db.quotes.push(q);markJustSaved('quotes',q.id);}
+ if(editing){q=editing;Object.assign(q,fields);if(transport>0)q.transport=transport;else delete q.transport;if(discount>0)q.discount=discount;else delete q.discount;q.editedDate=today();}
+ else{q={id:daftarNextId(),whatsapp:(f.get('whatsapp')||'').trim(),...fields};if(transport>0)q.transport=transport;if(discount>0)q.discount=discount;db.quotes??=[];db.quotes.push(q);markJustSaved('quotes',q.id);}
  setQuoteEditMode(null);
  save();resetQuoteForm();scheduleRender();
  if(saveWithoutPrint)daftarToast(`تم ${editing?'تعديل':'حفظ'} عرض السعر #${displayNo('quotes',q.id)}.`);else printQuote(q.id);
@@ -6495,6 +6536,7 @@ details.panel-collapse[open]>summary{margin-bottom:14px}
 .form .form-step{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
 .form-step-title{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-weight:bold;font-size:15px;color:var(--ink)}
 .form-step-title b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;font-size:13px}
+.form-step-title .discount-toggle{margin-inline-start:auto;min-height:0;padding:5px 14px;font-size:13px;font-weight:normal}
 .form-step .span-2{grid-column:span 2}
 .form-step .span-all{grid-column:1/-1}
 .form .form-step.pay-step{grid-template-columns:repeat(5,minmax(0,1fr))}
