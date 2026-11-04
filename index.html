@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.13.0";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.14.0";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -179,7 +179,7 @@ html,body{background:#fff!important}
 
 <header class="brand"><div class="mark">د</div><div><h1>دفتر</h1><p>إدارة المبيعات والمخزون والمشتريات <span id="appVersionTag" class="app-version"></span></p></div><div class="brand-status"><div id="supabaseStatus">☁️ لم تتم المزامنة بعد</div><div id="daftarAccountBar" style="display:none"><span id="daftarAccountText"></span><button type="button" id="daftarLogoutBtn">تسجيل الخروج</button></div></div></header><nav id="nav"><button class="active" data-page="dashboard">الرئيسية</button><button data-page="factory">كتالوج المصنع</button><button data-page="products">المخزون</button><button data-page="invoices">فواتير المبيعات</button><button data-page="quotes">عرض أسعار</button><button data-page="orders">الطلبيات</button><button data-page="customers">العملاء</button><button data-page="balances">الأرصدة والمشتريات</button><button data-page="treasury">الخزنة</button><button data-page="reports">التقارير</button><button data-page="settings">الإعدادات</button></nav><datalist id="customerNamesList"></datalist>
 <section id="dashboard" class="page"><div class="grid" id="summary"></div><div class="two" style="margin-top:16px"><article class="panel"><h2>نظرة سريعة</h2><div id="lowStock"></div></article><article class="panel"><h2>معلومات</h2><p class="notice">الطلبية لا تدخل المخزون إلا عند الاستلام. سعر المصنع هو تكلفة الشراء، وسعر البيع منفصل.</p></article></div><article class="panel" style="margin-top:16px"><h2>تنبيهات صلاحية أصناف المصنع</h2><p class="notice">بتظهر بس للأصناف الجايه من طلبية مصنع، بناءً على تاريخ الإنتاج (تقدر تعدّله من صفحة المخزون). عدّل تاريخ الإنتاج أو اضغط "المنتج سليم" لو مش عايز التنبيه ده يتكرر.</p><div id="expiryAlerts"></div></article></section>
-<section id="factory" class="page hidden"><article class="panel"><h2 id="factoryFormTitle">إضافة صنف في كتالوج المصنع</h2><form id="factoryForm" class="form"><input type="hidden" name="id"><label>اسم الصنف<input required name="name"></label><label>النوع<select name="packageType"><option value="شكارة">شكارة</option><option value="بستلة">بستلة</option></select></label><label>طريقة التسعير<select name="pricing"><option value="ton">بالطن (سعر العبوة بيتحسب من وزنها)</option><option value="unit">بالعبوة (سعر ثابت)</option></select></label><label><span id="factoryPriceLabel">سعر شراء الطن من المصنع</span><input required name="factoryPrice" type="number" min="0" step="0.01"></label><label><span id="salePriceLabel">سعر بيع الطن</span><input required name="salePrice" type="number" min="0" step="0.01"></label><label>الوزن الافتراضي للعبوة (كجم)<input name="packageWeight" type="number" min="0" step="0.001"></label><label>أوزان العبوات المتاحة (اختياري)<input name="weightOptions" placeholder="مثال: 20, 25"></label><details class="variant-editor" id="variantEditor"><summary>🎨 أكواد الألوان وأسعارها (للأصناف اللي كل لون فيها ليه سعر، زي المحارة الجاهزة) <span class="badge" id="variantCount">0</span></summary><p class="notice" style="margin:8px 0">كل كود ليه سعره. لما تعمل طلبية للصنف ده وتكتب الكود، السعر بيتحط لوحده. الأسعار هنا <strong id="variantUnitNote">بالطن</strong> زي سعر الصنف فوق. لو سبت سعر فاضي، بيتاخد سعر الصنف العادي.</p><div id="variantRows"></div><datalist id="colorSkuAllList"></datalist><div class="form-actions" style="margin-top:8px"><button type="button" class="secondary-btn" id="addVariantRow">➕ إضافة كود</button></div><details class="color-bulk" style="margin-top:10px"><summary>لصق أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر: الكود، سعر الشراء، سعر البيع (أو الكود وسعر البيع بس). مثال:<br><span dir="ltr">C-100, 9000, 11000</span></p><textarea id="variantBulkInput" rows="4" dir="ltr" placeholder="C-100, 9000, 11000"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="variantBulkAdd">إضافة للقايمة</button></div></details></details><button type="submit" class="primary">حفظ</button><button type="button" class="danger" id="cancelFactoryEdit">إلغاء التعديل</button></form></article><article class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">كتالوج المصنع</h2><button type="button" class="secondary-btn hidden" id="factoryPriceReviewBtn" style="flex:none;white-space:nowrap" onclick="openFactoryPriceReview()">💲 مراجعة أسعار المصنع</button></div><div id="factoryTable" style="margin-top:16px"></div></article><article class="panel" id="colorCodesPanel"><h2 id="colorFormTitle">🎨 درجات الألوان</h2><p class="notice">سجّل كود كل لون ودرجته. أي صنف في المخزون بنفس الكود هتظهر جنبه دايرة باللون ده لوحدها، وبتتزامن على كل الأجهزة. تقدر تختار أي درجة من مربع الألوان، أو تكتب كودها (#RRGGBB) لو معاك.</p><form id="colorCodeForm" class="form"><input type="hidden" name="id"><label>كود اللون<input required name="code" list="colorSkuList" autocomplete="off" dir="ltr" placeholder="مثلاً C-100"></label><label>اسم اللون (اختياري)<input name="name" placeholder="مثلاً أبيض ثلجي"></label><label>درجة اللون<span class="color-pick"><input type="color" name="hex" value="#c8102e" aria-label="اختيار درجة اللون"><input name="hexText" dir="ltr" maxlength="7" placeholder="#RRGGBB" aria-label="كود الدرجة"></span></label><button type="submit" class="primary" id="colorSaveBtn">حفظ اللون</button><button type="button" class="secondary-btn hidden" id="cancelColorEdit">إلغاء التعديل</button></form><datalist id="colorSkuList"></datalist><div id="colorMissing"></div><details class="color-bulk"><summary>إضافة أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر لون: الكود، واسم اللون (اختياري)، والدرجة — مفصولين بفاصلة. مثال:<br><span dir="ltr">C-100, أبيض ثلجي, #F4F4F0</span></p><textarea id="colorBulkInput" rows="5" dir="auto" placeholder="C-100, أبيض ثلجي, #F4F4F0"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="colorBulkSave">إضافة الأكواد</button></div></details><div class="color-search"><input id="colorSearch" type="search" placeholder="🔎 ابحث بالكود أو اسم اللون..." autocomplete="off"></div><div id="colorCodesTable"></div></article></section>
+<section id="factory" class="page hidden"><article class="panel"><h2 id="factoryFormTitle">إضافة صنف في كتالوج المصنع</h2><form id="factoryForm" class="form"><input type="hidden" name="id"><label>اسم الصنف<input required name="name"></label><label>النوع<select name="packageType"><option value="شكارة">شكارة</option><option value="بستلة">بستلة</option></select></label><label>طريقة التسعير<select name="pricing"><option value="ton">بالطن (سعر العبوة بيتحسب من وزنها)</option><option value="unit">بالعبوة (سعر ثابت)</option></select></label><label><span id="factoryPriceLabel">سعر شراء الطن من المصنع</span><input required name="factoryPrice" type="number" min="0" step="0.01"></label><label><span id="salePriceLabel">سعر بيع الطن</span><input required name="salePrice" type="number" min="0" step="0.01"></label><label>الوزن الافتراضي للعبوة (كجم)<input name="packageWeight" type="number" min="0" step="0.001"></label><label>أوزان العبوات المتاحة (اختياري)<input name="weightOptions" placeholder="مثال: 20, 25"></label><details class="variant-editor" id="variantEditor"><summary>🎨 أكواد الألوان وأسعارها (للأصناف اللي كل لون فيها ليه سعر، زي المحارة الجاهزة) <span class="badge" id="variantCount">0</span></summary><p class="notice" style="margin:8px 0">كل كود ليه سعره. لما تعمل طلبية للصنف ده وتكتب الكود، السعر بيتحط لوحده. الأسعار هنا <strong id="variantUnitNote">بالطن</strong> زي سعر الصنف فوق. لو سبت سعر فاضي، بيتاخد سعر الصنف العادي.</p><div id="variantRows"></div><datalist id="colorSkuAllList"></datalist><div class="form-actions" style="margin-top:8px"><button type="button" class="secondary-btn" id="addVariantRow">➕ إضافة كود</button></div><details class="color-bulk" style="margin-top:10px"><summary>لصق أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر: الكود، سعر الشراء، سعر البيع (أو الكود وسعر البيع بس). مثال:<br><span dir="ltr">C-100, 9000, 11000</span></p><textarea id="variantBulkInput" rows="4" dir="ltr" placeholder="C-100, 9000, 11000"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="variantBulkAdd">إضافة للقايمة</button></div></details></details><button type="submit" class="primary">حفظ</button><button type="button" class="danger" id="cancelFactoryEdit">إلغاء التعديل</button></form></article><article class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">كتالوج المصنع</h2><div class="ft-actions"><button type="button" class="secondary-btn" id="colorCatalogBtn" style="flex:none;white-space:nowrap" onclick="openColorCatalog()">📖 كتالوج الألوان</button><button type="button" class="secondary-btn hidden" id="factoryPriceReviewBtn" style="flex:none;white-space:nowrap" onclick="openFactoryPriceReview()">💲 مراجعة أسعار المصنع</button></div></div><div id="factoryTable" style="margin-top:16px"></div></article><article class="panel" id="colorCodesPanel"><h2 id="colorFormTitle">🎨 درجات الألوان</h2><p class="notice">سجّل كود كل لون ودرجته. أي صنف في المخزون بنفس الكود هتظهر جنبه دايرة باللون ده لوحدها، وبتتزامن على كل الأجهزة. تقدر تختار أي درجة من مربع الألوان، أو تكتب كودها (#RRGGBB) لو معاك.</p><form id="colorCodeForm" class="form"><input type="hidden" name="id"><label>كود اللون<input required name="code" list="colorSkuList" autocomplete="off" dir="ltr" placeholder="مثلاً C-100"></label><label>اسم اللون (اختياري)<input name="name" placeholder="مثلاً أبيض ثلجي"></label><label>درجة اللون<span class="color-pick"><input type="color" name="hex" value="#c8102e" aria-label="اختيار درجة اللون"><input name="hexText" dir="ltr" maxlength="7" placeholder="#RRGGBB" aria-label="كود الدرجة"></span></label><button type="submit" class="primary" id="colorSaveBtn">حفظ اللون</button><button type="button" class="secondary-btn hidden" id="cancelColorEdit">إلغاء التعديل</button></form><datalist id="colorSkuList"></datalist><div id="colorMissing"></div><details class="color-bulk"><summary>إضافة أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر لون: الكود، واسم اللون (اختياري)، والدرجة — مفصولين بفاصلة. مثال:<br><span dir="ltr">C-100, أبيض ثلجي, #F4F4F0</span></p><textarea id="colorBulkInput" rows="5" dir="auto" placeholder="C-100, أبيض ثلجي, #F4F4F0"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="colorBulkSave">إضافة الأكواد</button></div></details><div class="color-search"><input id="colorSearch" type="search" placeholder="🔎 ابحث بالكود أو اسم اللون..." autocomplete="off"></div><div id="colorCodesTable"></div></article></section>
 <section id="products" class="page hidden"><article class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">الأصناف الموجودة في المخزون</h2><div style="display:flex;gap:10px;align-items:center;flex:1;justify-content:flex-end;flex-wrap:wrap"><button type="button" class="secondary-btn" style="flex:none;white-space:nowrap" onclick="openStockAdjustLog()">📋 سجل تسويات الجرد</button><div style="min-width:280px;flex:1;max-width:430px"><input id="productSearch" type="search" placeholder="🔎 ابحث بالاسم أو الكود أو الباتش أو صاحب الطلبية..." autocomplete="off" style="width:100%"></div></div></div><p class="notice">الأصناف تدخل المخزون عن طريق استلام الطلبيات، وتُحذف تلقائيًا عند بيع آخر كمية. لو العدد الفعلي مختلف (تالف، ضايع، فرق جرد): ⋮ جنب الصنف ← «⚖️ تسوية الكمية».</p><div id="productsTable" style="margin-top:16px"></div></article></section>
 <section id="invoices" class="page hidden"><div class="page-views" data-page-views="invoices"><button type="button" data-view="new">➕ فاتورة جديدة</button><button type="button" data-view="list">📄 الفواتير السابقة</button></div><article class="panel" data-view="new"><h2>إنشاء فاتورة مبيعات</h2><form id="invoiceForm" class="form"><div class="form-step"><div class="form-step-title"><b>1</b> العميل</div><label class="span-2">العميل<input required name="customer" list="customerNamesList" autocomplete="off"></label><div class="customer-phone-hint span-2" id="invoicePhoneHint"></div></div><div class="form-step"><div class="form-step-title"><b>2</b> الأصناف</div><label class="span-2">بحث واختيار الصنف
   <div class="factory-order-picker" id="invoiceProductPicker">
@@ -204,7 +204,7 @@ html,body{background:#fff!important}
     <div id="factoryProductResults" class="factory-product-results hidden"></div>
     <div id="factoryProductSelected" class="notice factory-product-selected">لم يتم اختيار صنف بعد.</div>
   </div>
-</label><label>الكمية<input required name="quantity" type="number" min="1" step="1" value="1"></label><label>الكود<input name="itemSku" placeholder="اكتب رقم الكود…" list="orderSkuList" autocomplete="off" dir="auto"><datalist id="orderSkuList"></datalist><datalist id="allSkuList"></datalist></label><label>وزن العبوة (كجم)<input name="itemWeight" type="number" min="0" step="0.001" list="orderWeightOptions" placeholder="بيتملي من الكتالوج"><datalist id="orderWeightOptions"></datalist></label><label>سعر بيع العبوة (قابل للتعديل)<input name="itemSalePrice" type="number" min="0" step="0.01" placeholder="بيتحسب من سعر الطن"></label><label>رقم الباتش<input name="batchNo" placeholder="يُسحب تلقائيًا من المصنع ويمكن تعديله"></label><label>الحصوة<select name="pebble"><option value="">بدون</option><option>ناعم</option><option>خشن</option><option>نص مللي</option><option>1 مللي</option><option>1.5 مللي</option><option>2 مللي</option><option>3 مللي</option></select></label><button type="button" class="primary" id="addOrderItem">إضافة صنف للطلبية</button><div id="orderCart" class="span-all"></div></div><div class="form-step"><div class="form-step-title"><b>3</b> العربون والحفظ</div><label>العربون<input name="deposit" type="number" min="0" step="0.01" value="0"></label><label class="treasury-pick hidden">حساب العربون<select name="accountId" data-treasury="in"></select></label><label>تاريخ الطلب<input required name="date" type="date"></label><div class="form-actions span-2"><button class="primary" id="orderSaveBtn">حفظ الطلبية</button></div><p class="notice span-all" style="margin:0">أضف أكثر من صنف للطلبية ثم احفظها كطلبية واحدة. عند الترحيل للمخزون تُضاف كل الأصناف والكميات دفعة واحدة، ولا تدخل المخزون قبل الترحيل.</p></div></form><div id="ordersJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">الطلبيات</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="orderSearch" type="search" placeholder="🔎 ابحث برقم الطلبية أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="ordersPendingWeightSummary" class="notice" style="margin-top:12px"></div><div id="ordersTable" style="margin-top:16px"></div></article></section>
+</label><label>الكمية<input required name="quantity" type="number" min="1" step="1" value="1"></label><label>الكود<span class="sku-pick"><input name="itemSku" placeholder="اكتب رقم الكود…" list="orderSkuList" autocomplete="off" dir="auto"><button type="button" class="secondary-btn" id="orderSkuCatalogBtn" title="اختار اللون من كتالوج الألوان" aria-label="اختار اللون من كتالوج الألوان">📖</button></span><datalist id="orderSkuList"></datalist><datalist id="allSkuList"></datalist></label><label>وزن العبوة (كجم)<input name="itemWeight" type="number" min="0" step="0.001" list="orderWeightOptions" placeholder="بيتملي من الكتالوج"><datalist id="orderWeightOptions"></datalist></label><label>سعر بيع العبوة (قابل للتعديل)<input name="itemSalePrice" type="number" min="0" step="0.01" placeholder="بيتحسب من سعر الطن"></label><label>رقم الباتش<input name="batchNo" placeholder="يُسحب تلقائيًا من المصنع ويمكن تعديله"></label><label>الحصوة<select name="pebble"><option value="">بدون</option><option>ناعم</option><option>خشن</option><option>نص مللي</option><option>1 مللي</option><option>1.5 مللي</option><option>2 مللي</option><option>3 مللي</option></select></label><button type="button" class="primary" id="addOrderItem">إضافة صنف للطلبية</button><div id="orderCart" class="span-all"></div></div><div class="form-step"><div class="form-step-title"><b>3</b> العربون والحفظ</div><label>العربون<input name="deposit" type="number" min="0" step="0.01" value="0"></label><label class="treasury-pick hidden">حساب العربون<select name="accountId" data-treasury="in"></select></label><label>تاريخ الطلب<input required name="date" type="date"></label><div class="form-actions span-2"><button class="primary" id="orderSaveBtn">حفظ الطلبية</button></div><p class="notice span-all" style="margin:0">أضف أكثر من صنف للطلبية ثم احفظها كطلبية واحدة. عند الترحيل للمخزون تُضاف كل الأصناف والكميات دفعة واحدة، ولا تدخل المخزون قبل الترحيل.</p></div></form><div id="ordersJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">الطلبيات</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="orderSearch" type="search" placeholder="🔎 ابحث برقم الطلبية أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="ordersPendingWeightSummary" class="notice" style="margin-top:12px"></div><div id="ordersTable" style="margin-top:16px"></div></article></section>
 <section id="customers" class="page hidden"><article class="panel" id="customersListPanel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">العملاء</h2><div style="display:flex;gap:10px;align-items:center;flex:1;justify-content:flex-end;flex-wrap:wrap"><button type="button" class="primary" onclick="openAddCustomerDebt()">➕ إضافة مديونية / عميل جديد</button><div style="min-width:280px;flex:1;max-width:430px"><input id="customerSearch" type="search" placeholder="🔎 ابحث باسم العميل..." autocomplete="off" style="width:100%"></div></div></div><div id="customersTable" style="margin-top:16px"></div></article><article class="panel hidden" id="customerProfile"><div class="profile-bar"><button type="button" class="secondary-btn" id="customerBackBtn">→ رجوع للعملاء</button><h2 id="customerTitle"></h2><div class="profile-actions"><button type="button" class="primary" id="profilePayBtn">💵 دفعة جديدة</button><button type="button" class="secondary-btn" id="profileDebtBtn">➕ مديونية</button><button type="button" class="secondary-btn" id="profileStatementBtn">🧾 كشف حساب</button><button type="button" class="secondary-btn" id="profileWhatsBtn">واتساب</button><button type="button" class="secondary-btn hidden" id="profileRemindBtn">💬 تذكير بالمديونية</button><button type="button" class="secondary-btn hidden" id="profileFollowBtn">📝 متابعة الدين</button><button type="button" class="secondary-btn" id="profileReturnBtn">↩ مرتجع</button><button type="button" class="secondary-btn" id="profileEditBtn">⚙️ بيانات العميل</button></div></div><div id="customerDebtInfo" class="notice hidden"></div><div id="customerEditBox" class="profile-section hidden"><h3 class="profile-section-title">بيانات العميل</h3><div id="customerPhoneBox" class="customer-phone-hint" style="margin-bottom:12px"></div><div id="customerRepBox" class="form" style="margin-bottom:12px"></div><form id="balanceForm" class="form"><label>الرصيد الافتتاحي<input name="openingBalance" type="number" step="0.01"></label><button class="primary">حفظ الرصيد الافتتاحي</button></form></div><form id="paymentForm" class="form profile-pay"><h3 class="profile-section-title">تسجيل دفعة</h3><label>قيمة الدفعة<input required name="amount" type="number" min="0.01" step="0.01"></label><label data-treasury-method>طريقة الدفع<select name="paymentMethod"><option>كاش</option><option>محفظة</option><option>تحويل بنكي</option></select></label><label class="treasury-pick hidden">الحساب<select name="accountId" data-treasury="in"></select></label><label>التاريخ<input required name="date" type="date"></label><label>ملاحظة<input name="note"></label><button class="primary">تسجيل الدفعة</button></form><div id="returnBox"></div><details id="customerItemsDetails" class="profile-section"><summary>الأصناف اللي أخدها العميل</summary><div id="customerItemsSummary"></div></details><div id="customerHistory"></div></article><article class="panel" id="repsPanel"><details id="repsDetails" class="panel-collapse"><summary><h2>المناديب</h2><span class="badge" id="repsCount"></span></summary><div id="repsView"></div></details></article></section>
 <section id="balances" class="page hidden"><div class="grid" id="balanceSummary"></div><div class="page-views" data-page-views="balances"><button type="button" data-view="factory">🏭 حساب المصنع</button><button type="button" data-view="purchases">🧾 المشتريات</button><button type="button" data-view="extras">🚚 المصاريف الإضافية</button><button type="button" data-view="reps">👥 المناديب</button></div><div data-view="factory"><article class="panel" id="factoryAccountPanel"><h2>حساب المصنع (مديونية المصنع)</h2><p class="notice">حساب منفصل تمامًا عن المشتريات الإضافية وعن حساب أي عميل. بيزيد لما تسجل طلب من المصنع، وبينقص لما تسجل دفعة أو ترجع صنف للمصنع من المخزون.</p><div class="grid" id="factoryAccountSummary"></div><button type="button" class="danger" id="resetFactoryAccount" style="margin-top:10px">تصفير حساب المصنع (حذف قيود الطلبات والدفعات)</button><form id="factoryOpeningForm" class="form" style="margin-top:14px"><label>الرصيد الافتتاحي (مديونية سابقة قبل استخدام الحساب ده)<input name="opening" type="number" step="0.01"></label><button class="primary" type="submit">حفظ الرصيد الافتتاحي</button></form><div class="two" style="margin-top:16px"><form id="factoryDebitForm" class="form"><h3 style="margin:0 0 6px">تسجيل طلب من المصنع</h3><label>القيمة<input required name="amount" type="number" min="0.01" step="0.01"></label><label>التاريخ<input required name="date" type="date"></label><label>ملاحظة (اختياري)<input name="note" placeholder="مثلاً: طلبية جرافيتو 500 متر"></label><button class="primary" type="submit">تسجيل الطلب</button></form><form id="factoryPaymentForm" class="form"><h3 style="margin:0 0 6px">تسجيل دفعة للمصنع</h3><label>القيمة<input required name="amount" type="number" min="0.01" step="0.01"></label><label>التاريخ<input required name="date" type="date"></label><label data-treasury-method>طريقة الدفع<select name="method" id="factoryPaymentMethod"><option value="cash">كاش</option><option value="transfer">تحويل</option></select></label><div id="factoryTransferFields" class="hidden"><label>نوع التحويل<select name="transferType" id="factoryTransferType"><option value="bank">تحويل بنكي</option><option value="wallet">محفظة إلكترونية</option></select></label><label id="factoryAccountDetailLabel">اسم/رقم الحساب البنكي<input name="accountDetail" id="factoryAccountDetail" placeholder="مثلاً: حساب أحمد - البنك الأهلي"></label></div><label class="treasury-pick hidden">اتدفعت من حساب<select name="accountId" data-treasury="out"></select></label><label>ملاحظة (اختياري)<input name="note" placeholder="اختياري"></label><button class="primary" type="submit">تسجيل الدفعة</button></form></div><article class="panel" style="margin-top:16px"><h2>سجل حساب المصنع</h2><div id="factoryLedgerTable"></div></article></article></div><div data-view="purchases"><article class="panel"><h2>إضافة قيد مشتريات</h2><form id="ledgerForm" class="form"><label>اسم الصنف<input required name="description" list="ledgerNameList" autocomplete="off"></label><datalist id="ledgerNameList"></datalist><label>سعر الشراء للوحدة<input required name="unitPrice" type="number" min="0" step="0.01"></label><label>سعر البيع للوحدة<input required name="sellPrice" type="number" min="0" step="0.01"></label><label>الكمية<input required name="quantity" type="number" min="1" step="1"></label><label>رقم الباتش<input name="batchNo" placeholder="اختياري"></label><label>التاريخ<input required name="date" type="date"></label><label class="treasury-pick hidden">اتدفعت من حساب<select name="accountId" data-treasury="out"></select></label><button class="primary">حفظ وإضافة للمخزون</button></form><p class="notice">عند حفظ قيد المشتريات تُضاف الكمية للمخزون فورًا، ويُحفظ سعر الشراء كتكلـفة وسعر البيع كسعر الفواتير. لا يوجد ترحيل منفصل.</p></article><article class="panel"><h2>سجل المشتريات (من غير طلبيات المصنع)</h2><div id="ledgerTable"></div></article></div><div data-view="extras"><article class="panel"><h2>مشتريات إضافية — نقل ومصاريف لا تدخل المخزون</h2><form id="extraForm" class="form"><label>البيان<input required name="description" placeholder="نقل"></label><label>القيمة<input required name="amount" type="number" min="0" step="0.01"></label><label>التاريخ<input required name="date" type="date"></label><label class="treasury-pick hidden">اتدفعت من حساب<select name="accountId" data-treasury="out"></select></label><button class="primary">إضافة</button></form></article><article class="panel"><h2>المشتريات الإضافية</h2><div id="extraTable"></div></article></div><div data-view="reps"><article class="panel"><h2>حسابات المناديب</h2><div id="repPaymentsTable"></div></article></div></section>
 <section id="treasury" class="page hidden"><article class="panel"><div class="treasury-head"><h2>💰 الخزنة والحسابات</h2><div class="treasury-actions"><button type="button" class="primary" id="treasuryAddBtn">+ حساب جديد</button><button type="button" class="secondary-btn" id="treasuryTransferBtn">🔁 تحويل بين الحسابات</button></div></div><p class="notice">كل فلوس داخلة أو خارجة بتتسجل على حساب (الخزنة الكاش، أو محفظة، أو حساب بنكي): <strong>داخل</strong> = دفعات العملاء والمدفوع في الفواتير وعربون الطلبيات، و<strong>خارج</strong> = دفعات المصنع والمصاريف والمشتريات ودفعات المناديب ورد فلوس المرتجعات. الحساب مينفعش يصرف أكتر من اللي فيه. الحساب بيبدأ من «رصيد أول المدة» يوم ما بتعمله، والحركات اللي قبله مش بتتحسب فيه.</p><div id="treasuryBody"></div></article><article class="panel" id="treasuryMovesPanel"><h2>حركات الحساب</h2><div class="form treasury-filter"><label>الحساب<select id="treasuryAccSel"></select></label><label>من تاريخ<input type="date" id="treasuryFrom"></label><label>إلى تاريخ<input type="date" id="treasuryTo"></label><button type="button" class="secondary-btn" id="treasuryAllBtn">كل الحركات</button></div><div id="treasuryMoves"></div></article></section>
@@ -870,13 +870,14 @@ function showColorPreview(colorId,productId){
   // لون الكلام فوق الدرجة: أبيض على الغامق وأسود على الفاتح عشان يتقري.
   const [r,g,b]=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)),ink=(r*299+g*587+b*114)/1000>150?'#14213d':'#ffffff';
   const sameCode=db.products.filter(x=>colorKey(x.sku)===colorKey(raw.code));
-  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card color-preview-card" role="dialog" aria-modal="true" aria-labelledby="colorPreviewTitle"><div class="settlement-title"><div><small>درجة اللون</small><h3 id="colorPreviewTitle"><bdi dir="ltr">${esc(raw.code)}</bdi>${raw.name?` — ${esc(raw.name)}`:''}</h3></div><button type="button" class="settlement-close" data-close aria-label="إغلاق">×</button></div><div class="color-preview-swatch" style="background:${hex};color:${ink}"><span dir="ltr">${hex}</span></div><div class="color-preview-info">${p?`<div><span>الصنف</span><strong>${esc(p.name)}</strong></div>${p.batchNo?`<div><span>الباتش</span><strong>${esc(p.batchNo)}</strong></div>`:''}<div><span>المتاح</span><strong>${p.stock}</strong></div>`:''}<div><span>أصناف بالكود ده في المخزون</span><strong>${sameCode.length}</strong></div></div><div class="settlement-actions"><button type="button" class="secondary-btn" data-copy>نسخ كود الدرجة</button><button type="button" class="primary" data-close>إغلاق</button></div></div>`;
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card color-preview-card" role="dialog" aria-modal="true" aria-labelledby="colorPreviewTitle"><div class="settlement-title"><div><small>درجة اللون</small><h3 id="colorPreviewTitle"><bdi dir="ltr">${esc(raw.code)}</bdi>${raw.name?` — ${esc(raw.name)}`:''}</h3></div><button type="button" class="settlement-close" data-close aria-label="إغلاق">×</button></div><div class="color-preview-swatch" style="background:${hex};color:${ink}"><span dir="ltr">${hex}</span></div><div class="color-preview-info">${p?`<div><span>الصنف</span><strong>${esc(p.name)}</strong></div>${p.batchNo?`<div><span>الباتش</span><strong>${esc(p.batchNo)}</strong></div>`:''}<div><span>المتاح</span><strong>${p.stock}</strong></div>`:''}<div><span>أصناف بالكود ده في المخزون</span><strong>${sameCode.length}</strong></div></div><div class="settlement-actions"><button type="button" class="secondary-btn" data-try>🎨 جرّبه على الخامات</button><button type="button" class="secondary-btn" data-copy>نسخ كود الدرجة</button><button type="button" class="primary" data-close>إغلاق</button></div></div>`;
   document.body.appendChild(box);
   const close=()=>{box.remove();document.removeEventListener('keydown',onKey);};
   const onKey=e=>{if(e.key==='Escape')close();};
   document.addEventListener('keydown',onKey);
   box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);
   box.querySelector('.settlement-backdrop').onclick=close;
+  box.querySelector('[data-try]').onclick=()=>{close();openColorCatalog({tryCode:raw.code});};   // 38-color-catalog.js
   box.querySelector('[data-copy]').onclick=async()=>{try{await navigator.clipboard.writeText(hex);daftarToast(`اتنسخ ${hex}`);}catch(e){daftarAlert('كود الدرجة: '+hex);}};
   box.querySelector('.settlement-actions .primary').focus();
 }
@@ -6527,6 +6528,250 @@ document.querySelector('#treasuryAccSel')?.addEventListener('change',e=>{daftarT
 document.querySelector('#treasuryFrom')?.addEventListener('change',e=>{daftarTreasuryFrom=e.target.value;render();});
 document.querySelector('#treasuryTo')?.addEventListener('change',e=>{daftarTreasuryTo=e.target.value;render();});
 document.querySelector('#treasuryAllBtn')?.addEventListener('click',()=>{daftarTreasuryFrom='';daftarTreasuryTo='';render();});
+// ===== 📖 كتالوج الألوان + «🎨 جرّب وقارن» =====
+// صور صفحات كتالوج المصنع في فولدر catalog/ جنب البرنامج (ونسخة الموبايل بتحطها جنب index.html — build-web.js).
+// كل صفحة = خامة واحدة فيها 15 لون بنفس الترتيب (مربع كبير + 14 صغير)، فالدوسة على أي مربع بتعرف كوده من
+// مكانه في الصفحة — من غير ما حد يكتبه. الدرجات (hex) متاخدة من صور الكتالوج نفسها بعد تظبيط إضاءتها على أبيض
+// الكرتونة (scripts/catalog-pages.ps1) — تقريبية، والمرجع هو الكتالوج الورق.
+// «جرّب وقارن»: لونين جنب بعض، وكل لون على أي خامة: بناخد من المربع الكبير للخامة النور والضل بس ونلوّنه
+// بالدرجة. لو اللون على خامته هو، بنعرض صورته الحقيقية من الكتالوج. كله بيتحسب على الجهاز (من غير نت ولا مزامنة).
+// لو الكود متسجّل في «درجات الألوان» بدرجة تانية، درجتك هي اللي بتتاخد.
+const COLOR_CATALOG={pages:[
+  {name:'شيلد خشن',first:501,img:'emek-2025-5xx.jpg',hex:'c4ac7f 2a2c32 a7a9ab b7a480 f2e9db b8b9b7 55585d dec58e 7e5c3a dbc593 eae0c1 9a7e51 c9b392 c0a36a 6e5c49'},
+  {name:'جرافينكس',first:401,img:'emek-2025-4xx.jpg',hex:'9e8e5d fff7d1 9b8055 d1d2d3 d0be9a 5c4635 9f966e 94989e ae7d58 a3a18f d9d2ab 4c5159 837353 e7e6e8 87643a'},
+  {name:'جرافيتو 1 مللي',first:601,img:'emek-2025-6xx.jpg',hex:'563d2f eedcb2 936d5b b38c68 a9915a d2985c deb286 d9ba98 a45b3b d3b364 946e49 a06139 b59c7d 51261e d0b984'},
+  {name:'جرافيتو 2 مللي',first:701,img:'emek-2025-7xx.jpg',hex:'876c36 c3d1db 163d8f b2a57f ceb271 152841 c1a573 554e2d 948266 a78541 3a563d 8a7c55 947746 8e7244 626e3b'},
+  {name:'ماربل',first:901,img:'emek-2025-9xx.jpg',hex:'bfc0b8 e4e1cb e0d7c0 e6e3d7 cbb48a c2b694 a68d6d 7a7a74 e7e5ce d3b96f dacc98 aa9c84 99947f a19e8c cfcab8'},
+  {name:'شيلد ناعم',first:801,img:'emek-2025-8xx.jpg',hex:'807158 d8bf89 685f44 ddc7a6 cdb998 857456 c3b18c d8c39f a68c58 e0cfa9 ad987d 94856e cfc2b1 262528 a4a19b'}
+]};
+// أماكن المربعات الـ15 على صفحة مقاسها 1400×1981 (01 الكبير ثم 02…15)، وحتة الملمس من جوه المربع الكبير.
+const CC_W=1400,CC_H=1981,CC_N=360;
+const CC_BOXES=[[120,90,635,740],[740,430,980,740],[1070,430,1310,740],
+  [90,825,330,1130],[415,825,655,1130],[740,825,980,1130],[1070,825,1310,1130],
+  [95,1200,335,1505],[420,1200,660,1505],[745,1200,985,1505],[1070,1200,1310,1505],
+  [95,1575,335,1885],[420,1575,660,1885],[745,1575,985,1885],[1075,1575,1315,1885]];
+const CC_TEXTURE=[200,200,530,530];
+const ccState={tab:0,zoom:1,sel:null,slots:[{code:'',tex:0,texSet:false},{code:'',tex:0,texSet:false}],pick:null};
+let ccTok=0;
+function ccDigits(s){return String(s||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).trim();}
+function ccSpot(code){
+  const s=ccDigits(code);if(!/^\d+$/.test(s))return null;const n=+s;
+  const pi=COLOR_CATALOG.pages.findIndex(p=>n>=p.first&&n<p.first+15);
+  return pi<0?null:{pi,idx:n-COLOR_CATALOG.pages[pi].first};
+}
+// الكود (أو #RRGGBB) ← {code,hex,name,pi,idx}؛ pi/idx = مكانه في الكتالوج لو منه.
+function ccColor(input){
+  const raw=String(input||'').trim();if(!raw)return null;
+  if(raw.startsWith('#')){const hex=normalizeHex(raw);return hex?{code:hex,hex,name:'',pi:null,idx:null}:null;}
+  const code=ccDigits(raw),spot=ccSpot(code),own=colorMapByCode().get(colorKey(code));
+  if(!spot&&!own)return null;
+  if(!spot)return {code:own.code,hex:own.hex,name:own.name||'',pi:null,idx:null};
+  const p=COLOR_CATALOG.pages[spot.pi];
+  return {code:String(p.first+spot.idx),hex:own?.hex||normalizeHex(p.hex.split(' ')[spot.idx]),name:p.name,pi:spot.pi,idx:spot.idx};
+}
+const ccImgs=new Map(),ccTex=new Map();
+function ccImage(pi){
+  if(!ccImgs.has(pi))ccImgs.set(pi,new Promise((res,rej)=>{
+    const im=new Image();im.onload=()=>res(im);
+    im.onerror=()=>{ccImgs.delete(pi);rej(new Error(`صورة صفحة «${COLOR_CATALOG.pages[pi].name}» مش موجودة جنب البرنامج.`));};
+    im.src=COLOR_CATALOG.pages[pi].img;
+  }));
+  return ccImgs.get(pi);
+}
+function ccScale(im,r){const sx=im.naturalWidth/CC_W,sy=im.naturalHeight/CC_H;return [r[0]*sx,r[1]*sy,(r[2]-r[0])*sx,(r[3]-r[1])*sy];}
+// مربع من جوه المربع الصغير (من غير حوافه) — للصورة الحقيقية للون على خامته.
+function ccSwatchRect(idx){
+  if(idx===0)return CC_TEXTURE;
+  const [x0,y0,x1,y1]=CC_BOXES[idx],side=Math.min(x1-x0,y1-y0)*0.8,cx=(x0+x1)/2,cy=(y0+y1)/2;
+  return [cx-side/2,cy-side/2,cx+side/2,cy+side/2];
+}
+// ملمس الخامة: لكل نقطة قد إيه هي أفتح/أغمق من متوسط المربع الكبير.
+async function ccTexture(pi){
+  if(ccTex.has(pi))return ccTex.get(pi);
+  const im=await ccImage(pi),c=document.createElement('canvas');c.width=c.height=CC_N;
+  const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(im,...ccScale(im,CC_TEXTURE),0,0,CC_N,CC_N);
+  const d=g.getImageData(0,0,CC_N,CC_N).data,k=new Float32Array(CC_N*CC_N);let sum=0;
+  for(let i=0;i<k.length;i++){k[i]=0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2];sum+=k[i];}
+  const mean=sum/k.length||1;for(let i=0;i<k.length;i++)k[i]=1+(k[i]/mean-1)*0.9;
+  ccTex.set(pi,k);return k;
+}
+// بيرسم اللون على الخامة tpi. بيرجّع 'real' (صورة المربع نفسه من الكتالوج — بس لو allowReal) أو 'try' أو ''.
+// في المقارنة الاتنين بيترسموا بنفس الطريقة (ملمس المربع الكبير) عشان المقارنة تبقى عادلة: صورة المربع الصغير
+// الحقيقية أوضح في اللون بس أقل حِدّة لما تكبر.
+async function ccDrawTile(canvas,color,tpi,allowReal=false){
+  const tok=String(++ccTok);canvas.dataset.tok=tok;
+  if(!color)return '';
+  const real=allowReal&&color.pi===tpi&&color.idx!=null;
+  const im=await ccImage(tpi),k=real?null:await ccTexture(tpi);
+  if(canvas.dataset.tok!==tok)return '';
+  canvas.width=canvas.height=CC_N;const g=canvas.getContext('2d');
+  if(real){g.drawImage(im,...ccScale(im,ccSwatchRect(color.idx)),0,0,CC_N,CC_N);return 'real';}
+  const [r,gr,b]=[1,3,5].map(i=>parseInt(color.hex.slice(i,i+2),16)),img=g.createImageData(CC_N,CC_N),d=img.data;
+  const f=(v,x)=>x<=1?v*x:v+(255-v)*(x-1);
+  for(let i=0;i<k.length;i++){const x=k[i];d[i*4]=f(r,x);d[i*4+1]=f(gr,x);d[i*4+2]=f(b,x);d[i*4+3]=255;}
+  g.putImageData(img,0,0);return 'try';
+}
+function ccTexNote(color,tpi,kind){
+  const tex=COLOR_CATALOG.pages[tpi].name;
+  return kind==='real'?'الصورة من الكتالوج':color.pi===tpi?`على خامته (${tex})`:`على ${tex} — تجربة تقريبية`;
+}
+function ccCaption(color,tpi,kind){
+  if(!color)return '';
+  return `<strong><bdi dir="ltr">${esc(color.code)}</bdi>${color.name?` — ${esc(color.name)}`:''}</strong><small>${esc(ccTexNote(color,tpi,kind))}</small>`;
+}
+
+// opts: {pick:code=>…} (من الطلبية: «استخدم الكود») — {code} يفتح على صفحته ومحدد — {tryCode} يفتح «جرّب وقارن» بيه.
+function openColorCatalog(opts={}){
+  document.getElementById('colorCatalogModal')?.remove();
+  ccState.pick=typeof opts.pick==='function'?opts.pick:null;
+  const start=opts.tryCode?ccColor(opts.tryCode):opts.code?ccColor(opts.code):null;
+  if(opts.tryCode&&start){ccSetSlot(0,start.code);ccState.tab='try';}
+  else if(start&&start.pi!=null){ccState.tab=start.pi;ccState.sel={pi:start.pi,idx:start.idx};}
+  else if(ccState.tab!=='try'&&!(ccState.tab>=0))ccState.tab=0;
+  const box=document.createElement('div');box.id='colorCatalogModal';
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card cc-card" role="dialog" aria-modal="true" aria-labelledby="ccTitle"><div class="settlement-title"><div><small>${ccState.pick?'دوس على اللون اللي العميل اختاره':'الألوان على الشاشة تقريبية — المرجع هو الكتالوج الورق'}</small><h3 id="ccTitle">📖 كتالوج الألوان</h3></div><button type="button" class="settlement-close" data-close aria-label="إغلاق">×</button></div><div class="page-views cc-tabs" role="tablist"></div><div id="ccBody"></div></div>`;
+  document.body.appendChild(box);
+  const close=()=>{box.remove();document.removeEventListener('keydown',onKey);};
+  const onKey=e=>{if(e.key==='Escape')close();};
+  document.addEventListener('keydown',onKey);
+  box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);
+  box.querySelector('.settlement-backdrop').onclick=close;
+  box.ccClose=close;
+  ccRender();
+}
+function ccSetSlot(i,code){
+  const s=ccState.slots[i],c=ccColor(code);s.code=c?c.code:String(code||'').trim();
+  if(c&&c.pi!=null&&!s.texSet)s.tex=c.pi;
+}
+function ccRender(){
+  const box=document.getElementById('colorCatalogModal');if(!box)return;
+  const tabs=box.querySelector('.cc-tabs'),body=box.querySelector('#ccBody');
+  const filled=ccState.slots.filter(s=>ccColor(s.code)).length;
+  tabs.innerHTML=COLOR_CATALOG.pages.map((p,i)=>`<button type="button" role="tab" data-tab="${i}" class="${ccState.tab===i?'active':''}" aria-selected="${ccState.tab===i}">${esc(p.name)}</button>`).join('')+
+    `<button type="button" role="tab" data-tab="try" class="${ccState.tab==='try'?'active':''}" aria-selected="${ccState.tab==='try'}">🎨 جرّب وقارن${filled?` (${filled})`:''}</button>`;
+  tabs.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{ccState.tab=b.dataset.tab==='try'?'try':+b.dataset.tab;ccRender();});
+  if(ccState.tab==='try')ccRenderTry(body);else ccRenderPage(body,ccState.tab);
+}
+function ccRenderPage(body,pi){
+  const p=COLOR_CATALOG.pages[pi],z=ccState.zoom;
+  const hot=CC_BOXES.map((b,i)=>{const code=p.first+i,on=ccState.sel&&ccState.sel.pi===pi&&ccState.sel.idx===i;
+    return `<button type="button" class="cc-hot${on?' on':''}" data-idx="${i}" style="left:${b[0]/CC_W*100}%;top:${b[1]/CC_H*100}%;width:${(b[2]-b[0])/CC_W*100}%;height:${(b[3]-b[1])/CC_H*100}%" aria-label="لون ${code}" title="${code}"></button>`;}).join('');
+  body.innerHTML=`<div class="cc-page"><div class="cc-viewer"><div class="cc-zoom" role="group" aria-label="تكبير الصفحة"><button type="button" class="secondary-btn" data-zoom="-1" aria-label="تصغير"${z<=1?' disabled':''}>－</button><span>${z===1?'الصفحة كلها':`×${z}`}</span><button type="button" class="secondary-btn" data-zoom="1" aria-label="تكبير"${z>=3?' disabled':''}>＋</button></div>`+
+    `<div class="cc-scroll"><div class="cc-sheet${z===1?' fit':''}"${z>1?` style="width:${z*100}%"`:''}><img src="${esc(p.img)}" alt="صفحة ${esc(p.name)} من الكتالوج (${p.first}–${p.first+14})" draggable="false">${hot}</div></div></div>`+
+    `<div class="cc-side" id="ccSide"></div></div>`;
+  const img=body.querySelector('.cc-sheet img');
+  img.onerror=()=>{body.querySelector('.cc-scroll').innerHTML=`<div class="empty">صورة صفحة «${esc(p.name)}» مش موجودة جنب البرنامج.</div>`;};
+  body.querySelectorAll('[data-zoom]').forEach(b=>b.onclick=()=>{const steps=[1,1.5,2,3],i=steps.indexOf(ccState.zoom);ccState.zoom=steps[Math.max(0,Math.min(steps.length-1,i+ +b.dataset.zoom))];ccRender();});
+  body.querySelectorAll('.cc-hot').forEach(b=>b.onclick=()=>{
+    ccState.sel={pi,idx:+b.dataset.idx};
+    body.querySelectorAll('.cc-hot.on').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+    ccRenderSide(pi);
+    if(matchMedia('(max-width:700px)').matches)body.querySelector('#ccSide')?.scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+  ccRenderSide(pi);
+}
+function ccRenderSide(pi){
+  const side=document.getElementById('ccSide');if(!side)return;
+  const sel=ccState.sel&&ccState.sel.pi===pi?ccState.sel:null;
+  if(!sel){side.innerHTML=`<div class="cc-hint">👆 دوس على أي لون في الصفحة عشان تشوفه أكبر${ccState.pick?' وتحطه في الطلبية':''}، أو تحطه في «🎨 جرّب وقارن» جنب لون تاني وعلى أي خامة.</div>`;return;}
+  const p=COLOR_CATALOG.pages[pi],c=ccColor(p.first+sel.idx);
+  const inSlot=ccState.slots.findIndex(s=>s.code===c.code);
+  side.innerHTML=`<canvas class="cc-tile" aria-hidden="true"></canvas><div class="cc-cap" data-cap></div>`+
+    `<div class="cc-hex"><span class="color-dot" style="background:${c.hex}"></span><bdi dir="ltr">${c.hex}</bdi></div>`+
+    `<div class="cc-side-actions">${ccState.pick?`<button type="button" class="primary" data-use>✔ استخدم الكود ${esc(c.code)} في الطلبية</button>`:''}`+
+    `<button type="button" class="${ccState.pick?'secondary-btn':'primary'}" data-cmp>${inSlot>=0?'✔ في المقارنة — افتحها':'🎨 جرّبه وقارنه'}</button></div>`;
+  const cv=side.querySelector('canvas');
+  ccDrawTile(cv,c,pi,true).then(k=>{const cap=side.querySelector('[data-cap]');if(k&&cap)cap.innerHTML=ccCaption(c,pi,k);}).catch(e=>{side.querySelector('[data-cap]').textContent=e.message;});
+  side.querySelector('[data-use]')?.addEventListener('click',()=>{const fn=ccState.pick;document.getElementById('colorCatalogModal')?.ccClose?.();fn(c.code);daftarToast(`اتحط الكود ${c.code} (${c.name}).`);});
+  side.querySelector('[data-cmp]').onclick=()=>{
+    if(inSlot<0){const free=ccState.slots.findIndex(s=>!ccColor(s.code)),i=free<0?1:free;ccState.slots[i].texSet=false;ccSetSlot(i,c.code);
+      if(i===0&&!ccColor(ccState.slots[1].code)){daftarToast(`اتحط ${c.code} في المقارنة — اختار لون تاني، أو افتح «🎨 جرّب وقارن» وغيّر الخامة.`);ccRender();return;}}
+    ccState.tab='try';ccRender();
+  };
+}
+function ccRenderTry(body){
+  const pages=COLOR_CATALOG.pages;
+  const codes=pages.flatMap(p=>p.hex.split(' ').map((_,i)=>`<option value="${p.first+i}">${esc(p.name)}</option>`)).join('');
+  body.innerHTML=`<p class="cc-hint" style="margin-top:0">اكتب كود أي لون (من الكتالوج أو «درجات الألوان») واختار الخامة اللي تشوفه عليها.</p>`+
+    `<div class="cc-try">${[0,1].map(i=>{const s=ccState.slots[i];return `<div class="cc-slot" data-slot="${i}"><div class="cc-slot-fields"><label>${i?'اللون التاني':'اللون الأول'}<input data-code dir="ltr" list="ccCodeList" autocomplete="off" inputmode="text" placeholder="${i?'مثلاً 609':'مثلاً 501'}" value="${esc(s.code)}"></label>`+
+      `<label>الخامة<select data-tex>${pages.map((p,j)=>`<option value="${j}"${j===s.tex?' selected':''}>${esc(p.name)}</option>`).join('')}</select></label></div>`+
+      `<div class="cc-tile-box"><canvas class="cc-tile" aria-hidden="true"></canvas><div class="cc-empty">${i?'اكتب كود لون تاني للمقارنة':'اكتب كود اللون'}</div></div><div class="cc-cap" data-cap></div>`+
+      `${ccState.pick?`<button type="button" class="secondary-btn cc-use" data-use>✔ استخدمه في الطلبية</button>`:''}</div>`;}).join('')}</div>`+
+    `<datalist id="ccCodeList">${codes}</datalist>`+
+    `<div class="settlement-actions"><button type="button" class="primary" data-share>📤 صورة للعميل</button><button type="button" class="secondary-btn" data-swap>⇄ بدّل</button><button type="button" class="secondary-btn" data-clear>🧹 مسح</button></div>`;
+  body.querySelectorAll('.cc-slot').forEach(el=>{
+    const i=+el.dataset.slot,s=ccState.slots[i],inp=el.querySelector('[data-code]'),sel=el.querySelector('[data-tex]');
+    const paint=()=>ccPaintSlot(el,i);
+    inp.addEventListener('input',()=>{ccSetSlot(i,inp.value);sel.value=String(s.tex);paint();ccUpdateTryTab();});
+    inp.addEventListener('change',()=>{const c=ccColor(inp.value);if(c&&inp.value!==c.code)inp.value=c.code;});
+    sel.onchange=()=>{s.tex=+sel.value;s.texSet=true;paint();};
+    el.querySelector('[data-use]')?.addEventListener('click',()=>{const c=ccColor(s.code);if(!c)return daftarAlert('اكتب كود اللون الأول.');const fn=ccState.pick;document.getElementById('colorCatalogModal')?.ccClose?.();fn(c.code);daftarToast(`اتحط الكود ${c.code}.`);});
+    paint();
+  });
+  body.querySelector('[data-swap]').onclick=()=>{ccState.slots.reverse();ccRender();};
+  body.querySelector('[data-clear]').onclick=()=>{ccState.slots.forEach(s=>Object.assign(s,{code:'',texSet:false}));ccRender();};
+  body.querySelector('[data-share]').onclick=e=>ccShareCompare(e.currentTarget);
+}
+function ccUpdateTryTab(){
+  const b=document.querySelector('#colorCatalogModal [data-tab="try"]');if(!b)return;
+  const n=ccState.slots.filter(s=>ccColor(s.code)).length;b.textContent=`🎨 جرّب وقارن${n?` (${n})`:''}`;
+}
+function ccPaintSlot(el,i){
+  const s=ccState.slots[i],c=ccColor(s.code),cv=el.querySelector('canvas'),cap=el.querySelector('[data-cap]');
+  el.classList.toggle('filled',!!c);
+  el.querySelector('.cc-empty').textContent=s.code&&!c?'الكود ده مش في الكتالوج ولا في «درجات الألوان»':(i?'اكتب كود لون تاني للمقارنة':'اكتب كود اللون');
+  if(!c){cv.dataset.tok=String(++ccTok);cap.innerHTML='';return;}
+  ccDrawTile(cv,c,s.tex).then(k=>{if(k)cap.innerHTML=ccCaption(c,s.tex,k);}).catch(e=>{cap.textContent=e.message;});
+}
+// صورة المقارنة للعميل: اللونين (أو لون واحد) جنب بعض، وتحت كل واحد كوده وخامته.
+async function ccShareCompare(btn){
+  const items=ccState.slots.map(s=>({s,c:ccColor(s.code)})).filter(x=>x.c);
+  if(!items.length)return daftarAlert('اكتب كود لون واحد على الأقل.');
+  btn.disabled=true;
+  try{
+    const T=520,P=34,G=30,W=P*2+items.length*T+(items.length-1)*G,H=P+T+132;
+    const cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
+    g.fillStyle='#ffffff';g.fillRect(0,0,W,H);
+    const tile=document.createElement('canvas');
+    for(let n=0;n<items.length;n++){
+      const {s,c}=items[n],x=W-P-(n+1)*T-n*G;               // الأول على اليمين زي الشاشة
+      const kind=await ccDrawTile(tile,c,s.tex);
+      g.drawImage(tile,x,P,T,T);g.strokeStyle='#d0d5dd';g.lineWidth=2;g.strokeRect(x+1,P+1,T-2,T-2);
+      g.direction='rtl';g.textAlign='center';g.fillStyle='#14213d';
+      g.font='bold 34px Tahoma, "Segoe UI", Arial, sans-serif';g.fillText(`${c.code}${c.name?' — '+c.name:''}`,x+T/2,P+T+48);
+      g.font='26px Tahoma, "Segoe UI", Arial, sans-serif';g.fillStyle='#475569';
+      g.fillText(ccTexNote(c,s.tex,kind).replace(' تقريبية',''),x+T/2,P+T+88);
+    }
+    g.direction='rtl';g.textAlign='center';g.fillStyle='#94a3b8';g.font='20px Tahoma, "Segoe UI", Arial, sans-serif';
+    g.fillText('الألوان على الشاشة تقريبية — اللون الحقيقي في الكتالوج',W/2,H-16);
+    const blob=await new Promise(r=>cv.toBlob(r,'image/png'));if(!blob)throw new Error('مقدرتش أعمل الصورة.');
+    await ccShareImage(blob,`الوان-${items.map(x=>x.c.code.replace('#','')).join('-')}.png`,items.map(x=>x.c.code).join(' و '));
+  }catch(e){console.error('color compare share failed:',e);daftarAlert('مقدرتش أجهّز الصورة: '+(e?.message||e));}
+  finally{btn.disabled=false;}
+}
+async function ccShareImage(blob,fileName,caption){
+  if(window.daftarElectron?.writeClipboardImage){
+    const r=await window.daftarElectron.writeClipboardImage(new Uint8Array(await blob.arrayBuffer()));
+    if(r?.ok){await openWhatsAppTo('','');daftarToast('الصورة جاهزة في الحافظة واتفتح واتساب — اختار العميل واضغط Ctrl+V.');return;}
+  }
+  const file=new File([blob],fileName,{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{await navigator.share({files:[file],title:caption});return;}
+    catch(e){
+      if(e?.name==='AbortError')return;
+      // الموبايل ممكن يرفض لأن تجهيز الصورة أخد وقت بعد الدوسة: نديله زرار يدوس عليه تاني.
+      if(await daftarConfirm('الصورة جاهزة. تبعتها دلوقتي؟')){try{await navigator.share({files:[file],title:caption});return;}catch(e2){if(e2?.name==='AbortError')return;}}
+    }
+  }
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),4000);
+  daftarToast('اتنزلت صورة المقارنة — ابعتها للعميل من التنزيلات.');
+}
+// زرار 📖 جنب خانة «الكود» في فورم الطلبية: بيفتح الكتالوج على كود الخانة (لو منه) والدوسة بتحط الكود.
+document.querySelector('#orderSkuCatalogBtn')?.addEventListener('click',()=>{
+  const inp=document.querySelector('#orderForm [name=itemSku]');
+  openColorCatalog({code:inp?.value,pick:code=>{if(!inp)return;inp.value=code;inp.dispatchEvent(new Event('input',{bubbles:true}));inp.focus();}});
+});
 </script>
 
 <!-- مكتبة Supabase متضمنة جوه البرنامج () عشان تشتغل حتى لو البرنامج اتفتح من غير نت،
@@ -6643,6 +6888,53 @@ td>button,.phone-edit-btn{white-space:nowrap}
 #factoryPriceModal .fp-diff.up{color:var(--danger)}#factoryPriceModal .fp-diff.down{color:var(--good)}
 #factoryPriceModal tr.price-loss td{background:#fef2f2}
 body.dark #factoryPriceModal tr.price-loss td{background:rgba(248,113,113,.12)}
+/* (2.14.0) 📖 كتالوج الألوان و«🎨 جرّب وقارن» (38-color-catalog.js) */
+.sku-pick{display:flex;gap:6px;align-items:stretch;min-width:0}
+.sku-pick input{flex:1;min-width:0;width:0}
+.sku-pick button{flex:none;height:auto;padding:0 12px;font-size:17px;line-height:1}
+#colorCatalogModal .cc-card{width:min(1000px,100%);max-width:1000px;max-height:calc(100vh - 40px);overflow:auto}
+#colorCatalogModal .cc-tabs{gap:6px;margin-bottom:12px}
+#colorCatalogModal .cc-tabs button{padding:8px 14px;font-size:14px}
+.cc-page{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+.cc-viewer{min-width:0}
+.cc-zoom{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;color:var(--muted);font-size:13px}
+.cc-zoom button{height:34px;min-width:44px;padding:4px 10px;font-size:18px;line-height:1}
+.cc-zoom button:disabled{opacity:.4;cursor:default}
+.cc-scroll{overflow:auto;max-height:calc(100vh - 230px);border-radius:10px;background:var(--soft);-webkit-overflow-scrolling:touch}
+.cc-sheet{position:relative;margin:0 auto;line-height:0}
+.cc-sheet.fit{width:min(100%,calc((100vh - 270px) / 1.415));min-width:240px}
+.cc-sheet img{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.cc-hot{position:absolute;padding:0;margin:0;border:0;background:transparent;border-radius:8px;cursor:pointer;min-height:0;min-width:0}
+.cc-hot:hover{box-shadow:0 0 0 2px rgba(255,255,255,.9),0 0 0 4px rgba(37,99,235,.5)}
+.cc-hot.on{box-shadow:0 0 0 3px #fff,0 0 0 6px var(--blue)}
+.cc-hot:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.cc-side{display:grid;gap:10px;align-content:start}
+.cc-tile{display:block;width:100%;height:auto;aspect-ratio:1/1;border-radius:10px;border:1px solid var(--line);background:var(--soft)}
+.cc-cap{display:grid;gap:2px;text-align:center;min-height:42px;line-height:1.5}
+.cc-cap strong{font-size:16px;color:var(--ink)}
+.cc-cap small{color:var(--muted)}
+.cc-hex{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:13px}
+.cc-side-actions{display:grid;gap:8px}
+.cc-side-actions button,.cc-use{height:auto;min-height:40px;line-height:1.4}
+.cc-hint{color:var(--muted);line-height:1.8;font-size:14px;margin:0 0 10px}
+.cc-try{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cc-slot{display:grid;gap:8px;align-content:start;min-width:0}
+.cc-slot-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cc-slot-fields input,.cc-slot-fields select{width:100%}
+.cc-tile-box{position:relative;width:min(100%,380px);margin:0 auto}
+.cc-empty{position:absolute;inset:0;display:grid;place-items:center;padding:16px;text-align:center;color:var(--muted);border:2px dashed var(--line);border-radius:10px;background:var(--soft);font-size:14px;line-height:1.7}
+.cc-slot.filled .cc-empty{display:none}
+@media(max-width:700px){
+  #colorCatalogModal .cc-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  #colorCatalogModal .cc-tabs button{padding:8px 4px;font-size:13px;white-space:nowrap}
+  #colorCatalogModal .cc-tabs button[data-tab="try"]{grid-column:1/-1}
+  .cc-page{grid-template-columns:1fr}
+  .cc-scroll{max-height:none}
+  .cc-try{gap:10px}
+  .cc-slot-fields{grid-template-columns:1fr}
+  .cc-cap strong{font-size:14px}
+  .cc-empty{padding:8px;font-size:13px}
+}
 /* إعداد نص رسالة الوصول: أزرار الكلمات، والنص جنب المعاينة (بشكل فقاعة واتساب). */
 .arrival-tokens{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 12px}
 .arrival-token{display:inline-flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;font-size:13px;line-height:1.3}
