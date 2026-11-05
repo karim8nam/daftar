@@ -6551,7 +6551,9 @@ const CC_BOXES=[[120,90,635,740],[740,430,980,740],[1070,430,1310,740],
   [95,1200,335,1505],[420,1200,660,1505],[745,1200,985,1505],[1070,1200,1310,1505],
   [95,1575,335,1885],[420,1575,660,1885],[745,1575,985,1885],[1075,1575,1315,1885]];
 const CC_TEXTURE=[200,200,530,530];
-const ccState={tab:0,zoom:1,sel:null,slots:[{code:'',tex:0,texSet:false},{code:'',tex:0,texSet:false}],pick:null};
+const ccState={tab:0,zoom:1,sel:null,slots:[{code:'',tex:0,texSet:false},{code:'',tex:0,texSet:false}],pick:null,customer:false};
+// صفحة الزبون (catalog-page/ ← web-catalog/): نفس الكود ده لوحده من غير البرنامج، على موقع منفصل.
+const CC_PUBLIC_DEFAULT='https://karim8nam.github.io/emek-colors/';
 let ccTok=0;
 function ccDigits(s){return String(s||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).trim();}
 function ccSpot(code){
@@ -6621,23 +6623,63 @@ function ccCaption(color,tpi,kind){
 }
 
 // opts: {pick:code=>…} (من الطلبية: «استخدم الكود») — {code} يفتح على صفحته ومحدد — {tryCode} يفتح «جرّب وقارن» بيه.
+// {mount:el, customer:true} = صفحة الزبون: الكتالوج جوه الصفحة نفسها (مش نافذة) ومن غير أي حاجة من البرنامج.
 function openColorCatalog(opts={}){
   document.getElementById('colorCatalogModal')?.remove();
   ccState.pick=typeof opts.pick==='function'?opts.pick:null;
+  ccState.customer=!!opts.customer;
+  const inline=opts.mount instanceof Element;
   const start=opts.tryCode?ccColor(opts.tryCode):opts.code?ccColor(opts.code):null;
   if(opts.tryCode&&start){ccSetSlot(0,start.code);ccState.tab='try';}
   else if(start&&start.pi!=null){ccState.tab=start.pi;ccState.sel={pi:start.pi,idx:start.idx};}
   else if(ccState.tab!=='try'&&!(ccState.tab>=0))ccState.tab=0;
-  const box=document.createElement('div');box.id='colorCatalogModal';
-  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card cc-card" role="dialog" aria-modal="true" aria-labelledby="ccTitle"><div class="settlement-title"><div><small>${ccState.pick?'دوس على اللون اللي العميل اختاره':'الألوان على الشاشة تقريبية — المرجع هو الكتالوج الورق'}</small><h3 id="ccTitle">📖 كتالوج الألوان</h3></div><button type="button" class="settlement-close" data-close aria-label="إغلاق">×</button></div><div class="page-views cc-tabs" role="tablist"></div><div id="ccBody"></div></div>`;
-  document.body.appendChild(box);
+  const box=document.createElement('div');box.id='colorCatalogModal';if(inline)box.className='cc-inline';
+  const sub=ccState.customer?'اختار اللون والخامة، وقارن بين لونين جنب بعض — الألوان على الشاشة تقريبية':ccState.pick?'دوس على اللون اللي العميل اختاره':'الألوان على الشاشة تقريبية — المرجع هو الكتالوج الورق';
+  const tools=(ccState.customer?'':`<button type="button" class="secondary-btn cc-link-btn" data-link title="صفحة الكتالوج للزبون: لينك وQR" aria-label="لينك الكتالوج للعملاء">🔗<span class="cc-link-t"> لينك للعملاء</span></button>`)+(inline?'':`<button type="button" class="settlement-close" data-close aria-label="إغلاق">×</button>`);
+  box.innerHTML=`${inline?'':'<div class="settlement-backdrop"></div>'}<div class="settlement-card cc-card"${inline?'':' role="dialog" aria-modal="true"'} aria-labelledby="ccTitle"><div class="settlement-title"><div><small>${sub}</small><h3 id="ccTitle">📖 كتالوج الألوان</h3></div>${tools?`<div class="cc-head-tools">${tools}</div>`:''}</div><div class="page-views cc-tabs" role="tablist"></div><div id="ccBody"></div></div>`;
+  (inline?opts.mount:document.body).appendChild(box);
+  box.querySelector('[data-link]')?.addEventListener('click',openCatalogLinkBox);
+  if(!inline){
+    const close=()=>{box.remove();document.removeEventListener('keydown',onKey);};
+    const onKey=e=>{if(e.key==='Escape'&&!document.getElementById('catalogLinkModal'))close();};
+    document.addEventListener('keydown',onKey);
+    box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);
+    box.querySelector('.settlement-backdrop').onclick=close;
+    box.ccClose=close;
+  }
+  ccRender();
+}
+// «🔗 لينك للعملاء»: لينك صفحة الكتالوج (بيتحفظ في إعدادات الطباعة فبيتزامن) + نسخ + واتساب + QR يتطبع في المحل.
+function ccPublicLink(){const v=String((db.printSettings||{}).catalogLink||'').trim();return /^https:\/\/\S+$/i.test(v)?v:CC_PUBLIC_DEFAULT;}
+function ccQr(text,cell){
+  try{if(typeof qrcode!=='function')return '';const q=qrcode(0,'M');q.addData(unescape(encodeURIComponent(text)));q.make();return q.createDataURL(cell,2);}
+  catch(e){console.warn('catalog QR failed:',e);return '';}
+}
+function openCatalogLinkBox(){
+  document.getElementById('catalogLinkModal')?.remove();
+  const box=document.createElement('div');box.id='catalogLinkModal';
   const close=()=>{box.remove();document.removeEventListener('keydown',onKey);};
   const onKey=e=>{if(e.key==='Escape')close();};
   document.addEventListener('keydown',onKey);
-  box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);
-  box.querySelector('.settlement-backdrop').onclick=close;
-  box.ccClose=close;
-  ccRender();
+  const paint=()=>{
+    const link=ccPublicLink(),qr=ccQr(link,6);
+    box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" role="dialog" aria-modal="true" aria-labelledby="clTitle" style="max-width:480px"><div class="settlement-title"><div><small>صفحة فيها الكتالوج و«جرّب وقارن» بس — من غير البرنامج ولا أي بيانات</small><h3 id="clTitle">🔗 لينك الكتالوج للعملاء</h3></div><button type="button" class="settlement-close" data-close aria-label="إغلاق">×</button></div>`+
+      `<form class="cl-form" autocomplete="off"><label>اللينك<input name="link" dir="ltr" spellcheck="false" value="${esc(link)}"></label><button type="submit" class="secondary-btn">حفظ</button></form>`+
+      (qr?`<div class="cl-qr"><img src="${qr}" alt="QR لينك الكتالوج" width="180" height="180"><small>الزبون يصوّره بكاميرا الموبايل فيفتح الكتالوج</small></div>`:'')+
+      `<div class="settlement-actions"><button type="button" class="primary" data-wa>📤 ابعته واتساب</button><button type="button" class="secondary-btn" data-copy>📋 نسخ</button>${qr?'<button type="button" class="secondary-btn" data-qr>⬇️ صورة الـQR</button>':''}</div></div>`;
+    box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);
+    box.querySelector('.settlement-backdrop').onclick=close;
+    box.querySelector('.cl-form').onsubmit=e=>{
+      e.preventDefault();const v=String(e.currentTarget.elements.link.value||'').trim();
+      if(!/^https:\/\/\S+$/i.test(v))return daftarAlert('اللينك لازم يبدأ بـ https://');
+      if(v===ccPublicLink())return daftarToast('اللينك زي ما هو.');
+      db.printSettings={...(db.printSettings||{}),catalogLink:v,updatedAt:new Date().toISOString()};save();paint();daftarToast('اتحفظ اللينك.');
+    };
+    box.querySelector('[data-copy]').onclick=async()=>{try{await navigator.clipboard.writeText(link);daftarToast('اتنسخ اللينك.');}catch(e){daftarAlert(link);}};
+    box.querySelector('[data-wa]').onclick=()=>openWhatsAppExternal(`كتالوج الألوان — اختار اللون والخامة وقارن بنفسك:\n${link}`);
+    box.querySelector('[data-qr]')?.addEventListener('click',()=>{const a=document.createElement('a');a.href=ccQr(link,16);a.download='QR-كتالوج-الالوان.gif';document.body.appendChild(a);a.click();a.remove();});
+  };
+  document.body.appendChild(box);paint();
 }
 function ccSetSlot(i,code){
   const s=ccState.slots[i],c=ccColor(code);s.code=c?c.code:String(code||'').trim();
@@ -6692,13 +6734,13 @@ function ccRenderSide(pi){
 function ccRenderTry(body){
   const pages=COLOR_CATALOG.pages;
   const codes=pages.flatMap(p=>p.hex.split(' ').map((_,i)=>`<option value="${p.first+i}">${esc(p.name)}</option>`)).join('');
-  body.innerHTML=`<p class="cc-hint" style="margin-top:0">اكتب كود أي لون (من الكتالوج أو «درجات الألوان») واختار الخامة اللي تشوفه عليها.</p>`+
+  body.innerHTML=`<p class="cc-hint" style="margin-top:0">${ccState.customer?'اكتب كود اللون (أو دوس عليه في صفحته) واختار الخامة اللي تشوفه عليها.':'اكتب كود أي لون (من الكتالوج أو «درجات الألوان») واختار الخامة اللي تشوفه عليها.'}</p>`+
     `<div class="cc-try">${[0,1].map(i=>{const s=ccState.slots[i];return `<div class="cc-slot" data-slot="${i}"><div class="cc-slot-fields"><label>${i?'اللون التاني':'اللون الأول'}<input data-code dir="ltr" list="ccCodeList" autocomplete="off" inputmode="text" placeholder="${i?'مثلاً 609':'مثلاً 501'}" value="${esc(s.code)}"></label>`+
       `<label>الخامة<select data-tex>${pages.map((p,j)=>`<option value="${j}"${j===s.tex?' selected':''}>${esc(p.name)}</option>`).join('')}</select></label></div>`+
       `<div class="cc-tile-box"><canvas class="cc-tile" aria-hidden="true"></canvas><div class="cc-empty">${i?'اكتب كود لون تاني للمقارنة':'اكتب كود اللون'}</div></div><div class="cc-cap" data-cap></div>`+
       `${ccState.pick?`<button type="button" class="secondary-btn cc-use" data-use>✔ استخدمه في الطلبية</button>`:''}</div>`;}).join('')}</div>`+
     `<datalist id="ccCodeList">${codes}</datalist>`+
-    `<div class="settlement-actions"><button type="button" class="primary" data-share>📤 صورة للعميل</button><button type="button" class="secondary-btn" data-swap>⇄ بدّل</button><button type="button" class="secondary-btn" data-clear>🧹 مسح</button></div>`;
+    `<div class="settlement-actions"><button type="button" class="primary" data-share>${ccState.customer?'📤 احفظ / شارك الصورة':'📤 صورة للعميل'}</button><button type="button" class="secondary-btn" data-swap>⇄ بدّل</button><button type="button" class="secondary-btn" data-clear>🧹 مسح</button></div>`;
   body.querySelectorAll('.cc-slot').forEach(el=>{
     const i=+el.dataset.slot,s=ccState.slots[i],inp=el.querySelector('[data-code]'),sel=el.querySelector('[data-tex]');
     const paint=()=>ccPaintSlot(el,i);
@@ -6765,7 +6807,7 @@ async function ccShareImage(blob,fileName,caption){
   }
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=fileName;document.body.appendChild(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),4000);
-  daftarToast('اتنزلت صورة المقارنة — ابعتها للعميل من التنزيلات.');
+  daftarToast(ccState.customer?'اتنزلت الصورة.':'اتنزلت صورة المقارنة — ابعتها للعميل من التنزيلات.');
 }
 // زرار 📖 جنب خانة «الكود» في فورم الطلبية: بيفتح الكتالوج على كود الخانة (لو منه) والدوسة بتحط الكود.
 document.querySelector('#orderSkuCatalogBtn')?.addEventListener('click',()=>{
@@ -6893,6 +6935,13 @@ body.dark #factoryPriceModal tr.price-loss td{background:rgba(248,113,113,.12)}
 .sku-pick input{flex:1;min-width:0;width:0}
 .sku-pick button{flex:none;height:auto;padding:0 12px;font-size:17px;line-height:1}
 #colorCatalogModal .cc-card{width:min(1000px,100%);max-width:1000px;max-height:calc(100vh - 40px);overflow:auto}
+.cc-head-tools{display:flex;align-items:center;gap:10px;flex:none}
+.cc-link-btn{height:auto;min-height:36px;padding:6px 12px;font-size:13px;white-space:nowrap}
+.cl-form{display:flex;gap:8px;align-items:end;margin-bottom:12px}
+.cl-form label{flex:1;min-width:0}
+.cl-form input{width:100%}
+.cl-qr{display:grid;justify-items:center;gap:6px;margin:4px 0 6px;color:var(--muted);font-size:13px}
+.cl-qr img{width:180px;height:180px;image-rendering:pixelated;background:#fff;padding:6px;border-radius:8px;border:1px solid var(--line)}
 #colorCatalogModal .cc-tabs{gap:6px;margin-bottom:12px}
 #colorCatalogModal .cc-tabs button{padding:8px 14px;font-size:14px}
 .cc-page{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
@@ -6925,6 +6974,8 @@ body.dark #factoryPriceModal tr.price-loss td{background:rgba(248,113,113,.12)}
 .cc-empty{position:absolute;inset:0;display:grid;place-items:center;padding:16px;text-align:center;color:var(--muted);border:2px dashed var(--line);border-radius:10px;background:var(--soft);font-size:14px;line-height:1.7}
 .cc-slot.filled .cc-empty{display:none}
 @media(max-width:700px){
+  .cc-link-t{display:none}
+  .cc-link-btn{padding:6px 10px;font-size:16px}
   #colorCatalogModal .cc-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
   #colorCatalogModal .cc-tabs button{padding:8px 4px;font-size:13px;white-space:nowrap}
   #colorCatalogModal .cc-tabs button[data-tab="try"]{grid-column:1/-1}
