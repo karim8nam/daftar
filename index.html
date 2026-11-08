@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.15.0";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.16.0";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -1738,6 +1738,7 @@ async function deleteFactoryLedgerEntry(id){
     :'الدفعة دي اتبعتت لخزنة الشركة ومستنية التأكيد — مينفعش تتمسح دلوقتي.\nلو فيها غلط: خلّي الخزنة تقول «مش واصل»، وبعدين امسحها وسجّلها صح.');
   // (2.15.0) المرتجع اللي جاي من مرتجع عميل (عيب في المنتج) بيتمسح مع مرتجع العميل نفسه
   if(entry.type==='return'&&entry.customerReturnId)return daftarAlert('المرتجع ده جاي من مرتجع عميل (عيب في المنتج) — امسح مرتجع العميل نفسه من «المرتجعات ← من العملاء».');
+  if(entry.type==='return'&&typeof frLocked==='function'&&frLocked(entry))return daftarAlert('المرتجع ده اتبعت للمصنع — مينفعش يتمسح من هنا (عشان الحسابين يفضلوا زي بعض). لو فيه غلط كلّم المصنع يرفضه الأول.');
   const typeLabel=entry.type==='debit'?(entry.factoryInvoiceId?'فاتورة المصنع':'طلب من المصنع'):entry.type==='return'?'مرتجع صنف':'دفعة';
   const ok=await daftarConfirm(`حذف قيد «${typeLabel}» بقيمة ${money(entry.amount)} بتاريخ ${esc(entry.date)}؟\nسيتم إرجاع تأثير هذا القيد من رصيد حساب المصنع.${entry.factoryInvoiceId?'\n\nالقيد ده فاتورة جت من المصنع (ربط المصنع). لو حذفته مش هيرجع تاني لوحده — احذفه بس لو الفاتورة دي اتسجلت عندك بطريقة تانية.':''}`);
   if(!ok)return;
@@ -6877,7 +6878,8 @@ function openCustomerReturn(name,invoiceId){
         // عيب في صنف المصنع: بيرجع للمصنع على طول — مبيدخلش المخزون (المطابقة: رجع من العميل + راح للمصنع = صفر)
         const cost=invoiceItemUnitCost(l.it),tU=itemTransportUnit(l.it),goods=retMoney2(cost*l.q),trAmt=retMoney2(tU*l.q),fid=daftarNextId();
         db.factoryLedger.push({id:fid,type:'return',amount:retMoney2(goods+trAmt),goodsAmount:goods,transportAmount:trAmt,discountPercent:0,discountAmount:0,unitPrice:cost,date,
-          note:`مرتجع عيب من العميل «${name}» — ${l.q} من «${l.it.productName}»`,productId:l.it.productId||'',productName:l.it.productName,quantity:l.q,reason:'factory',groupId:'c'+gid,customerReturnId:String(id)});
+          note:`مرتجع عيب من العميل «${name}» — ${l.q} من «${l.it.productName}»`,productId:l.it.productId||'',productName:l.it.productName,quantity:l.q,reason:'factory',groupId:'c'+gid,customerReturnId:String(id),
+          rnote:`عيب — العميل «${name}»`,...frLinkOf(invoiceItemOrigin(l.it).orderId,l.it.batchNo,l.it.packageWeight)});
         rec.productId=l.it.productId||'';rec.factoryReturnId=String(fid);
       }else{
         // لو الصنف اتشال من المخزون (اتباعت آخر كمية منه)، بيرجع بنفس بياناته الأصلية، ومنها رقم طلبية المصنع.
@@ -6903,6 +6905,7 @@ function openCustomerReturn(name,invoiceId){
 // حذف سجل مرتجع عميل: المشكلة (لو فيه) أو '' + تنفيذ الحذف
 function customerReturnDeleteProblem(r){
   if(+r.creditUsed>0)return `رصيد المرتجع «${r.productName}» (${money(r.creditUsed)}) اتستخدم كعربون في طلبية، فمينفعش يتحذف.\nلو الطلبية دي غلط، ألغِها الأول.`;
+  if(r.factoryReturnId){const fe=db.factoryLedger.find(x=>String(x.id)===String(r.factoryReturnId));if(fe&&frLocked(fe))return `المرتجع ده اتبعت للمصنع (${FR_LABEL[frState(fe)]||''}) — مينفعش يتمسح من هنا. لو فيه غلط كلّم المصنع يرفضه الأول.`;}
   if(r.factoryReturnId||r.adjId)return '';
   const q=+r.quantity||0,p=db.products.find(x=>String(x.id)===String(r.productId));
   if(!p||(+p.stock||0)<q)return `مينفعش تحذف مرتجع «${r.productName}»، لأن الكمية اللي رجعت (${q}) مش موجودة كلها في المخزون دلوقتي (اتباعت تاني أو اترجعت للمصنع).`;
@@ -6990,7 +6993,7 @@ function openFactoryReturn(productId){
     const gid='f'+daftarNextId();
     for(const l of ls){
       db.factoryLedger.push({id:daftarNextId(),type:'return',amount:l.amount,goodsAmount:l.goods,transportAmount:l.trAmt,discountPercent:l.disc,discountAmount:l.discAmt,unitPrice:l.c,date,reason,groupId:gid,
-        note:`مرتجع ${l.q} وحدة من «${l.p.name}» للمصنع${note?` — ${note}`:''}`,productId:l.p.id,productName:l.p.name,quantity:l.q});
+        note:`مرتجع ${l.q} وحدة من «${l.p.name}» للمصنع${note?` — ${note}`:''}`,productId:l.p.id,productName:l.p.name,quantity:l.q,rnote:note,...frLinkOf(l.p.orderId,l.p.batchNo,l.p.packageWeight)});
       l.p.stock=(+l.p.stock||0)-l.q;
       // «شاهد الحذف» قبل ما الصنف يتشال، وإلا المزامنة هترجّعه بالكمية القديمة
       if(l.p.stock<=0){markDeleted('products',l.p.id);db.products=db.products.filter(x=>String(x.id)!==String(l.p.id));}
@@ -7003,6 +7006,7 @@ function openFactoryReturn(productId){
 async function deleteFactoryReturnGroup(gid){
   const es=(db.factoryLedger||[]).filter(x=>x.type==='return'&&retGroupKey(x)===String(gid));if(!es.length)return;
   if(es.some(x=>x.customerReturnId))return daftarAlert('المرتجع ده جاي من مرتجع عميل (عيب في المنتج) — امسح مرتجع العميل نفسه من «من العملاء».');
+  if(es.some(frLocked))return daftarAlert(`المرتجع ده اتبعت للمصنع (${FR_LABEL[frState(es[0])]}) — مينفعش يتمسح من هنا (عشان الحسابين يفضلوا زي بعض). لو فيه غلط كلّم المصنع يرفضه الأول.`);
   if(es.length===1)return deleteFactoryLedgerEntry(es[0].id);
   if(!await daftarConfirm(`حذف المرتجع للمصنع؟\n${es.map(x=>`- ${x.productName} × ${x.quantity}`).join('\n')}\n\nالكميات هترجع المخزون، و${money(es.reduce((s,x)=>s+(+x.amount||0),0))} هترجع على حساب المصنع.`))return;
   for(const x of es){markDeleted('factoryLedger',x.id);restoreFactoryReturnStock(x);}
@@ -7014,6 +7018,115 @@ function restoreFactoryReturnStock(entry){
   const existing=db.products.find(x=>String(x.id)===String(entry.productId))||db.products.find(x=>String(x.name||'').trim()===String(entry.productName||'').trim()&&x.orderId);
   if(existing)existing.stock=(+existing.stock||0)+q;
   else db.products.push({id:daftarNextId(),name:entry.productName||'صنف مسترجع',baseName:entry.productName||'صنف مسترجع',sku:'',stock:q,price:0,cost:unit,factoryPrice:unit,batchNo:'',pebble:'',packageWeight:0,customerName:'المخزون العام',orderId:'factory'});
+}
+
+// ———————————————————— (2.16.0) «📤 ابعت للمصنع»: المرتجع للمصنع يوصل دفتر اميك (sql/054)
+// كل قيد مرتجع متعلّم عليه طلبية المصنع (رقمها الثابت) والباتش ووزن العبوة (fl) — من الصنف أو من سطر الفاتورة. المرتجع كله بيتبعت مرة واحدة
+// (fr.uid على كل قيوده): هناك بيستنى المبيعات تحوّله لمرتجع ← المدير ← المخزن/التصنيع ← القيمة بتنزل من «حساب الفرع». والنقل المدير يعتمده.
+// أول ما كل حاجة تخلص هناك، قيمة المرتجع هنا بتتظبط على اللي المصنع خصمه فعلًا (الضريبة / النقل اللي اترفض / ...) — عشان الحسابين يبقوا زي بعض.
+const FR_LABEL={sending:'⏳ في الطريق للمصنع',pending:'🕓 مستني المصنع يحوّله',converted:'↩️ المصنع حوّله لمرتجع — مستني الاستلام',done:'✅ المصنع خصمه من حسابك',rejected:'❌ المصنع رفضه',error:'⚠️ المصنع مقبلهوش'};
+function frLinkOf(orderId,batchNo,weight){
+  const o=orderId?db.orders.find(x=>String(x.id)===String(orderId)):null,u=o?.factory?.uid;
+  return u?{fl:{order:String(u),batch:String(batchNo||''),weight:+weight||0}}:{};
+}
+const frState=x=>(x&&x.fr&&x.fr.state)||'';
+function frLocked(x){const s=frState(x);return s==='sending'||s==='pending'||s==='converted'||s==='done';}
+function frGroup(gid){return (db.factoryLedger||[]).filter(x=>x.type==='return'&&retGroupKey(x)===String(gid));}
+// تتبعت؟ الربط شغال، وكل أصنافها من طلبيات اتبعتت للمصنع، ولسه متبعتتش (أو المصنع رفضها / مقبلهاش)
+function frCanSend(es){
+  if(!es.length||typeof factoryLinkOn!=='function'||!factoryLinkOn())return false;
+  if(!es.every(x=>x.fl&&x.fl.order))return false;
+  const s=frState(es[0]);return !s||s==='rejected'||s==='error';
+}
+function factoryReturnNoMap(){
+  return cachedLookup('factoryReturnNos',db.factoryLedger,()=>{const m=new Map();retGroups((db.factoryLedger||[]).filter(x=>x.type==='return')).reverse().forEach((g,i)=>m.set(retGroupKey(g[0]),i+1));return m;});
+}
+async function factorySendReturn(gid){
+  const es=frGroup(gid);
+  if(!frCanSend(es))return daftarAlert(es.some(x=>!x.fl)?'المرتجع ده فيه أصناف مش من طلبية اتبعتت للمصنع من البرنامج — مينفعش يتبعت (سجّله مع المصنع بإيدك).':'المرتجع ده اتبعت قبل كده.');
+  const x0=es[0],kind=x0.reason==='factory'||x0.customerReturnId?'technical':'excess';
+  if(kind==='technical'&&+x0.discountPercent>0)return daftarAlert('مرتجع «مشكلة من المصنع» مفيهوش خصم في المصنع — امسحه وسجّله تاني من غير خصم، أو بسبب «زيادة».');
+  const trn=retMoney2(es.reduce((s,x)=>s+(+x.transportAmount||0),0)),no=factoryReturnNoMap().get(String(gid));
+  const payload={ext_ref:String(no||''),kind,discount_pct:String(+x0.discountPercent||0),transport:trn.toFixed(2),note:x0.rnote||'',date:x0.date,phone_at:new Date().toISOString(),
+    lines:es.map(x=>({order_uid:x.fl.order,batch:x.fl.batch,item:x.productName,count:String(+x.quantity||0),kg:x.fl.weight>0?String(Math.round(x.fl.weight*(+x.quantity||0)*1000)/1000):'',
+      unit_price:String(+x.unitPrice||0),amount:String(retMoney2((+x.unitPrice||0)*(+x.quantity||0)))}))};
+  if(!await daftarConfirm(`هيتبعت المرتجع للمصنع («${kind==='technical'?'مشكلة من المصنع':'زيادة'}»):\n${es.map(x=>`- ${x.productName} × ${x.quantity}${x.fl.batch?` (باتش ${x.fl.batch})`:''}`).join('\n')}${trn>0?`\nوالنقل ${money(trn)}`:''}\n\nالمصنع بيحوّله لمرتجع ويستلمه، وبعدها القيمة بتنزل من حسابك هناك. بعد ما يتبعت مش هتقدر تمسحه من هنا (إلا لو المصنع رفضه). متأكد؟`))return;
+  const fr={uid:crypto.randomUUID(),state:'sending',sentAt:new Date().toISOString()};
+  for(const x of es)x.fr={...fr};
+  x0.fr.payload=payload;save();scheduleRender();
+  try{
+    const r=await flRpc('branch_link_submit',{p_uid:fr.uid,p_kind:'branch_return',p_payload:payload});
+    for(const x of es){x.fr.submitted=true;if(r.delivered)x.fr.state='pending';}
+    if(r.delivered)delete x0.fr.payload;
+    save();scheduleRender();
+    daftarToast('📤 المرتجع اتبعت للمصنع — مستني المبيعات هناك تحوّله.');
+  }catch(e){
+    if(e.network||e.unset){save();return daftarAlert(`${e.unset?e.message:'مفيش نت دلوقتي'} — المرتجع متسجل إنه هيتبعت، وهيتبعت لوحده أول ما ${e.unset?'تدخل تاني':'النت يرجع'} (مش هيتكرر).`);}
+    for(const x of es){x.fr.state='error';x.fr.error=e.message;}delete x0.fr.payload;save();scheduleRender();
+    daftarAlert(`المصنع مقبلش المرتجع:\n${e.message}`);
+  }
+}
+// النت قطع قبل ما يوصل: بيتبعت تاني بنفس الرقم (49-factory-link.js بيناديها)
+async function frResendPending(){
+  let changed=false;
+  const seen=new Set();
+  for(const x of db.factoryLedger||[]){
+    const f=x.fr;if(!f||f.state!=='sending'||!f.payload||f.submitted||seen.has(f.uid))continue;seen.add(f.uid);
+    const es=(db.factoryLedger||[]).filter(e=>e.fr&&e.fr.uid===f.uid);
+    try{const r=await flRpc('branch_link_submit',{p_uid:f.uid,p_kind:'branch_return',p_payload:f.payload});for(const e of es){e.fr.submitted=true;if(r.delivered)e.fr.state='pending';}if(r.delivered)delete f.payload;changed=true;}
+    catch(e){if(e.network||e.unset){if(changed)save();throw e;}for(const y of es){y.fr.state='error';y.fr.error=e.message;}delete f.payload;changed=true;}
+  }
+  if(changed)save();
+}
+// حالة المرتجعات من صورة الفرع (st.returns) — وبعد ما كل حاجة تخلص هناك: قيمة المرتجع هنا = اللي المصنع خصمه فعلًا
+function applyFactoryReturns(st,inbox){
+  let changed=false;
+  const rs=new Map(((st&&st.returns)||[]).map(t=>[String(t.uid),t]));
+  const groups=new Map();
+  for(const x of db.factoryLedger||[]){if(x.type!=='return'||!x.fr)continue;const u=String(x.fr.uid);if(!groups.has(u))groups.set(u,[]);groups.get(u).push(x);}
+  for(const [uid,es] of groups){
+    const before=JSON.stringify(es.map(x=>[x.fr,x.amount])),t=rs.get(uid),ib=inbox&&inbox.get(uid);
+    let state=es[0].fr.state,extra={};
+    if(t){
+      const fin=(t.returns||[]).filter(r=>r.kind!=='transport');
+      const final=t.status==='converted'&&fin.length&&fin.every(r=>['received','rejected','cancelled'].includes(r.status))&&t.transport_status!=='pending';
+      const credited=retMoney2(t.credited);
+      if(t.status==='rejected'){state='rejected';extra.reason=t.note||'';}
+      else if(t.status==='pending')state='pending';
+      else if(final&&credited>0){
+        state='done';extra.credited=credited;
+        // التوزيع على قيود المرتجع بنسبة قيمتها (وآخر قيد بياخد الباقي بالقرش)
+        const base=es.reduce((s,x)=>s+(+x.fr.sentAmount||+x.amount||0),0)||1;let left=credited;
+        es.forEach((x,i)=>{if(x.fr.sentAmount==null)x.fr.sentAmount=+x.amount||0;const v=i===es.length-1?retMoney2(left):retMoney2(credited*(+x.fr.sentAmount||0)/base);left=retMoney2(left-v);if(+x.amount!==v)x.amount=v;});
+      }else if(final){state='rejected';extra.reason='المصنع رفض المرتجع بعد ما اتحوّل — امسحه من هنا عشان البضاعة ترجع المخزون';}
+      else state='converted';
+      extra.numbers=(t.returns||[]).map(r=>r.number);
+      if(t.transport_status)extra.transport=t.transport_status;
+      if(t.transport_note)extra.transportNote=t.transport_note;
+    }else if(ib&&ib.error&&!ib.delivered&&(state==='sending'||state==='error')){state='error';extra.error=ib.error;}
+    else if(ib&&ib.delivered&&state==='sending')state='pending';
+    for(const x of es){
+      const keep={uid:x.fr.uid,sentAt:x.fr.sentAt,submitted:x.fr.submitted,...(x.fr.sentAmount!=null?{sentAmount:x.fr.sentAmount}:{}),...(x.fr.payload&&state==='sending'?{payload:x.fr.payload}:{})};
+      x.fr={...keep,state,...extra};
+    }
+    if(JSON.stringify(es.map(x=>[x.fr,x.amount]))!==before)changed=true;
+  }
+  return changed;
+}
+function frNoteHtml(x){
+  const f=x&&x.fr;if(!f||!FR_LABEL[f.state])return '';
+  const bad=f.state==='rejected'||f.state==='error';
+  const more=f.state==='done'&&f.credited!=null?` (${money(f.credited)})`:f.state==='rejected'&&f.reason?`: ${esc(f.reason)}`:f.state==='error'&&f.error?`: ${esc(f.error)}`:'';
+  const nums=(f.numbers||[]).length?` — ${esc(f.numbers.join('، '))}`:'';
+  const tr=f.transport==='rejected'?`<br><small class="factory-link-note bad">🚚 المصنع رفض النقل${f.transportNote?`: ${esc(f.transportNote)}`:''}</small>`:f.transport==='credited'?'<br><small class="factory-link-note">🚚 النقل اتخصم</small>':'';
+  return `<br><small class="factory-link-note${bad?' bad':''}">${FR_LABEL[f.state]}${more}${nums}</small>${tr}`;
+}
+// «⚖️ مطابقة الحساب مع المصنع»: المرتجعات اللي لسه المصنع مخصمهاش (متسجلة هنا بس)
+function frReconcileRows(){
+  const from=typeof factoryPayFrom==='function'?factoryPayFrom():'';
+  const rets=(db.factoryLedger||[]).filter(x=>x.type==='return'&&frState(x)!=='done'&&(x.fr||(from&&String(x.date||'')>=from)));
+  const unsent=rets.filter(x=>!x.fr||['rejected','error'].includes(frState(x))),waiting=rets.filter(x=>['sending','pending','converted'].includes(frState(x)));
+  return {unsent,waiting};
 }
 
 // ———————————————————— إيصال المرتجع (طباعة + صورة واتساب)
@@ -7059,7 +7172,9 @@ function renderReturnsPage(){
     document.querySelector('#retFactorySummary').innerHTML=`${groups.length} مرتجع — اتخصم من حساب المصنع <strong>${money(total)}</strong>`;
     document.querySelector('#retFactoryList').innerHTML=pagedTable('returnsFactory',['التاريخ','الأصناف','البضاعة','خصم المصنع','النقل','اتخصم من حساب المصنع','السبب',''],groups,g=>{const x0=g[0];
       const why=x0.customerReturnId?'عيب — من مرتجع عميل':x0.reason?FRET_REASONS[x0.reason]||'':'—';
-      return `<tr><td>${esc(x0.date)}</td><td>${g.map(x=>`${esc(x.productName)} × ${x.quantity||0}`).join('<br>')}${x0.note&&g.length===1?`<br><small>${esc(x0.note)}</small>`:''}</td><td>${money(g.reduce((s,x)=>s+factoryReturnGoods(x),0))}</td><td>${sum(g,'discountAmount')?`${money(sum(g,'discountAmount'))}${x0.discountPercent?` (${x0.discountPercent}%)`:''}`:'—'}</td><td>${sum(g,'transportAmount')?money(sum(g,'transportAmount')):'—'}</td><td><strong>${money(sum(g,'amount'))}</strong></td><td>${esc(why)}</td><td>${x0.customerReturnId?'':`<button type="button" class="danger" onclick="deleteFactoryReturnGroup('${retGroupKey(x0)}')">حذف</button>`}</td></tr>`;},q);
+      const gk=retGroupKey(x0),send=frCanSend(g)?`<button type="button" class="primary" onclick="factorySendReturn('${gk}')">📤 ابعت للمصنع</button>`:'';
+      const del=x0.customerReturnId||frLocked(x0)?'':`<button type="button" class="danger" onclick="deleteFactoryReturnGroup('${gk}')">حذف</button>`;
+      return `<tr><td>${esc(x0.date)}</td><td>${g.map(x=>`${esc(x.productName)} × ${x.quantity||0}`).join('<br>')}${x0.note&&g.length===1?`<br><small>${esc(x0.note)}</small>`:''}${frNoteHtml(x0)}</td><td>${money(g.reduce((s,x)=>s+factoryReturnGoods(x),0))}</td><td>${sum(g,'discountAmount')?`${money(sum(g,'discountAmount'))}${x0.discountPercent?` (${x0.discountPercent}%)`:''}`:'—'}</td><td>${sum(g,'transportAmount')?money(sum(g,'transportAmount')):'—'}</td><td><strong>${money(sum(g,'amount'))}</strong></td><td>${esc(why)}</td><td>${send||del?`<div class="row-actions">${send}${del}</div>`:''}</td></tr>`;},q);
   }
 }
 document.querySelector('#retNewCustomerBtn')?.addEventListener('click',()=>openCustomerReturn(''));
@@ -8929,6 +9044,7 @@ async function factoryLinkResendPending(){
     catch(e){if(e.network||e.unset){if(changed)save();throw e;}Object.assign(f,{state:'error',error:e.message});delete f.payload;changed=true;}
   }
   if(changed)save();
+  if(typeof frResendPending==='function')await frResendPending();   // (2.16.0) المرتجعات اللي اتبعتت للمصنع والنت قطع
 }
 function applyFactoryState(res){
   let changed=false;
@@ -8960,6 +9076,7 @@ function applyFactoryState(res){
   }
   if(st)changed=syncFactoryInvoices(st)||changed;
   changed=applyFactoryTransfers(st,inbox)||changed;
+  if(typeof applyFactoryReturns==='function')changed=applyFactoryReturns(st,inbox)||changed;   // (2.16.0) حالة المرتجعات للمصنع
   return changed;
 }
 // (2.13.0) الدفعات اللي اتبعتت لخزنة الشركة: مستنية / الخزنة استلمتها / مش واصلة (بالسبب) / المصنع مقبلهاش
@@ -9413,12 +9530,16 @@ function factoryReconcileHtml(st){
   if(!st)return '';
   const pays=db.factoryLedger.filter(x=>x.type==='payment'),sum=a=>a.reduce((s,x)=>s+(+x.amount||0),0);
   const unsent=pays.filter(x=>ftCanSend(x)&&!ftState(x)),waiting=pays.filter(x=>['sending','pending'].includes(ftState(x))),refused=pays.filter(x=>['rejected','error'].includes(ftState(x)));
-  const here=factoryBalance(),there=+st.balance||0,other=Math.round((there-here-sum(unsent)-sum(waiting)-sum(refused))*100)/100;
+  // (2.16.0) المرتجعات للمصنع اللي لسه المصنع مخصمهاش من حسابك (متسجلة هنا بس)
+  const fr=typeof frReconcileRows==='function'?frReconcileRows():{unsent:[],waiting:[]};
+  const here=factoryBalance(),there=+st.balance||0,other=Math.round((there-here-sum(unsent)-sum(waiting)-sum(refused)-sum(fr.unsent)-sum(fr.waiting))*100)/100;
   const row=(l,v,n)=>`<tr><td>${l}${n!=null?` <small>(${n})</small>`:''}</td><td>${money(v)}</td></tr>`;
   return `<h3>⚖️ مطابقة الحساب مع المصنع</h3>`+table(['البيان','المبلغ'],[row('رصيدك للمصنع هنا («حساب المصنع»)',here),row('المصنع شايف على الفرع',there),
       ...(unsent.length?[row('دفعات لسه متبعتتش لخزنة الشركة',sum(unsent),unsent.length)]:[]),
       ...(waiting.length?[row('دفعات مستنية تأكيد خزنة الشركة',sum(waiting),waiting.length)]:[]),
-      ...(refused.length?[row('دفعات الخزنة قالت مش واصلة (أو المصنع مقبلهاش)',sum(refused),refused.length)]:[])])+
+      ...(refused.length?[row('دفعات الخزنة قالت مش واصلة (أو المصنع مقبلهاش)',sum(refused),refused.length)]:[]),
+      ...(fr.unsent.length?[row('مرتجعات للمصنع لسه متبعتتش (أو المصنع رفضها)',sum(fr.unsent),fr.unsent.length)]:[]),
+      ...(fr.waiting.length?[row('مرتجعات للمصنع مستنية المصنع يخصمها',sum(fr.waiting),fr.waiting.length)]:[])])+
     (Math.abs(other)<0.01?'<div class="notice tone-success">✅ الحساب مطابق: الفرق كله من الدفعات اللي فوق.</div>'
       :`<div class="notice tone-danger">⚠️ فيه فرق تاني <strong>${money(Math.abs(other))}</strong> ${other>0?'(المصنع شايف عليك أكتر)':'(المصنع شايف عليك أقل)'}: قيود متسجلة عندك بس (رصيد افتتاحي، طلب من المصنع بإيدك، مرتجع، دفعات قبل تاريخ البداية متسجلتش هناك) أو حاجة في المصنع مش عندك — راجعها مع المصنع.</div>`);
 }
