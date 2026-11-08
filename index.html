@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.16.0";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.17.0";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -309,6 +309,7 @@ html,body{background:#fff!important}
           <button type="submit" class="primary">حفظ المظهر</button>
         </form>
         <div id="appearanceStatus" class="notice"></div>
+        <div class="form-actions" style="margin-top:10px"><button type="button" class="secondary-btn" id="shortcutsHelpBtn">⌨️ اختصارات الكيبورد (F1)</button></div>
       </article><article class="panel" style="margin-bottom:0">
         <h2>اختبارات الحسابات</h2>
         <p class="notice">تشغّل مجموعة اختبارات فعلية على حسابات المبيعات والمشتريات ورصيد العميل وتوزيع الدفعات ودمج المزامنة، من غير ما تلمس بياناتك الحقيقية أبدًا (بتشتغل على بيانات وهمية مؤقتة وترجّع بياناتك زي ما هي بعدها).</p>
@@ -1512,6 +1513,8 @@ function renderNow(){
  if(pageVisible('orders'))renderFactoryOrderPicker(undefined,false);
  // خانة «الحساب» في كل الفورمات اللي فيها فلوس (بتتبني من جديد بس لو الحسابات اتغيّرت)
  if(typeof fillTreasurySelects==='function')fillTreasurySelects();
+ // (2.17.0) علامة على التبويب لما المصنع يغيّر حاجة
+ if(typeof renderNavBadges==='function')renderNavBadges();
  const customerNames=customers();
  const customerNamesKey=customerNames.length+'|'+customerNames.join('\u0001');
  if(customerNamesKey!==daftarLastCustomerNamesKey){
@@ -7220,6 +7223,12 @@ body.brand-theme .page-views button:not(.active):hover{border-color:#F0A030;colo
 /* ===== المرحلة 3: شكل موحّد ===== */
 /* شريط التبويبات ثابت فوق وإنت بتنزل في أي صفحة. */
 nav#nav{position:sticky;top:0;z-index:30;background:var(--bg);padding:8px 0;margin-top:-8px;box-shadow:0 6px 10px -10px rgba(15,23,42,.35)}
+/* (2.17.0) عدد اللي اتغيّر من المصنع على التبويب، واختصارات الكيبورد */
+#nav .nav-badge{display:inline-block;min-width:18px;margin-inline-start:6px;padding:0 5px;border-radius:9px;background:var(--danger);color:#fff;font-size:12px;font-weight:700;line-height:18px;text-align:center;vertical-align:1px}
+.shortcuts-table{width:100%;border-collapse:collapse}
+.shortcuts-table td{padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.shortcuts-table td:first-child{width:110px;white-space:nowrap}
+.shortcuts-table kbd{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;background:var(--soft);color:var(--ink);font:600 13px/1.6 Consolas,monospace}
 /* أزرار الحذف والإلغاء: زرار بإطار أحمر واضح بدل لينك أحمر طاير. */
 button.danger{color:var(--danger);background:transparent;border:1px solid currentColor;border-radius:8px;padding:8px 14px;cursor:pointer;font:inherit;line-height:1.2}
 button.danger:hover{background:rgba(220,38,38,.08)}
@@ -9714,6 +9723,136 @@ function startFactoryLink(){
 }
 window.addEventListener('online',()=>{if(daftarUnlocked)factoryLinkPull({quiet:true});});
 startFactoryLink();
+// ===== (2.17.0) اختصارات الكيبورد + علامة على التبويب لما المصنع يغيّر حاجة =====
+// الاختصارات بـ e.code مش e.key، عشان تشتغل والكيبورد عربي أو إنجليزي.
+const DAFTAR_SHORTCUTS=[
+  ['F2','فاتورة جديدة'],
+  ['F3','طلبية جديدة'],
+  ['F4','عرض سعر جديد'],
+  ['Ctrl + S','حفظ: الفاتورة / عرض السعر / الطلبية — أو زرار «حفظ» في النافذة المفتوحة'],
+  ['Ctrl + P','حفظ وطباعة (الفاتورة وعرض السعر)'],
+  ['Esc','يقفل النافذة المفتوحة'],
+  ['F1','الاختصارات دي'],
+];
+// آخر نافذة مفتوحة (كل النوافذ في البرنامج settlement-card، وبتتضاف في آخر الصفحة)
+function topModalCard(){
+  const cards=[...document.querySelectorAll('.settlement-card')].filter(c=>c.getClientRects().length);
+  return cards[cards.length-1]||null;
+}
+function shortcutsBlocked(){
+  const shown=id=>{const el=document.getElementById(id);return !!el&&getComputedStyle(el).display!=='none';};
+  return shown('daftarPinOverlay')||shown('daftarAuthOverlay');
+}
+function openNewDoc(page){
+  const btn=document.querySelector(`#nav [data-page="${page}"]`);if(!btn)return;
+  btn.click();
+  showPageView(page,'new');render();window.scrollTo({top:0});
+  setTimeout(()=>{const f=document.querySelector(`#${page} [data-view="new"] [name=customer]`);if(f&&!f.value)f.focus();},30);
+}
+// زرار الحفظ في الصفحة الظاهرة (لو فورم «جديدة» مفتوح)
+function pageSaveButton(print){
+  const ids={invoices:print?'saveInvoicePrint':'saveInvoiceOnly',quotes:print?'saveQuotePrint':'saveQuoteOnly',orders:'orderSaveBtn'};
+  for(const page of Object.keys(ids)){
+    if(!pageVisible(page)||daftarPageView[page]!=='new')continue;
+    return document.getElementById(ids[page]);
+  }
+  return null;
+}
+// زرار «حفظ / سجّل» في النافذة — مش أي زرار أساسي (نافذة الاختيار ممكن أول زرار فيها يبقى «حذف»)
+function modalSaveButton(card){
+  if(card.closest('#daftarChoiceModal,#daftarConfirmModal'))return null;
+  return [...card.querySelectorAll('button.primary')].find(b=>!b.disabled&&b.getClientRects().length&&/حفظ|سجّل|سجل|تسجيل/.test(b.textContent))||null;
+}
+function showShortcutsHelp(){
+  document.getElementById('daftarShortcutsModal')?.remove();
+  const box=document.createElement('div');box.id='daftarShortcutsModal';
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:520px"><div class="settlement-title"><div><small>الكيبورد</small><h3>⌨️ الاختصارات</h3></div><button type="button" class="settlement-close" data-close>×</button></div>`+
+    `<table class="shortcuts-table"><tbody>${DAFTAR_SHORTCUTS.map(([k,t])=>`<tr><td><kbd dir="ltr">${esc(k)}</kbd></td><td>${esc(t)}</td></tr>`).join('')}</tbody></table></div>`;
+  document.body.appendChild(box);
+  const close=()=>box.remove();
+  box.querySelector('[data-close]').onclick=close;box.querySelector('.settlement-backdrop').onclick=close;
+}
+document.getElementById('shortcutsHelpBtn')?.addEventListener('click',showShortcutsHelp);
+// capture: بيشتغل قبل أي حاجة تانية، فـ Esc بيقفل نافذة واحدة بس (اللي فوق)
+window.addEventListener('keydown',e=>{
+  if(e.defaultPrevented||e.isComposing||shortcutsBlocked())return;
+  const ctrl=e.ctrlKey||e.metaKey,card=topModalCard();
+  if(e.key==='Escape'&&!ctrl){
+    if(document.getElementById('daftarRowMenu'))return;   // قايمة ⋮ ليها Esc بتاعها
+    if(!card)return;
+    const x=card.querySelector('.settlement-close,[data-close]');
+    if(!x)return;                                          // نافذة متتقفلش (زي التحديث وهو شغال)
+    e.preventDefault();e.stopImmediatePropagation();x.click();return;
+  }
+  if(ctrl&&!e.altKey&&(e.code==='KeyS'||e.code==='KeyP')){
+    const print=e.code==='KeyP';
+    const btn=card?(print?null:modalSaveButton(card)):pageSaveButton(print);
+    if(!btn)return;
+    e.preventDefault();e.stopImmediatePropagation();
+    document.activeElement?.blur?.();                     // الخانة اللي بتكتب فيها تتسجل قيمتها (onchange) قبل الحفظ
+    btn.click();return;
+  }
+  if(ctrl||e.altKey)return;
+  const go={F2:'invoices',F3:'orders',F4:'quotes'}[e.key];
+  if(go){e.preventDefault();if(!card)openNewDoc(go);return;}
+  if(e.key==='F1'){e.preventDefault();if(!card)showShortcutsHelp();}
+},true);
+
+// ---------- علامة على التبويب: عدد الحاجات اللي المصنع غيّرها ولسه مشفتهاش
+// بتتحسب من الحالة نفسها (مش من رسايل)، و«شفتها» محفوظة على الجهاز ده بس — وبتتمسح لما تفتح التبويب.
+const NAV_SEEN_KEY='daftar-nav-seen';
+const NAV_BADGE_VIEW={orders:'list',returns:'factory',balances:'factory'};
+// كل تبويب: {مفتاح: بصمة الحالة} للحاجات اللي تستاهل تنبيه بس
+function navBadgeItems(){
+  const out={orders:{},returns:{},balances:{}};
+  for(const o of db.orders||[]){
+    if(!o.factory||o.received)continue;
+    const st=typeof factoryStageOf==='function'?factoryStageOf(o):'';
+    const addErr=(o.factory.adds||[]).filter(a=>a.state==='error').length;
+    if(['ready','part_out','out','cancelled','closed','error'].includes(st)||addErr)
+      out.orders[o.id]=`${st}|${(o.factory.exits||[]).length}|${addErr}`;
+  }
+  for(const x of db.factoryLedger||[]){
+    if(x.type==='return'&&x.fr&&['converted','done','rejected','error'].includes(x.fr.state)){
+      const k=typeof retGroupKey==='function'?retGroupKey(x):x.id;out.returns[k]=x.fr.state;
+    }
+    if(x.ft&&['received','rejected','error'].includes(x.ft.state))out.balances[x.id]=x.ft.state+(x.ft.reversed?'|r':'');
+  }
+  return out;
+}
+function navSeenRead(){try{return JSON.parse(localStorage.getItem(NAV_SEEN_KEY)||'null');}catch(e){return null;}}
+function navSeenWrite(s){try{localStorage.setItem(NAV_SEEN_KEY,JSON.stringify(s));}catch(e){}}
+let navBadgePending=null;
+function navBadgeCounts(items,seen){
+  const c={};
+  for(const tab of Object.keys(items))c[tab]=Object.entries(items[tab]).filter(([k,v])=>(seen[tab]||{})[k]!==v).length;
+  return c;
+}
+function renderNavBadges(){
+  if(typeof daftarStorageReady!=='undefined'&&!daftarStorageReady)return;
+  const items=navBadgeItems();
+  let seen=navSeenRead();
+  if(!seen){seen=items;navSeenWrite(seen);}            // أول مرة: اللي موجود دلوقتي يعتبر متشاف (من غير زحمة علامات)
+  // فتحت التبويب: اللي فيه اتشاف — ولو كان عليه علامة يفتح على الجزء اللي فيه التغيير
+  if(navBadgePending&&pageVisible(navBadgePending)){
+    const tab=navBadgePending;navBadgePending=null;
+    if(navBadgeCounts(items,seen)[tab]>0&&NAV_BADGE_VIEW[tab]&&daftarPageView[tab]!==NAV_BADGE_VIEW[tab]){showPageView(tab,NAV_BADGE_VIEW[tab]);scheduleRender();}
+    seen={...seen,[tab]:items[tab]};navSeenWrite(seen);
+  }
+  const counts=navBadgeCounts(items,seen);
+  for(const tab of Object.keys(counts)){
+    const btn=document.querySelector(`#nav [data-page="${tab}"]`);if(!btn)continue;
+    let b=btn.querySelector('.nav-badge');
+    if(!counts[tab]){b?.remove();continue;}
+    if(!b){b=document.createElement('span');b.className='nav-badge';btn.appendChild(b);}
+    b.textContent=String(counts[tab]);
+    b.title=`${counts[tab]} حاجة اتغيّرت من المصنع`;
+  }
+}
+document.querySelectorAll('#nav [data-page]').forEach(btn=>btn.addEventListener('click',()=>{
+  if(!NAV_BADGE_VIEW[btn.dataset.page])return;
+  navBadgePending=btn.dataset.page;renderNavBadges();   // التبويبات المقفولة بالرمز: بيتعلّم متشاف بعد ما تفتح (من render)
+}));
 </script>
 <style>
 #daftarA2hs{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:9000;display:flex;gap:10px;align-items:center;background:var(--surface,#fff);color:var(--ink,#111);border:1px solid var(--line,#ddd);border-radius:14px;padding:12px 14px;box-shadow:0 8px 28px rgba(0,0,0,.18);direction:rtl;max-width:560px;margin:0 auto}
