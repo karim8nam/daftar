@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.17.0";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.18.0";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -177,7 +177,7 @@ html,body{background:#fff!important}
 #daftarPrintBox.statement-print.doc-sheet .dp-inner>.doc-contact{position:fixed;left:7mm;right:7mm;bottom:6mm;margin:0}
 #daftarPrintBox.statement-print.doc-sheet .dp-inner .total{break-inside:avoid}}</style></head><body><main class="shell">
 
-<header class="brand"><div class="mark">د</div><div><h1>دفتر</h1><p>إدارة المبيعات والمخزون والمشتريات <span id="appVersionTag" class="app-version"></span></p></div><div class="brand-status"><div id="supabaseStatus">☁️ لم تتم المزامنة بعد</div><div id="daftarAccountBar" style="display:none"><span id="daftarAccountText"></span><button type="button" id="daftarLogoutBtn">تسجيل الخروج</button></div></div></header><nav id="nav"><button class="active" data-page="dashboard">الرئيسية</button><button data-page="factory">كتالوج المصنع</button><button data-page="products">المخزون</button><button data-page="invoices">فواتير المبيعات</button><button data-page="quotes">عرض أسعار</button><button data-page="orders">الطلبيات</button><button data-page="customers">العملاء</button><button data-page="returns">المرتجعات</button><button data-page="balances">الأرصدة والمشتريات</button><button data-page="treasury">الخزنة</button><button data-page="reports">التقارير</button><button data-page="settings">الإعدادات</button></nav><datalist id="customerNamesList"></datalist>
+<header class="brand"><div class="mark">د</div><div><h1>دفتر</h1><p>إدارة المبيعات والمخزون والمشتريات <span id="appVersionTag" class="app-version"></span></p></div><div class="brand-status"><div id="supabaseStatus">☁️ لم تتم المزامنة بعد</div><div id="daftarAccountBar" style="display:none"><span id="daftarAccountText"></span><button type="button" id="daftarLogoutBtn">تسجيل الخروج</button></div></div></header><nav id="nav"><button class="active" data-page="dashboard">الرئيسية</button><button data-page="factory">كتالوج المصنع</button><button data-page="products">المخزون</button><button data-page="invoices">فواتير المبيعات</button><button data-page="quotes">عرض أسعار</button><button data-page="orders">الطلبيات</button><button data-page="customers">العملاء</button><button data-page="returns">المرتجعات</button><button data-page="jobs">الشغلانات</button><button data-page="balances">الأرصدة والمشتريات</button><button data-page="treasury">الخزنة</button><button data-page="reports">التقارير</button><button data-page="settings">الإعدادات</button></nav><datalist id="customerNamesList"></datalist>
 <section id="dashboard" class="page"><div class="grid" id="summary"></div><div class="two" style="margin-top:16px"><article class="panel"><h2>نظرة سريعة</h2><div id="lowStock"></div></article><article class="panel"><h2>معلومات</h2><p class="notice">الطلبية لا تدخل المخزون إلا عند الاستلام. سعر المصنع هو تكلفة الشراء، وسعر البيع منفصل.</p></article></div><article class="panel" style="margin-top:16px"><h2>تنبيهات صلاحية أصناف المصنع</h2><p class="notice">بتظهر بس للأصناف الجايه من طلبية مصنع، بناءً على تاريخ الإنتاج (تقدر تعدّله من صفحة المخزون). عدّل تاريخ الإنتاج أو اضغط "المنتج سليم" لو مش عايز التنبيه ده يتكرر.</p><div id="expiryAlerts"></div></article></section>
 <section id="factory" class="page hidden"><article class="panel"><h2 id="factoryFormTitle">إضافة صنف في كتالوج المصنع</h2><form id="factoryForm" class="form"><input type="hidden" name="id"><label>اسم الصنف<input required name="name"></label><label>النوع<select name="packageType"><option value="شكارة">شكارة</option><option value="بستلة">بستلة</option></select></label><label>طريقة التسعير<select name="pricing"><option value="ton">بالطن (سعر العبوة بيتحسب من وزنها)</option><option value="unit">بالعبوة (سعر ثابت)</option></select></label><label><span id="factoryPriceLabel">سعر شراء الطن من المصنع</span><input required name="factoryPrice" type="number" min="0" step="0.01"></label><label><span id="salePriceLabel">سعر بيع الطن</span><input required name="salePrice" type="number" min="0" step="0.01"></label><label>الوزن الافتراضي للعبوة (كجم)<input name="packageWeight" type="number" min="0" step="0.001"></label><label>أوزان العبوات المتاحة (اختياري)<input name="weightOptions" placeholder="مثال: 20, 25"></label><details class="variant-editor" id="variantEditor"><summary>🎨 أكواد الألوان وأسعارها (للأصناف اللي كل لون فيها ليه سعر، زي المحارة الجاهزة) <span class="badge" id="variantCount">0</span></summary><p class="notice" style="margin:8px 0">كل كود ليه سعره. لما تعمل طلبية للصنف ده وتكتب الكود، السعر بيتحط لوحده. الأسعار هنا <strong id="variantUnitNote">بالطن</strong> زي سعر الصنف فوق. لو سبت سعر فاضي، بيتاخد سعر الصنف العادي.</p><div id="variantRows"></div><datalist id="colorSkuAllList"></datalist><div class="form-actions" style="margin-top:8px"><button type="button" class="secondary-btn" id="addVariantRow">➕ إضافة كود</button></div><details class="color-bulk" style="margin-top:10px"><summary>لصق أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر: الكود، سعر الشراء، سعر البيع (أو الكود وسعر البيع بس). مثال:<br><span dir="ltr">C-100, 9000, 11000</span></p><textarea id="variantBulkInput" rows="4" dir="ltr" placeholder="C-100, 9000, 11000"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="variantBulkAdd">إضافة للقايمة</button></div></details></details><button type="submit" class="primary">حفظ</button><button type="button" class="danger" id="cancelFactoryEdit">إلغاء التعديل</button></form></article><article class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">كتالوج المصنع</h2><div class="ft-actions"><button type="button" class="secondary-btn" id="colorCatalogBtn" style="flex:none;white-space:nowrap" onclick="openColorCatalog()">📖 كتالوج الألوان</button><button type="button" class="secondary-btn hidden" id="factoryPriceReviewBtn" style="flex:none;white-space:nowrap" onclick="openFactoryPriceReview()">💲 مراجعة أسعار المصنع</button></div></div><div id="factoryTable" style="margin-top:16px"></div></article><article class="panel" id="colorCodesPanel"><h2 id="colorFormTitle">🎨 درجات الألوان</h2><p class="notice">سجّل كود كل لون ودرجته. أي صنف في المخزون بنفس الكود هتظهر جنبه دايرة باللون ده لوحدها، وبتتزامن على كل الأجهزة. تقدر تختار أي درجة من مربع الألوان، أو تكتب كودها (#RRGGBB) لو معاك.</p><form id="colorCodeForm" class="form"><input type="hidden" name="id"><label>كود اللون<input required name="code" list="colorSkuList" autocomplete="off" dir="ltr" placeholder="مثلاً C-100"></label><label>اسم اللون (اختياري)<input name="name" placeholder="مثلاً أبيض ثلجي"></label><label>درجة اللون<span class="color-pick"><input type="color" name="hex" value="#c8102e" aria-label="اختيار درجة اللون"><input name="hexText" dir="ltr" maxlength="7" placeholder="#RRGGBB" aria-label="كود الدرجة"></span></label><button type="submit" class="primary" id="colorSaveBtn">حفظ اللون</button><button type="button" class="secondary-btn hidden" id="cancelColorEdit">إلغاء التعديل</button></form><datalist id="colorSkuList"></datalist><div id="colorMissing"></div><details class="color-bulk"><summary>إضافة أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر لون: الكود، واسم اللون (اختياري)، والدرجة — مفصولين بفاصلة. مثال:<br><span dir="ltr">C-100, أبيض ثلجي, #F4F4F0</span></p><textarea id="colorBulkInput" rows="5" dir="auto" placeholder="C-100, أبيض ثلجي, #F4F4F0"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="colorBulkSave">إضافة الأكواد</button></div></details><div class="color-search"><input id="colorSearch" type="search" placeholder="🔎 ابحث بالكود أو اسم اللون..." autocomplete="off"></div><div id="colorCodesTable"></div></article></section>
 <section id="products" class="page hidden"><article class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">الأصناف الموجودة في المخزون</h2><div style="display:flex;gap:10px;align-items:center;flex:1;justify-content:flex-end;flex-wrap:wrap"><button type="button" class="secondary-btn" style="flex:none;white-space:nowrap" onclick="openStockAdjustLog()">📋 سجل تسويات الجرد</button><div style="min-width:280px;flex:1;max-width:430px"><input id="productSearch" type="search" placeholder="🔎 ابحث بالاسم أو الكود أو الباتش أو صاحب الطلبية..." autocomplete="off" style="width:100%"></div></div></div><p class="notice">الأصناف تدخل المخزون عن طريق استلام الطلبيات، وتُحذف تلقائيًا عند بيع آخر كمية. لو العدد الفعلي مختلف (تالف، ضايع، فرق جرد): ⋮ جنب الصنف ← «⚖️ تسوية الكمية».</p><div id="productsTable" style="margin-top:16px"></div></article></section>
@@ -207,6 +207,7 @@ html,body{background:#fff!important}
 </label><label>الكمية<input required name="quantity" type="number" min="1" step="1" value="1"></label><label>الكود<span class="sku-pick"><input name="itemSku" placeholder="اكتب رقم الكود…" list="orderSkuList" autocomplete="off" dir="auto"><button type="button" class="secondary-btn" id="orderSkuCatalogBtn" title="اختار اللون من كتالوج الألوان" aria-label="اختار اللون من كتالوج الألوان">📖</button></span><datalist id="orderSkuList"></datalist><datalist id="allSkuList"></datalist></label><label>وزن العبوة (كجم)<input name="itemWeight" type="number" min="0" step="0.001" list="orderWeightOptions" placeholder="بيتملي من الكتالوج"><datalist id="orderWeightOptions"></datalist></label><label>سعر بيع العبوة (قابل للتعديل)<input name="itemSalePrice" type="number" min="0" step="0.01" placeholder="بيتحسب من سعر الطن"></label><label>رقم الباتش<input name="batchNo" placeholder="يُسحب تلقائيًا من المصنع ويمكن تعديله"></label><label>الحصوة<select name="pebble"><option value="">بدون</option><option>ناعم</option><option>خشن</option><option>نص مللي</option><option>1 مللي</option><option>1.5 مللي</option><option>2 مللي</option><option>3 مللي</option></select></label><button type="button" class="primary" id="addOrderItem">إضافة صنف للطلبية</button><div id="orderCart" class="span-all"></div></div><div class="form-step"><div class="form-step-title"><b>3</b> العربون والحفظ</div><label>العربون<input name="deposit" type="number" min="0" step="0.01" value="0"></label><label class="treasury-pick hidden">حساب العربون<select name="accountId" data-treasury="in"></select></label><label>تاريخ الطلب<input required name="date" type="date"></label><div class="form-actions span-2"><button class="primary" id="orderSaveBtn">حفظ الطلبية</button></div><p class="notice span-all" style="margin:0">أضف أكثر من صنف للطلبية ثم احفظها كطلبية واحدة. عند الترحيل للمخزون تُضاف كل الأصناف والكميات دفعة واحدة، ولا تدخل المخزون قبل الترحيل.</p></div></form><div id="ordersJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">الطلبيات</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="orderSearch" type="search" placeholder="🔎 ابحث برقم الطلبية أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="ordersPendingWeightSummary" class="notice" style="margin-top:12px"></div><div id="ordersTable" style="margin-top:16px"></div></article></section>
 <section id="customers" class="page hidden"><article class="panel" id="customersListPanel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">العملاء</h2><div style="display:flex;gap:10px;align-items:center;flex:1;justify-content:flex-end;flex-wrap:wrap"><button type="button" class="primary" onclick="openAddCustomerDebt()">➕ إضافة مديونية / عميل جديد</button><div style="min-width:280px;flex:1;max-width:430px"><input id="customerSearch" type="search" placeholder="🔎 ابحث باسم العميل..." autocomplete="off" style="width:100%"></div></div></div><div id="customersTable" style="margin-top:16px"></div></article><article class="panel hidden" id="customerProfile"><div class="profile-bar"><button type="button" class="secondary-btn" id="customerBackBtn">→ رجوع للعملاء</button><h2 id="customerTitle"></h2><div class="profile-actions"><button type="button" class="primary" id="profilePayBtn">💵 دفعة جديدة</button><button type="button" class="secondary-btn" id="profileDebtBtn">➕ مديونية</button><button type="button" class="secondary-btn" id="profileStatementBtn">🧾 كشف حساب</button><button type="button" class="secondary-btn" id="profileWhatsBtn">واتساب</button><button type="button" class="secondary-btn hidden" id="profileRemindBtn">💬 تذكير بالمديونية</button><button type="button" class="secondary-btn hidden" id="profileFollowBtn">📝 متابعة الدين</button><button type="button" class="secondary-btn" id="profileReturnBtn">↩ مرتجع</button><button type="button" class="secondary-btn" id="profileEditBtn">⚙️ بيانات العميل</button></div></div><div id="customerDebtInfo" class="notice hidden"></div><div id="customerEditBox" class="profile-section hidden"><h3 class="profile-section-title">بيانات العميل</h3><div id="customerPhoneBox" class="customer-phone-hint" style="margin-bottom:12px"></div><div id="customerRepBox" class="form" style="margin-bottom:12px"></div><form id="balanceForm" class="form"><label>الرصيد الافتتاحي<input name="openingBalance" type="number" step="0.01"></label><button class="primary">حفظ الرصيد الافتتاحي</button></form></div><form id="paymentForm" class="form profile-pay"><h3 class="profile-section-title">تسجيل دفعة</h3><label>قيمة الدفعة<input required name="amount" type="number" min="0.01" step="0.01"></label><label data-treasury-method>طريقة الدفع<select name="paymentMethod"><option>كاش</option><option>محفظة</option><option>تحويل بنكي</option></select></label><label class="treasury-pick hidden">الحساب<select name="accountId" data-treasury="in"></select></label><label>التاريخ<input required name="date" type="date"></label><label>ملاحظة<input name="note"></label><button class="primary">تسجيل الدفعة</button></form><div id="returnBox"></div><details id="customerItemsDetails" class="profile-section"><summary>الأصناف اللي أخدها العميل</summary><div id="customerItemsSummary"></div></details><div id="customerHistory"></div></article><article class="panel" id="repsPanel"><details id="repsDetails" class="panel-collapse"><summary><h2>المناديب</h2><span class="badge" id="repsCount"></span></summary><div id="repsView"></div></details></article></section>
 <section id="returns" class="page hidden"><div class="page-views" data-page-views="returns"><button type="button" data-view="customers">👥 من العملاء</button><button type="button" data-view="factory">🏭 للمصنع</button></div><div data-view="customers"><article class="panel"><div class="returns-head"><h2>↩️ مرتجعات العملاء</h2><button type="button" class="primary" id="retNewCustomerBtn">+ مرتجع من عميل</button></div><p class="notice">المرتجع بكذا صنف من نفس الفاتورة مرة واحدة. <strong>«زيادة / العميل مش محتاجها»</strong>: بخصم % لو حبيت، والبضاعة سليمة ترجع المخزون أو تالفة (تسوية جرد). <strong>«عيب في المنتج»</strong>: من غير خصم، وصنف المصنع بيرجع للمصنع على طول بسعر الشراء + نصيبه من النقل.</p><div class="form returns-filter"><label>بحث<input id="retSearch" placeholder="اسم العميل أو الصنف" autocomplete="off"></label><div class="returns-sum" id="retCustomersSummary"></div></div><div id="retCustomersList"></div></article></div><div data-view="factory"><article class="panel"><div class="returns-head"><h2>🏭 المرتجع للمصنع</h2><button type="button" class="primary" id="retNewFactoryBtn">+ مرتجع للمصنع</button></div><p class="notice">كذا صنف مرة واحدة بسعر الشراء، و<strong>«خصم المصنع %»</strong> بتكتبه بإيدك (بيتخصم من صافي الربح). لو المشكلة من المصنع، نقل البضاعة بيتحسب عليه كمان. القيمة كلها بتتخصم من «حساب المصنع».</p><div class="form returns-filter"><label>بحث<input id="retFactorySearch" placeholder="اسم الصنف أو ملاحظة" autocomplete="off"></label><div class="returns-sum" id="retFactorySummary"></div></div><div id="retFactoryList"></div></article></div></section>
+<section id="jobs" class="page hidden"><div id="jobsListView"><article class="panel"><div class="returns-head"><h2>🧱 الشغلانات</h2><button type="button" class="primary" id="jobNewBtn">+ شغلانة جديدة</button></div><p class="notice">كل شغلانة لعميل: الأمتار × سعر المتر = المتفق عليه (وبيتسجل على حساب العميل)، و<strong>الخامات</strong> بتتسحب من المخزون بسعر بتحدده وقتها (من غير مديونية)، و<strong>المصاريف والعمال</strong> بيتصرفوا من الخزنة، و<strong>فلوس العميل</strong> دفعات والباقي عليه. لما تخلص، ربحها بيدخل صافي ربح الشهر.</p><div class="form returns-filter"><label>بحث<input id="jobSearch" placeholder="اسم العميل أو الشغلانة" autocomplete="off"></label><label>الحالة<select id="jobStatusFilter"><option value="open">🔨 شغالة</option><option value="done">✅ خلصت</option><option value="">الكل</option></select></label><div class="returns-sum" id="jobsSummary"></div></div><div id="jobsList"></div></article></div><div id="jobDetailView" class="hidden"></div></section>
 <section id="balances" class="page hidden"><div class="grid" id="balanceSummary"></div><div class="page-views" data-page-views="balances"><button type="button" data-view="factory">🏭 حساب المصنع</button><button type="button" data-view="purchases">🧾 المشتريات</button><button type="button" data-view="extras">🚚 المصاريف الإضافية</button><button type="button" data-view="reps">👥 المناديب</button></div><div data-view="factory"><article class="panel" id="factoryAccountPanel"><h2>حساب المصنع (مديونية المصنع)</h2><p class="notice">حساب منفصل تمامًا عن المشتريات الإضافية وعن حساب أي عميل. بيزيد لما تسجل طلب من المصنع، وبينقص لما تسجل دفعة أو ترجع صنف للمصنع من المخزون.</p><div class="grid" id="factoryAccountSummary"></div><button type="button" class="danger" id="resetFactoryAccount" style="margin-top:10px">تصفير حساب المصنع (حذف قيود الطلبات والدفعات)</button><form id="factoryOpeningForm" class="form" style="margin-top:14px"><label>الرصيد الافتتاحي (مديونية سابقة قبل استخدام الحساب ده)<input name="opening" type="number" step="0.01"></label><button class="primary" type="submit">حفظ الرصيد الافتتاحي</button></form><div class="two" style="margin-top:16px"><form id="factoryDebitForm" class="form"><h3 style="margin:0 0 6px">تسجيل طلب من المصنع</h3><label>القيمة<input required name="amount" type="number" min="0.01" step="0.01"></label><label>التاريخ<input required name="date" type="date"></label><label>ملاحظة (اختياري)<input name="note" placeholder="مثلاً: طلبية جرافيتو 500 متر"></label><button class="primary" type="submit">تسجيل الطلب</button></form><form id="factoryPaymentForm" class="form"><h3 style="margin:0 0 6px">تسجيل دفعة للمصنع</h3><label>القيمة<input required name="amount" type="number" min="0.01" step="0.01"></label><label>التاريخ<input required name="date" type="date"></label><label data-treasury-method>طريقة الدفع<select name="method" id="factoryPaymentMethod"><option value="cash">كاش</option><option value="transfer">تحويل</option></select></label><div id="factoryTransferFields" class="hidden"><label>نوع التحويل<select name="transferType" id="factoryTransferType"><option value="bank">تحويل بنكي</option><option value="wallet">محفظة إلكترونية</option></select></label><label id="factoryAccountDetailLabel">اسم/رقم الحساب البنكي<input name="accountDetail" id="factoryAccountDetail" placeholder="مثلاً: حساب أحمد - البنك الأهلي"></label></div><label class="treasury-pick hidden">اتدفعت من حساب<select name="accountId" data-treasury="out"></select></label><label>ملاحظة (اختياري)<input name="note" placeholder="اختياري"></label><button class="primary" type="submit">تسجيل الدفعة</button></form></div><article class="panel" style="margin-top:16px"><h2>سجل حساب المصنع</h2><div id="factoryLedgerTable"></div></article></article></div><div data-view="purchases"><article class="panel"><h2>إضافة قيد مشتريات</h2><form id="ledgerForm" class="form"><label>اسم الصنف<input required name="description" list="ledgerNameList" autocomplete="off"></label><datalist id="ledgerNameList"></datalist><label>سعر الشراء للوحدة<input required name="unitPrice" type="number" min="0" step="0.01"></label><label>سعر البيع للوحدة<input required name="sellPrice" type="number" min="0" step="0.01"></label><label>الكمية<input required name="quantity" type="number" min="1" step="1"></label><label>رقم الباتش<input name="batchNo" placeholder="اختياري"></label><label>التاريخ<input required name="date" type="date"></label><label class="treasury-pick hidden">اتدفعت من حساب<select name="accountId" data-treasury="out"></select></label><button class="primary">حفظ وإضافة للمخزون</button></form><p class="notice">عند حفظ قيد المشتريات تُضاف الكمية للمخزون فورًا، ويُحفظ سعر الشراء كتكلـفة وسعر البيع كسعر الفواتير. لا يوجد ترحيل منفصل.</p></article><article class="panel"><h2>سجل المشتريات (من غير طلبيات المصنع)</h2><div id="ledgerTable"></div></article></div><div data-view="extras"><article class="panel"><h2>مشتريات إضافية — نقل ومصاريف لا تدخل المخزون</h2><form id="extraForm" class="form"><label>البيان<input required name="description" placeholder="نقل"></label><label>القيمة<input required name="amount" type="number" min="0" step="0.01"></label><label>التاريخ<input required name="date" type="date"></label><label class="treasury-pick hidden">اتدفعت من حساب<select name="accountId" data-treasury="out"></select></label><button class="primary">إضافة</button></form></article><article class="panel"><h2>المشتريات الإضافية</h2><div id="extraTable"></div></article></div><div data-view="reps"><article class="panel"><h2>حسابات المناديب</h2><div id="repPaymentsTable"></div></article></div></section>
 <section id="treasury" class="page hidden"><article class="panel"><div class="treasury-head"><h2>💰 الخزنة والحسابات</h2><div class="treasury-actions"><button type="button" class="primary" id="treasuryAddBtn">+ حساب جديد</button><button type="button" class="secondary-btn" id="treasuryTransferBtn">🔁 تحويل بين الحسابات</button></div></div><p class="notice">كل فلوس داخلة أو خارجة بتتسجل على حساب (الخزنة الكاش، أو محفظة، أو حساب بنكي): <strong>داخل</strong> = دفعات العملاء والمدفوع في الفواتير وعربون الطلبيات، و<strong>خارج</strong> = دفعات المصنع والمصاريف والمشتريات ودفعات المناديب ورد فلوس المرتجعات. الحساب مينفعش يصرف أكتر من اللي فيه. الحساب بيبدأ من «رصيد أول المدة» يوم ما بتعمله، والحركات اللي قبله مش بتتحسب فيه.</p><div id="treasuryBody"></div></article><article class="panel" id="treasuryMovesPanel"><h2>حركات الحساب</h2><div class="form treasury-filter"><label>الحساب<select id="treasuryAccSel"></select></label><label>من تاريخ<input type="date" id="treasuryFrom"></label><label>إلى تاريخ<input type="date" id="treasuryTo"></label><button type="button" class="secondary-btn" id="treasuryAllBtn">كل الحركات</button></div><div id="treasuryMoves"></div></article></section>
 <section id="reports" class="page hidden"><div class="page-views" data-page-views="reports"><button type="button" data-view="months">📅 الشهور والملخص</button><button type="button" data-view="stock">📦 الجرد الحالي</button></div><div data-view="months"><article class="panel">
@@ -342,7 +343,7 @@ html,body{background:#fff!important}
 <script>
 // رقم نسخة البرنامج: على الكمبيوتر من البرنامج نفسه، وعلى الموبايل بيتكتب في الصفحة وقت تجهيز نسخة الموقع.
 const DAFTAR_APP_VERSION=window.daftarElectron?.appVersion||window.DAFTAR_WEB_VERSION||'';
-const initial={products:[],factoryItems:[],invoices:[],quotes:[],orders:[],customerBalances:{},customerPayments:[],ledgerEntries:[],extraPurchases:[],customerReturns:[],deletedIds:{},customerPhones:{},customerReps:{},repRates:{},repPayments:[],factoryLedger:[],factoryOpeningBalance:0,customerDataUpdatedAt:{},printSettings:{},colorCodes:[],deviceInfo:{},treasuryAccounts:[],treasuryTransfers:[],treasuryEntries:[],stockAdjustments:[],debtFollowups:[]};
+const initial={products:[],factoryItems:[],invoices:[],quotes:[],orders:[],customerBalances:{},customerPayments:[],ledgerEntries:[],extraPurchases:[],customerReturns:[],deletedIds:{},customerPhones:{},customerReps:{},repRates:{},repPayments:[],factoryLedger:[],factoryOpeningBalance:0,customerDataUpdatedAt:{},printSettings:{},colorCodes:[],deviceInfo:{},treasuryAccounts:[],treasuryTransfers:[],treasuryEntries:[],stockAdjustments:[],debtFollowups:[],jobs:[]};
 let db=JSON.parse(localStorage.getItem('daftar-v1')||JSON.stringify(initial));
 // ===== الحفظ في ملف حقيقي على الجهاز (داخل برنامج الديسكتوب) =====
 // البيانات بقت بتتحفظ في ملف daftar-data.json في فولدر بيختاره المستخدم (الافتراضي
@@ -1159,6 +1160,8 @@ function duplicatePurchaseGroups(){
 // تساوي = اللي موجود في المخزون + اللي اتباع (بسعر الشراء) − اللي رجع من العملاء.
 // أي فرق معناه كمية ناقصة من المخزون من غير فاتورة ولا قيد مرتجع (غالبًا مرتجع
 // للمصنع اتحذف قيده). بنحسبها لكل صنف (بالاسم) عشان تغيير الباتش ميعملش فرق وهمي.
+// (2.18.0) الكمية اللي فضلت في الشغلانة من خامة اتسحبت (اللي اتسحب − اللي رجع المخزون)
+function jobMatQty(m){return Math.max(0,(+m?.qty||0)-(+m?.returned||0));}
 function purchasesInventoryReconcile(){
   const byName=new Map();
   const row=name=>{const k=String(name||'').trim();if(!byName.has(k))byName.set(k,{name:k,bought:0,boughtValue:0,factoryBought:0,factoryValue:0,sold:0,custReturned:0,toFactory:0,stock:0,adjusted:0});return byName.get(k);};
@@ -1166,6 +1169,8 @@ function purchasesInventoryReconcile(){
   for(const o of db.orders){if(!o.received)continue;for(const i of orderItemsOf(o)){const r=row(i.productName);const q=+i.quantity||0,v=(+i.factoryPrice||0)*q;r.bought+=q;r.boughtValue+=v;r.factoryBought+=q;r.factoryValue+=v;}}
   const invById=new Map(db.invoices.map(i=>[String(i.id),i]));
   for(const inv of db.invoices)for(const i of inv.items||[])row(i.productName).sold+=+i.quantity||0;
+  // (2.18.0) خامات الشغلانات خرجت من المخزون زي البيع (الكمية − اللي رجع)
+  for(const j of db.jobs||[])for(const m of j.materials||[])row(m.productName).sold+=jobMatQty(m);
   for(const r of db.customerReturns){const it=invById.get(String(r.invoiceId))?.items?.[+r.itemIndex];row(it?.productName||r.productName).custReturned+=+r.quantity||0;}
   for(const x of db.factoryLedger||[])if(x.type==='return'&&x.productName)row(x.productName).toFactory+=+x.quantity||0;
   for(const p of db.products)row(p.name).stock+=+p.stock||0;
@@ -1175,7 +1180,8 @@ function purchasesInventoryReconcile(){
   const b=purchasesBreakdown();
   const goods=b.ledger+b.orders-b.factoryReturns;
   const inventory=db.products.reduce((s,p)=>s+(+p.stock||0)*(+p.cost||+p.factoryPrice||0),0);
-  const soldNet=db.invoices.reduce((s,x)=>s+invoiceCost(x),0)-db.customerReturns.reduce((s,x)=>s+returnCost(x),0);
+  const soldNet=db.invoices.reduce((s,x)=>s+invoiceCost(x),0)-db.customerReturns.reduce((s,x)=>s+returnCost(x),0)
+    +(db.jobs||[]).reduce((s,j)=>s+(j.materials||[]).reduce((a,m)=>a+jobMatQty(m)*(+m.cost||0),0),0);   // (2.18.0)
   const adjValue=(db.stockAdjustments||[]).reduce((s,a)=>s+stockAdjustValue(a),0);
   return {goods,inventory,soldNet,diff:Math.round((goods-inventory-soldNet+adjValue)*100)/100,
     factoryGaps:rows.filter(r=>r.missing>0&&r.factoryBought>0),otherGaps:rows.filter(r=>r.missing!==0&&!(r.missing>0&&r.factoryBought>0))};
@@ -1339,9 +1345,28 @@ function customerCreditForNewWork(name,pendingOrderId){
   const bal=customerBalance(name);
   return Math.max(0,-bal);
 }
+// ===== (2.18.0) حساب الشغلانة =====
+// الخامات بسعر الشغلانة (price) وبسعر الشراء (cost)، والمصاريف والعمال = extraPurchases عليها jobId (jobPart: expense / labor)،
+// وفلوس العميل = customerPayments عليها jobId. ربح الشغلانة = المتفق − الخامات بسعرها − المصاريف − العمال،
+// وربح الخامات = سعرها − تكلفتها، والربح الكلي (اللي بيدخل صافي الربح في شهر ما خلصت) = المتفق − تكلفة الخامات − المصاريف − العمال.
+function jobIndex(){const ex=new Map(),pay=new Map();for(const x of db.extraPurchases||[])if(x.jobId){const k=String(x.jobId);if(!ex.has(k))ex.set(k,[]);ex.get(k).push(x);}for(const x of db.customerPayments||[])if(x.jobId){const k=String(x.jobId);if(!pay.has(k))pay.set(k,[]);pay.get(k).push(x);}return {ex,pay};}
+function jobTotals(j,idx){
+  const r2=n=>Math.round((+n||0)*100)/100,k=String(j.id);
+  const ex=idx?(idx.ex.get(k)||[]):(db.extraPurchases||[]).filter(x=>String(x.jobId)===k);
+  const pays=idx?(idx.pay.get(k)||[]):(db.customerPayments||[]).filter(x=>String(x.jobId)===k);
+  const mats=j.materials||[];
+  const matPrice=r2(mats.reduce((s,m)=>s+jobMatQty(m)*(+m.price||0),0)),matCost=r2(mats.reduce((s,m)=>s+jobMatQty(m)*(+m.cost||0),0));
+  const labor=r2(ex.filter(x=>x.jobPart==='labor').reduce((s,x)=>s+(+x.amount||0),0)),expenses=r2(ex.filter(x=>x.jobPart!=='labor').reduce((s,x)=>s+(+x.amount||0),0));
+  const agreed=r2(j.agreed),paid=r2(pays.reduce((s,x)=>s+(+x.amount||0),0)),meters=+j.meters||0;
+  const jobProfit=r2(agreed-matPrice-expenses-labor),matProfit=r2(matPrice-matCost),profit=r2(agreed-matCost-expenses-labor);
+  const costAll=r2(matPrice+expenses+labor);
+  return {agreed,paid,remaining:r2(agreed-paid),matPrice,matCost,expenses,labor,costAll,jobProfit,matProfit,profit,meters,
+    costPerMeter:meters>0?r2(costAll/meters):null,profitPerMeter:meters>0?r2(jobProfit/meters):null,extras:ex,payments:pays};
+}
+const jobDoneIn=(j,y,m)=>j.status==='done'&&inMonth(j.doneDate||j.date,y,m);
 function dateParts(date){const m=String(date||'').match(/^(\d{4})-(\d{2})-(\d{2})/);return m?{y:+m[1],m:+m[2],d:+m[3]}:null;}
 function inMonth(date,y,m){const p=dateParts(date);return !!p&&p.y===y&&p.m===m;}
-function reportYears(){const years=new Set([new Date().getFullYear()]);const add=a=>a.forEach(x=>{const p=dateParts(x.date);if(p)years.add(p.y)});add(db.invoices);add(db.orders);add(db.ledgerEntries);add(db.extraPurchases);add(db.customerReturns);add(db.customerPayments);add(db.repPayments||[]);return [...years].sort((a,b)=>b-a);}
+function reportYears(){const years=new Set([new Date().getFullYear()]);const add=a=>a.forEach(x=>{const p=dateParts(x.date);if(p)years.add(p.y)});add(db.invoices);add(db.orders);add(db.ledgerEntries);add(db.extraPurchases);add(db.customerReturns);add(db.customerPayments);add(db.repPayments||[]);add(db.jobs||[]);return [...years].sort((a,b)=>b-a);}
 let reportYear=new Date().getFullYear(),reportMonth=null;
 function monthData(y,m){
   const invoices=salesInvoices().filter(x=>inMonth(x.date,y,m));
@@ -1350,7 +1375,8 @@ function monthData(y,m){
   const ledger=db.ledgerEntries.filter(x=>inMonth(x.date,y,m));
   const orders=db.orders.filter(x=>inMonth(x.date,y,m)&&x.received);
   const factoryReturns=(db.factoryLedger||[]).filter(x=>x.type==='return'&&inMonth(x.date,y,m));
-  const extras=db.extraPurchases.filter(x=>inMonth(x.date,y,m));
+  const extras=db.extraPurchases.filter(x=>!x.jobId&&inMonth(x.date,y,m));   // مصاريف الشغلانات جوه ربحها
+  const jobs=(db.jobs||[]).filter(j=>jobDoneIn(j,y,m)),jIdx=jobs.length?jobIndex():null,jobProfit=Math.round(jobs.reduce((s,j)=>s+jobTotals(j,jIdx).profit,0)*100)/100;
   const payments=db.customerPayments.filter(x=>inMonth(x.date,y,m));
   const salesGross=invoices.reduce((s,x)=>s+invoiceSalesValue(x),0);
   const transport=invoices.reduce((s,x)=>s+docTransport(x),0);
@@ -1368,7 +1394,7 @@ function monthData(y,m){
   const cogs=invoices.reduce((s,x)=>s+invoiceCost(x),0)-returns.reduce((s,x)=>s+returnCost(x),0);
   // (2.12.0) تسوية الجرد: الناقص (تالف / ضايع) بيتخصم من صافي الربح بسعر الشراء، والزيادة بتتزود
   const adjs=(db.stockAdjustments||[]).filter(x=>inMonth(x.date,y,m)),stockAdj=Math.round(adjs.reduce((s,a)=>s+stockAdjustValue(a),0)*100)/100;
-  return {invoices,paidReturns,returns,ledger,orders,extras,payments,repPays,adjs,factoryReturns,salesGross,transport,returnDeduction,salesNet,purchases,repPay,extra,stockAdj,factoryRetAdj,profit:salesNet-purchases-extra+factoryRetAdj,cogs,netProfit:salesNet-cogs-extra-repPay+stockAdj+factoryRetAdj};
+  return {invoices,paidReturns,returns,ledger,orders,extras,payments,repPays,adjs,factoryReturns,jobs,jobProfit,salesGross,transport,returnDeduction,salesNet,purchases,repPay,extra,stockAdj,factoryRetAdj,profit:salesNet-purchases-extra+factoryRetAdj+jobProfit,cogs,netProfit:salesNet-cogs-extra-repPay+stockAdj+factoryRetAdj+jobProfit};
 }
 // نسخة سريعة من monthData بتحسب شهور السنة الـ12 كلهم مرة واحدة بس، بدل ما كل
 // دالة (كروت الشهور والملخص السنوي) تعمل .filter() منفصل على كل القوائم لكل
@@ -1377,13 +1403,15 @@ function monthData(y,m){
 // والطلبيات يكبر). هنا بنعمل قراءة واحدة بس لكل قائمة ونوزّع كل عنصر على شهره
 // (Map)، فيبقى العبء الكلي أقل بكتير مهما كان عدد الشهور المطلوبة.
 function buildAllMonthsData(y){
-  const buckets=Array.from({length:13},()=>({invoices:[],paidReturns:[],returns:[],ledger:[],orders:[],extras:[],payments:[],factoryReturns:[],repPays:[],adjs:[]}));
+  const buckets=Array.from({length:13},()=>({invoices:[],paidReturns:[],returns:[],ledger:[],orders:[],extras:[],payments:[],factoryReturns:[],repPays:[],adjs:[],jobs:[]}));
   const monthOf=dateStr=>{const p=dateParts(dateStr);return (p&&p.y===y)?p.m:0;};
   for(const x of db.invoices){if(isDebtRecord(x))continue;const m=monthOf(x.date);if(m)buckets[m].invoices.push(x);}
   for(const x of db.customerReturns){const m=monthOf(x.date);if(m){buckets[m].returns.push(x);if(x.paid)buckets[m].paidReturns.push(x);}}
   for(const x of db.ledgerEntries){const m=monthOf(x.date);if(m)buckets[m].ledger.push(x);}
   for(const x of db.orders){if(!x.received)continue;const m=monthOf(x.date);if(m)buckets[m].orders.push(x);}
-  for(const x of db.extraPurchases){const m=monthOf(x.date);if(m)buckets[m].extras.push(x);}
+  for(const x of db.extraPurchases){if(x.jobId)continue;const m=monthOf(x.date);if(m)buckets[m].extras.push(x);}
+  for(const j of db.jobs||[]){if(j.status!=='done')continue;const m=monthOf(j.doneDate||j.date);if(m)buckets[m].jobs.push(j);}
+  const jIdx=(db.jobs||[]).length?jobIndex():null;
   for(const x of db.customerPayments){const m=monthOf(x.date);if(m)buckets[m].payments.push(x);}
   for(const x of (db.factoryLedger||[])){if(x.type!=='return')continue;const m=monthOf(x.date);if(m)buckets[m].factoryReturns.push(x);}
   for(const x of (db.repPayments||[])){const m=monthOf(x.date);if(m)buckets[m].repPays.push(x);}
@@ -1404,7 +1432,8 @@ function buildAllMonthsData(y){
     const extra=b.extras.reduce((s,x)=>s+(+x.amount||0),0);
     const cogs=b.invoices.reduce((s,x)=>s+invoiceCost(x),0)-b.returns.reduce((s,x)=>s+returnCost(x),0);
     const stockAdj=Math.round(b.adjs.reduce((s,a)=>s+stockAdjustValue(a),0)*100)/100;   // (2.12.0) تسوية الجرد
-    result.push({...b,salesGross,transport,returnDeduction,salesNet,purchases,repPay,extra,stockAdj,factoryRetAdj,profit:salesNet-purchases-extra+factoryRetAdj,cogs,netProfit:salesNet-cogs-extra-repPay+stockAdj+factoryRetAdj});
+    const jobProfit=Math.round(b.jobs.reduce((s,j)=>s+jobTotals(j,jIdx).profit,0)*100)/100;   // (2.18.0) الشغلانات اللي خلصت
+    result.push({...b,jobProfit,salesGross,transport,returnDeduction,salesNet,purchases,repPay,extra,stockAdj,factoryRetAdj,profit:salesNet-purchases-extra+factoryRetAdj+jobProfit,cogs,netProfit:salesNet-cogs-extra-repPay+stockAdj+factoryRetAdj+jobProfit});
   }
   return result; // فهرس 0 = شهر يناير (m=1) ... فهرس 11 = شهر ديسمبر (m=12)
 }
@@ -1422,8 +1451,8 @@ function renderMonthReports(monthsData){
 }
 function renderAnnualReportSummary(monthsData){
   const data=monthsData||buildAllMonthsData(reportYear);
-  let sales=0,purchases=0,extra=0,profit=0,cogs=0,netProfit=0,repPay=0,invoices=0,returns=0,transport=0,stockAdj=0,factoryRetAdj=0;
-  for(const d of data){sales+=d.salesNet;purchases+=d.purchases;extra+=d.extra;profit+=d.profit;cogs+=d.cogs;netProfit+=d.netProfit;repPay+=d.repPay;invoices+=d.invoices.length;returns+=d.returns.length;transport+=d.transport||0;stockAdj+=d.stockAdj||0;factoryRetAdj+=d.factoryRetAdj||0;}
+  let sales=0,purchases=0,extra=0,profit=0,cogs=0,netProfit=0,repPay=0,invoices=0,returns=0,transport=0,stockAdj=0,factoryRetAdj=0,jobProfit=0,jobsN=0;
+  for(const d of data){sales+=d.salesNet;purchases+=d.purchases;extra+=d.extra;profit+=d.profit;cogs+=d.cogs;netProfit+=d.netProfit;repPay+=d.repPay;invoices+=d.invoices.length;returns+=d.returns.length;transport+=d.transport||0;stockAdj+=d.stockAdj||0;factoryRetAdj+=d.factoryRetAdj||0;jobProfit+=d.jobProfit||0;jobsN+=(d.jobs||[]).length;}
   const inventorySaleValue=db.products.reduce((sum,x)=>sum+(+x.stock||0)*(+x.price||0),0);
   const inventoryPurchaseValue=db.products.reduce((sum,x)=>sum+(+x.stock||0)*(+(x.cost??x.factoryPrice)||0),0);
   // الربح المتوقع لو تم بيع كل المخزون الحالي بسعر البيع الحالي (حصر بيع كامل):
@@ -1431,9 +1460,9 @@ function renderAnnualReportSummary(monthsData){
   const inventoryExpectedProfit=inventorySaleValue-inventoryPurchaseValue;
   const factoryDebitsThisYear=db.factoryLedger.filter(x=>x.type==='debit'&&String(x.date||'').startsWith(String(reportYear))).reduce((s,x)=>s+(+x.amount||0),0);
   const factoryPaidThisYear=db.factoryLedger.filter(x=>x.type==='payment'&&String(x.date||'').startsWith(String(reportYear))).reduce((s,x)=>s+(+x.amount||0),0);
-  cards('#reportSummary',[['مبيعات السنة',money(sales)],['مشتريات السنة',money(purchases)],['منها مدفوعات المناديب',money(repPay)],['مشتريات إضافية (بتتخصم من الربح)',money(extra)],...(stockAdj?[[stockAdj<0?'تالف وعجز المخزون (بيتخصم من الربح)':'زيادة جرد المخزون',money(Math.abs(stockAdj))]]:[]),...(Math.abs(factoryRetAdj)>0.004?[[factoryRetAdj<0?'خصم المصنع على المرتجعات (بيتخصم من الربح)':'نقل رجع من المصنع على المرتجعات',money(Math.abs(factoryRetAdj))]]:[]),['تكلفة البضاعة المباعة',money(cogs)],['صافي ربح السنة (بعد كل المصاريف)',money(netProfit)],['المبيعات − كل المشتريات (فرق نقدي)',money(profit)],...(transport>0?[['نقل اتحسب على العملاء (خارج المبيعات والربح)',money(transport)]]:[]),['عدد الفواتير',invoices],['عدد المرتجعات',returns],['المخزون بسعر البيع',money(inventorySaleValue)],['المخزون بسعر الشراء',money(inventoryPurchaseValue)],['الربح المتوقع لكل المخزون الحالي',money(inventoryExpectedProfit)],['رصيد حساب المصنع الحالي (مديونية)',money(factoryBalance())],['طلبات من المصنع هذه السنة',money(factoryDebitsThisYear)],['مسدد للمصنع هذه السنة',money(factoryPaidThisYear)]]);
+  cards('#reportSummary',[['مبيعات السنة',money(sales)],['مشتريات السنة',money(purchases)],['منها مدفوعات المناديب',money(repPay)],['مشتريات إضافية (بتتخصم من الربح)',money(extra)],...(stockAdj?[[stockAdj<0?'تالف وعجز المخزون (بيتخصم من الربح)':'زيادة جرد المخزون',money(Math.abs(stockAdj))]]:[]),...(Math.abs(factoryRetAdj)>0.004?[[factoryRetAdj<0?'خصم المصنع على المرتجعات (بيتخصم من الربح)':'نقل رجع من المصنع على المرتجعات',money(Math.abs(factoryRetAdj))]]:[]),...(jobsN?[[`ربح الشغلانات اللي خلصت (${jobsN})`,money(jobProfit)]]:[]),['تكلفة البضاعة المباعة',money(cogs)],['صافي ربح السنة (بعد كل المصاريف)',money(netProfit)],['المبيعات − كل المشتريات (فرق نقدي)',money(profit)],...(transport>0?[['نقل اتحسب على العملاء (خارج المبيعات والربح)',money(transport)]]:[]),['عدد الفواتير',invoices],['عدد المرتجعات',returns],['المخزون بسعر البيع',money(inventorySaleValue)],['المخزون بسعر الشراء',money(inventoryPurchaseValue)],['الربح المتوقع لكل المخزون الحالي',money(inventoryExpectedProfit)],['رصيد حساب المصنع الحالي (مديونية)',money(factoryBalance())],['طلبات من المصنع هذه السنة',money(factoryDebitsThisYear)],['مسدد للمصنع هذه السنة',money(factoryPaidThisYear)]]);
 }
-function openReportMonth(m,skipScroll){reportMonth=m;renderMonthReports();const names=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];const d=monthData(reportYear,m);document.querySelector('#monthDetailPanel').classList.remove('hidden');document.querySelector('#monthDetailTitle').textContent=`تفاصيل ${names[m-1]} ${reportYear}`;cards('#monthDetailSummary',[['المبيعات',money(d.salesNet)],['المشتريات',money(d.purchases)],['منها مدفوعات المناديب',money(d.repPay)],['مشتريات إضافية (بتتخصم من الربح)',money(d.extra)],...(d.stockAdj?[[d.stockAdj<0?'تالف وعجز المخزون (بيتخصم من الربح)':'زيادة جرد المخزون',money(Math.abs(d.stockAdj))]]:[]),...(Math.abs(d.factoryRetAdj||0)>0.004?[[d.factoryRetAdj<0?'خصم المصنع على المرتجعات (بيتخصم من الربح)':'نقل رجع من المصنع على المرتجعات',money(Math.abs(d.factoryRetAdj))]]:[]),['تكلفة البضاعة المباعة',money(d.cogs)],['صافي الربح (بعد كل المصاريف)',money(d.netProfit)],['المبيعات − كل المشتريات (فرق نقدي)',money(d.profit)],...(d.transport>0?[['نقل اتحسب على العملاء (خارج المبيعات والربح)',money(d.transport)]]:[])]);
+function openReportMonth(m,skipScroll){reportMonth=m;renderMonthReports();const names=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];const d=monthData(reportYear,m);document.querySelector('#monthDetailPanel').classList.remove('hidden');document.querySelector('#monthDetailTitle').textContent=`تفاصيل ${names[m-1]} ${reportYear}`;cards('#monthDetailSummary',[['المبيعات',money(d.salesNet)],['المشتريات',money(d.purchases)],['منها مدفوعات المناديب',money(d.repPay)],['مشتريات إضافية (بتتخصم من الربح)',money(d.extra)],...(d.stockAdj?[[d.stockAdj<0?'تالف وعجز المخزون (بيتخصم من الربح)':'زيادة جرد المخزون',money(Math.abs(d.stockAdj))]]:[]),...(Math.abs(d.factoryRetAdj||0)>0.004?[[d.factoryRetAdj<0?'خصم المصنع على المرتجعات (بيتخصم من الربح)':'نقل رجع من المصنع على المرتجعات',money(Math.abs(d.factoryRetAdj))]]:[]),...(d.jobs?.length?[[`ربح الشغلانات اللي خلصت (${d.jobs.length})`,money(d.jobProfit)]]:[]),['تكلفة البضاعة المباعة',money(d.cogs)],['صافي الربح (بعد كل المصاريف)',money(d.netProfit)],['المبيعات − كل المشتريات (فرق نقدي)',money(d.profit)],...(d.transport>0?[['نقل اتحسب على العملاء (خارج المبيعات والربح)',money(d.transport)]]:[])]);
 let html='';
 // بنبني خريطة الأرقام المعروضة مرة واحدة بس هنا (مش نستدعي displayNo لكل سطر
 // لوحده)، لإن displayNo بترتب القائمة الكاملة من الصفر في كل استدعاء — استدعاؤها
@@ -1450,6 +1479,7 @@ const flatOrderItems=d.orders.flatMap(x=>{const items=x.items?.length?x.items:[{
 html+=`<h3 class="report-section-title">الطلبيات التي تم ترحيلها للمخزون</h3>${pagedTable('monthOrders',['رقم','التاريخ','العميل','الصنف','الباتش','الكمية','سعر المصنع','الإجمالي'],flatOrderItems,({x,i})=>`<tr><td>#${ordNoMap.get(String(x.id))}</td><td>${x.date}</td><td>${esc(x.customer)||'المخزون العام'}</td><td>${esc(i.productName)||'—'}</td><td>${esc(i.batchNo)||'—'}</td><td>${i.quantity||0}</td><td>${money(i.factoryPrice||0)}</td><td>${money((+i.factoryPrice||0)*(+i.quantity||0))}</td></tr>`,'',daftarMonthPageOpts)}`;
 html+=`<h3 class="report-section-title">مدفوعات المناديب</h3>${pagedTable('monthRepPays',['التاريخ','المندوب','النوع','المبلغ','التفاصيل'],d.repPays,x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.rep)}</td><td>${REP_PAYMENT_TYPES[x.type]||x.type}</td><td>${money(x.amount)}</td><td>${repPaymentDetails(x)}</td></tr>`,'',daftarMonthPageOpts)}`;
 html+=`<h3 class="report-section-title">المشتريات الإضافية (بتتخصم من الربح)</h3>${pagedTable('monthExtras',['التاريخ','البيان','القيمة'],d.extras,x=>`<tr><td>${x.date}</td><td>${esc(x.description)}</td><td>${money(x.amount)}</td></tr>`,'',daftarMonthPageOpts)}`;
+if(d.jobs?.length){const ji=jobIndex();html+=`<h3 class="report-section-title">🧱 الشغلانات اللي خلصت</h3>${pagedTable('monthJobs',['خلصت','العميل','الشغلانة','المتفق','الخامات (تكلفة)','المصاريف','العمال','الربح'],d.jobs,j=>{const t=jobTotals(j,ji);return `<tr><td>${esc(j.doneDate||j.date)}</td><td>${esc(j.customer)}</td><td>${esc(j.title||'')}</td><td>${money(t.agreed)}</td><td>${money(t.matCost)}</td><td>${money(t.expenses)}</td><td>${money(t.labor)}</td><td>${money(t.profit)}</td></tr>`},'',daftarMonthPageOpts)}`;}
 if(d.adjs?.length)html+=`<h3 class="report-section-title">تسويات الجرد (تالف / عجز / زيادة)</h3>${pagedTable('monthAdjs',['التاريخ','الصنف','الفرق','السبب','القيمة بسعر الشراء'],d.adjs,a=>`<tr><td>${esc(a.date)}</td><td>${esc(a.productName)}</td><td>${a.qty>0?'+':''}${a.qty}</td><td>${esc(a.reasonLabel||'')}${a.note?` — ${esc(a.note)}`:''}</td><td>${money(stockAdjustValue(a))}</td></tr>`,'',daftarMonthPageOpts)}`;
 html+=`<h3 class="report-section-title">المرتجعات</h3>${pagedTable('monthReturns',['التاريخ','العميل','الصنف','الكمية','الإجمالي','الخصم','الصافي','الحالة'],d.returns,x=>`<tr><td>${x.date}</td><td>${esc(x.customer)}</td><td>${esc(x.productName)}</td><td>${x.quantity}</td><td>${money(x.grossAmount)}</td><td>${x.discountPercent||0}% (${money(x.discountAmount||0)})</td><td>${money(x.netAmount)}</td><td>${x.paid?'تم الدفع للعميل':'رصيد للعميل'}</td></tr>`,'',daftarMonthPageOpts)}`;
 html+=`<h3 class="report-section-title">دفعات العملاء</h3>${pagedTable('monthPayments',['التاريخ','العميل','القيمة','طريقة الدفع','ملاحظة'],d.payments,x=>`<tr><td>${x.date}</td><td>${esc(x.customer)}</td><td>${money(x.amount)}</td><td>${esc(x.paymentMethod)||'—'}</td><td>${esc(x.note)}</td></tr>`,'',daftarMonthPageOpts)}`;
@@ -1671,6 +1701,7 @@ function renderNow(){
  if(pageVisible('customers')){renderCustomerList();renderRepsPanel();}
  if(pageVisible('treasury')&&typeof renderTreasury==='function')renderTreasury();
  if(pageVisible('returns')&&typeof renderReturnsPage==='function')renderReturnsPage();
+ if(pageVisible('jobs')&&typeof renderJobsPage==='function')renderJobsPage();   // (2.18.0)
  }finally{daftarRendering=false;}
 }
 function renderCart(){document.querySelector('#invoiceCart').innerHTML=invoiceCart.length?table(['الصنف','الكمية','السعر','الإجمالي',''],invoiceCart.map((x,i)=>`<tr><td>${esc(x.productName)}</td><td>${x.quantity}</td><td>${money(x.unitPrice)}</td><td>${money(x.total)}</td><td><button type="button" class="danger" onclick="invoiceCart.splice(${i},1);renderCart();refreshInvoiceCreditBox()">إزالة</button></td></tr>`)):'<div class="notice">لم تتم إضافة أصناف.</div>';}
@@ -3267,7 +3298,9 @@ function customerHistoryTable(name){
     const key=entry.kind+':'+entry.id, paid=allocation.paidByDoc.get(key)||0, due=+x.total||0, remaining=Math.max(0,due-paid);
     if(isDebtRecord(x)){
       debtNo++;totalDue+=due;totalPaid+=paid;totalRemaining+=remaining;
-      return `<tr class="history-debt"><td class="history-row-number">مديونية ${debtNo}</td><td class="statement">${esc(x.note)||'مديونية على العميل'}</td><td>${money(due)}</td><td>${money(paid)}</td><td class="${remaining>0?'history-balance-open':'history-balance-zero'}">${money(remaining)}</td><td>${entry.date}</td><td><button type="button" class="danger" onclick="deleteCustomerDebt('${x.id}')">حذف</button></td></tr>`;
+      // (2.18.0) مديونية الشغلانة بتتعدّل من صفحتها بس
+      const act=x.jobId?`<button type="button" class="secondary-btn" onclick="openJobFromCustomer('${esc(String(x.jobId))}')">🧱 الشغلانة</button>`:`<button type="button" class="danger" onclick="deleteCustomerDebt('${x.id}')">حذف</button>`;
+      return `<tr class="history-debt"><td class="history-row-number">${x.jobId?'شغلانة':'مديونية'} ${debtNo}</td><td class="statement">${esc(x.note)||'مديونية على العميل'}</td><td>${money(due)}</td><td>${money(paid)}</td><td class="${remaining>0?'history-balance-open':'history-balance-zero'}">${money(remaining)}</td><td>${entry.date}</td><td>${act}</td></tr>`;
     }
     invoiceNo++;
     totalDue+=due;totalPaid+=paid;totalRemaining+=remaining;
@@ -3641,7 +3674,7 @@ async function mergeCustomerInto(source,target){
     ?`دمج «${source}» في «${target}»؟\n\nهيتنقل لـ«${target}»: ${counts.invoices} فاتورة، ${counts.orders} طلبية، ${counts.customerPayments} دفعة، ${counts.customerReturns} مرتجع.\nوالاسم «${source}» هيختفي من قائمة العملاء.`
     :`تغيير اسم العميل «${source}» إلى «${target}»؟\n\nكل فواتيره وطلبياته ودفعاته ومرتجعاته هتتنقل للاسم الجديد.`;
   if(!await daftarConfirm(msg))return false;
-  for(const k of ['invoices','orders','customerPayments','customerReturns','quotes','debtFollowups'])for(const x of (db[k]||[]))if(isSource(x))x.customer=target;   // (2.12.0 + متابعة الديون)
+  for(const k of ['invoices','orders','customerPayments','customerReturns','quotes','debtFollowups','jobs'])for(const x of (db[k]||[]))if(isSource(x))x.customer=target;   // (2.12.0 + متابعة الديون)
   if(db.customerBalances[source]!=null){db.customerBalances[target]=(+db.customerBalances[target]||0)+(+db.customerBalances[source]||0);delete db.customerBalances[source];}
   db.customerPhones=db.customerPhones||{};
   if(db.customerPhones[source]){if(!db.customerPhones[target])db.customerPhones[target]=db.customerPhones[source];delete db.customerPhones[source];}
@@ -3692,6 +3725,7 @@ function openAddCustomerDebt(enc){
 }
 async function deleteCustomerDebt(id){
   const x=db.invoices.find(i=>String(i.id)===String(id)&&isDebtRecord(i));if(!x)return;
+  if(x.jobId)return daftarAlert('دي قيمة شغلانة — بتتعدّل أو تتحذف من صفحة «🧱 الشغلانات».');   // (2.18.0)
   if(!await daftarConfirm(`حذف مديونية ${money(x.total)}${x.note?` (${x.note})`:''} من حساب «${x.customer}»؟`))return;
   markDeleted('invoices',x.id);db.invoices=db.invoices.filter(i=>i!==x);
   save();scheduleRender();refreshOpenCustomerProfile(x.customer);
@@ -4227,6 +4261,8 @@ async function deleteCustomerData(enc){
 // فمتاح في أي وقت بغض النظر عن الرصيد، لكن العملية لا رجعة فيها خالص.
 async function deleteCustomerCompletely(enc){
   const name=decodeURIComponent(enc);
+  const jobsN=(db.jobs||[]).filter(j=>j.customer===name).length;   // (2.18.0)
+  if(jobsN)return daftarAlert(`«${name}» ليه ${jobsN} شغلانة — احذفها الأول من صفحة «🧱 الشغلانات» (عشان الخامات ترجع المخزون والمصاريف تتشال صح).`);
   const invoices=db.invoices.filter(x=>x.customer===name);
   const orders=db.orders.filter(x=>x.customer===name);
   const returns=db.customerReturns.filter(x=>x.customer===name);
@@ -4649,7 +4685,7 @@ function customerStatementData(name){
     if(fromRet>0)ev.push({date:o.date||'',id:(+o.id||0)+1,label:'رصيد مرتجعات اتحجز كعربون',details:`لطلبية #${displayNo('orders',o.id)}`,debit:fromRet,credit:0});
   }
   for(const x of db.invoices.filter(x=>x.customer===name)){
-    if(isDebtRecord(x)){ev.push({date:x.date||'',id:+x.id||0,label:'مديونية',details:esc(x.note)||'مديونية على العميل',debit:+x.total||0,credit:0});continue;}
+    if(isDebtRecord(x)){ev.push({date:x.date||'',id:+x.id||0,label:x.jobId?'شغلانة':'مديونية',details:esc(x.note)||'مديونية على العميل',debit:+x.total||0,credit:0});continue;}
     // عربون الطلبية ظهر في سطره وقت ما اندفع، فمش بيتحسب تاني هنا. الجزء اللي جه من
     // رصيد المرتجعات ظاهر في سطر المرتجع نفسه.
     const linked=db.orders.find(o=>String(o.invoiceId)===String(x.id));
@@ -6157,7 +6193,7 @@ async function applyRestoredData(data){
   if(!data||typeof data!=='object'||!Array.isArray(data.products)||!Array.isArray(data.factoryItems)||!Array.isArray(data.invoices)||!Array.isArray(data.orders))throw new Error('invalid');
   db=data;
   db.customerBalances??={};db.customerPayments??=[];db.ledgerEntries??=[];db.extraPurchases??=[];db.customerReturns??=[];db.quotes??=[];db.deletedIds??={};
-  db.stockAdjustments??=[];db.debtFollowups??=[];                                // (2.12.0)
+  db.stockAdjustments??=[];db.debtFollowups??=[];db.jobs??=[];   // (2.18.0 الشغلانات)                                // (2.12.0)
   // نسحب الخلفيات من ملف النسخة الاحتياطية (لو موجودة) لمكانها المنفصل، وما نسيبهاش جوه db.
   for(const k of DAFTAR_IMAGE_KEYS){if(db[k]){daftarBg[k]=db[k];delete db[k];}}
   // الاستعادة قرار صريح من المستخدم إن البيانات دي المفروض ترجع فعليًا — حتى
@@ -7519,6 +7555,11 @@ details.panel-collapse[open]>summary{margin-bottom:14px}
 .returns-filter{margin-bottom:12px;align-items:end}
 .returns-sum{align-self:center;color:var(--muted)}
 .fr-table{width:100%;table-layout:fixed}
+/* (2.18.0) 🧱 الشغلانات */
+.job-cards{margin:12px 0}
+.job-cards .card.job-due strong{color:var(--danger)}
+.job-cards .card.job-total strong{color:var(--good)}
+#jobDetailView h2{overflow-wrap:anywhere}
 .fr-table select,.fr-table input{width:100%;min-width:0;box-sizing:border-box}
 #treasuryMovesPanel{scroll-margin-top:calc(var(--nav-h,60px) + 10px)}
 .treasury-in{color:var(--good)}.treasury-out,.treasury-neg{color:var(--danger)}
@@ -7627,7 +7668,7 @@ function normalizeDb(data){if(!data||typeof data!=='object')return structuredClo
 // أسماء كل القوائم اللي كل عنصر فيها له id ثابت — بيتم دمجها بمقارنة الـ id
 // بدل استبدال قاعدة البيانات كلها، عشان أي بيانات اتضافت على جهاز معين ومتزامنتش
 // لسه ميحصلهاش فقدان لو جهاز تاني كتب فوقها.
-const DAFTAR_LIST_KEYS=['products','factoryItems','invoices','quotes','orders','customerPayments','ledgerEntries','extraPurchases','customerReturns','factoryLedger','repPayments','colorCodes','treasuryAccounts','treasuryTransfers','treasuryEntries','stockAdjustments','debtFollowups'];
+const DAFTAR_LIST_KEYS=['products','factoryItems','invoices','quotes','orders','customerPayments','ledgerEntries','extraPurchases','customerReturns','factoryLedger','repPayments','colorCodes','treasuryAccounts','treasuryTransfers','treasuryEntries','stockAdjustments','debtFollowups','jobs'];
 
 // كل عنصر بياخد "بصمة" من محتواه (من غير وقت التعديل نفسه). لما نحفظ، بنقارن
 // البصمة الجديدة بالقديمة: لو اتغيّرت فعلاً نحط على العنصر وقت تعديل (updatedAt) جديد.
@@ -9853,6 +9894,297 @@ document.querySelectorAll('#nav [data-page]').forEach(btn=>btn.addEventListener(
   if(!NAV_BADGE_VIEW[btn.dataset.page])return;
   navBadgePending=btn.dataset.page;renderNavBadges();   // التبويبات المقفولة بالرمز: بيتعلّم متشاف بعد ما تفتح (من render)
 }));
+// ===== (2.18.0) 🧱 الشغلانات (شغل بالمتر من الخامات) =====
+// db.jobs: {id, customer, title, date, meters, meterPrice, agreed, note, status:'open'|'done', doneDate, debtId,
+//   materials:[{id, productId, productName, sku, batchNo, qty, returned, price (سعر الشغلانة), cost (سعر الشراء وقت السحب), date}]}
+// - المتفق عليه بيتسجل على حساب العميل كمديونية (invoices kind:'debt' عليها jobId) — فبيدخل رصيده وكشف حسابه ومتابعة الديون لوحده.
+// - فلوس العميل = دفعات عادية (customerPayments عليها jobId) — بتنزّل رصيده وبتدخل حساب الخزنة.
+// - المصاريف والعمال = extraPurchases عليها jobId (jobPart: expense / labor) — بتطلع من حساب الخزنة، ومش بتتحسب لوحدها
+//   في الأرباح: بتدخل في ربح الشغلانة (09-reports.js jobTotals) في الشهر اللي خلصت فيه.
+// - الخامات بتنزل من المخزون وقت السحب، واللي فضل بيرجع بزرار (returned)، ومن غير أي مديونية.
+let jobOpenId=null;
+const jobById=id=>(db.jobs||[]).find(j=>String(j.id)===String(id))||null;
+const jobR2=n=>Math.round((+n||0)*100)/100;
+function jobProfitUnlocked(){return typeof daftarReportsUnlockedThisSession!=='undefined'&&!!daftarReportsUnlockedThisSession;}
+const jobMeters=n=>`${(+n||0).toLocaleString('ar-EG',{maximumFractionDigits:2})} م`;
+function jobLabel(j){return `«${j.title||'شغلانة'}» — ${j.customer}`;}
+
+// مديونية الشغلانة على العميل = المتفق عليه
+function jobSyncDebt(j){
+  const total=jobR2(j.agreed);
+  let d=j.debtId?db.invoices.find(x=>String(x.id)===String(j.debtId)):null;
+  if(!(total>0)){if(d){markDeleted('invoices',d.id);db.invoices=db.invoices.filter(x=>x!==d);}delete j.debtId;return;}
+  const note=`شغلانة: ${j.title||''}${+j.meters>0?` (${jobMeters(j.meters)} × ${money(j.meterPrice)})`:''}`;
+  if(!d){d={id:daftarNextId(),kind:'debt',jobId:String(j.id),items:[],deposit:0,cashDeposit:0,creditUsed:0,orderDepositUsed:0};db.invoices.push(d);j.debtId=String(d.id);}
+  Object.assign(d,{customer:j.customer,date:j.date,note,total,remaining:total});
+}
+
+// ---------- القايمة
+function renderJobsPage(){
+  const listView=document.querySelector('#jobsListView'),detail=document.querySelector('#jobDetailView');if(!listView||!detail)return;
+  const j=jobOpenId?jobById(jobOpenId):null;
+  if(jobOpenId&&!j)jobOpenId=null;
+  listView.classList.toggle('hidden',!!j);detail.classList.toggle('hidden',!j);
+  if(j)return renderJobDetail(j);
+  const q=normalizeArabicName(document.querySelector('#jobSearch')?.value||''),st=document.querySelector('#jobStatusFilter')?.value??'open';
+  const idx=jobIndex(),noMap=buildDisplayNoMap('jobs');
+  const list=(db.jobs||[]).filter(x=>(!st||(x.status||'open')===st)&&(!q||normalizeArabicName(x.customer+' '+(x.title||'')).includes(q)))
+    .sort((a,b)=>String(b.date).localeCompare(String(a.date))||(+b.id)-(+a.id));
+  const tot=list.map(x=>jobTotals(x,idx)),showP=jobProfitUnlocked();
+  const sum=k=>jobR2(tot.reduce((s,t)=>s+t[k],0));
+  document.querySelector('#jobsSummary').innerHTML=`${list.length} شغلانة — المتفق <strong>${money(sum('agreed'))}</strong> — الباقي على العملاء <strong>${money(sum('remaining'))}</strong>${showP?` — الربح <strong>${money(sum('profit'))}</strong>`:''}`;
+  const tMap=new Map(list.map((x,i)=>[x,tot[i]]));
+  document.querySelector('#jobsList').innerHTML=pagedTable('jobsList',['رقم','التاريخ','العميل','الشغلانة','الأمتار','المتفق','اتدفع','الباقي',...(showP?['الربح']:[]),'الحالة',''],list,x=>{const t=tMap.get(x);
+    return `<tr><td>#${noMap.get(String(x.id))}</td><td>${esc(x.date)}</td><td>${esc(x.customer)}</td><td>${esc(x.title||'—')}</td><td>${t.meters?jobMeters(t.meters):'—'}</td><td>${money(t.agreed)}</td><td>${money(t.paid)}</td><td class="${t.remaining>0.004?'history-balance-open':'history-balance-zero'}">${money(t.remaining)}</td>${showP?`<td>${money(t.profit)}</td>`:''}<td>${x.status==='done'?`✅ خلصت${x.doneDate?` <small>${esc(x.doneDate)}</small>`:''}`:'🔨 شغالة'}</td><td><button type="button" class="primary" onclick="openJob('${esc(String(x.id))}')">فتح</button></td></tr>`;},`${q}|${st}`);
+}
+function openJob(id){jobOpenId=String(id);scheduleRender();window.scrollTo({top:0});}
+function closeJob(){jobOpenId=null;scheduleRender();window.scrollTo({top:0});}
+function openJobFromCustomer(id){document.querySelector('#nav [data-page="jobs"]')?.click();openJob(id);}
+
+// ---------- الشغلانة نفسها
+function renderJobDetail(j){
+  const t=jobTotals(j),showP=jobProfitUnlocked(),open=j.status!=='done',id=esc(String(j.id));
+  const acc=x=>x.accountId?esc(treasuryAccountName(x.accountId)):'—';
+  const card=(l,v,cls)=>`<article class="card${cls?' '+cls:''}"><small>${l}</small><strong>${v}</strong></article>`;
+  const mats=(j.materials||[]).slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))||(+a.id)-(+b.id));
+  const exps=t.extras.filter(x=>x.jobPart!=='labor'),labs=t.extras.filter(x=>x.jobPart==='labor');
+  const del=(fn,xid)=>`<button type="button" class="danger" onclick="${fn}('${id}','${esc(String(xid))}')">حذف</button>`;
+  const profitHtml=showP
+    ?`<div class="grid job-cards">${card('ربح الشغلانة',money(t.jobProfit))}${card('ربح الخامات (سعرها − تكلفتها)',money(t.matProfit))}${card('الربح الكلي',money(t.profit),'job-total')}${t.meters?card('تكلفة المتر',money(t.costPerMeter))+card('ربح المتر',money(t.profitPerMeter)):''}</div>`
+    :`<button type="button" class="secondary-btn" onclick="jobShowProfit()">🔒 اعرض الربح</button>`;
+  document.querySelector('#jobDetailView').innerHTML=`<article class="panel"><div class="returns-head"><div><button type="button" class="secondary-btn" onclick="closeJob()">‹ الشغلانات</button></div><div class="row-actions">${open?`<button type="button" class="primary" onclick="jobSetDone('${id}',true)">✅ خلصت</button>`:`<button type="button" class="secondary-btn" onclick="jobSetDone('${id}',false)">🔨 رجّعها شغالة</button>`}<button type="button" class="secondary-btn" onclick="openJobForm('${id}')">✏️ تعديل</button><button type="button" class="danger" onclick="deleteJob('${id}')">حذف الشغلانة</button></div></div>
+<h2>🧱 ${esc(j.title||'شغلانة')} — ${esc(j.customer)}</h2><p class="notice">بدأت ${esc(j.date)}${open?' — 🔨 شغالة':` — ✅ خلصت ${esc(j.doneDate||'')}`}${j.note?` — ${esc(j.note)}`:''}</p>
+<div class="grid job-cards">${t.meters?card(`المساحة — المتر بـ ${money(j.meterPrice)}`,jobMeters(t.meters)):''}${card('المتفق عليه',money(t.agreed))}${card('اتدفع',money(t.paid))}${card('الباقي على العميل',money(t.remaining),t.remaining>0.004?'job-due':'')}${card('الخامات',money(t.matPrice))}${card('المصاريف',money(t.expenses))}${card('العمال',money(t.labor))}</div>
+${profitHtml}</article>
+<article class="panel"><div class="returns-head"><h2>🧱 الخامات</h2><button type="button" class="primary" onclick="openJobMaterial('${id}')">+ اسحب خامة من المخزون</button></div>
+${table(['التاريخ','الصنف','الكمية','السعر','الإجمالي',''],mats.map(m=>{const q=jobMatQty(m);return `<tr><td>${esc(m.date)}</td><td>${esc(m.productName)}${m.batchNo?` <small>(باتش ${esc(m.batchNo)})</small>`:''}</td><td>${q}${+m.returned>0?` <small>(سحبت ${m.qty} ورجع ${m.returned})</small>`:''}</td><td>${money(m.price)}</td><td>${money(q*(+m.price||0))}</td><td class="row-actions">${q>0?`<button type="button" class="secondary-btn" onclick="returnJobMaterial('${id}','${esc(String(m.id))}')">↩️ رجّع للمخزون</button>`:''}${del('deleteJobMaterial',m.id)}</td></tr>`;}))}</article>
+<article class="panel"><div class="returns-head"><h2>🚚 مصاريف إضافية</h2><button type="button" class="primary" onclick="openJobExpense('${id}','expense')">+ مصروف</button></div>
+${table(['التاريخ','البيان','المبلغ','الحساب',''],exps.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.jobNote||x.description)}</td><td>${money(x.amount)}</td><td>${acc(x)}</td><td>${del('deleteJobExtra',x.id)}</td></tr>`))}</article>
+<article class="panel"><div class="returns-head"><h2>👷 العمال</h2><button type="button" class="primary" onclick="openJobExpense('${id}','labor')">+ عامل</button></div>
+${table(['التاريخ','العامل','الأيام × اليومية','المبلغ','الحساب',''],labs.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.worker||'')}</td><td>${+x.days>0?`${+x.days} × ${money(x.rate)}`:'—'}</td><td>${money(x.amount)}</td><td>${acc(x)}</td><td>${del('deleteJobExtra',x.id)}</td></tr>`))}</article>
+<article class="panel"><div class="returns-head"><h2>💵 فلوس العميل</h2><button type="button" class="primary" onclick="openJobPayment('${id}')">+ دفعة من العميل</button></div>
+${table(['التاريخ','المبلغ','الحساب','ملاحظة',''],t.payments.slice().sort((a,b)=>String(a.date).localeCompare(String(b.date))).map(x=>`<tr><td>${esc(x.date)}</td><td>${money(x.amount)}</td><td>${x.accountId?acc(x):esc(x.paymentMethod||'كاش')}</td><td>${esc(x.jobNote||'')}</td><td>${del('deleteJobPayment',x.id)}</td></tr>`))}</article>`;
+}
+async function jobShowProfit(){if(await ensureReportsPin())scheduleRender();}
+
+// ---------- نافذة عامة
+function jobModal(boxId,small,title,body,saveLabel){
+  document.getElementById(boxId)?.remove();
+  const box=document.createElement('div');box.id=boxId;
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:560px"><div class="settlement-title"><div><small>${small}</small><h3>${title}</h3></div><button type="button" class="settlement-close" data-close>×</button></div><div class="form job-form">${body}</div><div class="settlement-actions"><button type="button" class="primary" data-save>${saveLabel}</button><button type="button" class="secondary-btn" data-close>إلغاء</button></div></div>`;
+  document.body.appendChild(box);
+  const close=()=>box.remove();
+  box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);box.querySelector('.settlement-backdrop').onclick=close;
+  return {box,close,val:sel=>box.querySelector(sel)?.value??'',num:sel=>jobR2(box.querySelector(sel)?.value)};
+}
+const jobAccField=dir=>treasuryOn()?`<label>${dir==='in'?'دخلت في حساب':'اتصرفت من حساب'}<select data-jacc>${treasuryOptionsHtml()}</select></label>`:'';
+
+// شغلانة جديدة / تعديل
+function openJobForm(id){
+  const j=id?jobById(id):null;
+  const m=jobModal('daftarJobForm',j?'تعديل الشغلانة':'شغلانة جديدة',j?esc(jobLabel(j)):'🧱 شغلانة جديدة',
+    `<label class="span-2">العميل<input data-f="customer" list="customerNamesList" autocomplete="off" value="${esc(j?.customer||'')}" placeholder="اختر أو اكتب اسم العميل"></label>
+<label class="span-2">الشغلانة<input data-f="title" value="${esc(j?.title||'')}" placeholder="مثلاً: دهان شقة التجمع"></label>
+<label>عدد الأمتار<input data-f="meters" type="number" min="0" step="0.01" value="${j?+j.meters||'':''}" placeholder="0"></label>
+<label>سعر المتر<input data-f="meterPrice" type="number" min="0" step="0.01" value="${j?+j.meterPrice||'':''}" placeholder="0"></label>
+<label>المتفق عليه (الإجمالي)<input data-f="agreed" type="number" min="0" step="0.01" value="${j?+j.agreed||'':''}" placeholder="الأمتار × سعر المتر"></label>
+<label>تاريخ البداية<input data-f="date" type="date" value="${esc(j?.date||today())}"></label>
+${j&&j.status==='done'?`<label>تاريخ ما خلصت<input data-f="doneDate" type="date" value="${esc(j.doneDate||today())}"></label>`:''}
+<label class="span-2">ملاحظة<input data-f="note" value="${esc(j?.note||'')}" placeholder="اختياري"></label>`,j?'حفظ التعديل':'حفظ الشغلانة');
+  const f=k=>m.box.querySelector(`[data-f="${k}"]`);
+  // الإجمالي بيتحسب من الأمتار × السعر، إلا لو كتبته بإيدك
+  let manual=!!j&&Math.abs(jobR2(+j.meters*+j.meterPrice)-jobR2(j.agreed))>0.004;
+  const calc=()=>{if(manual)return;const v=jobR2((+f('meters').value||0)*(+f('meterPrice').value||0));f('agreed').value=v>0?v:'';};
+  f('meters').oninput=calc;f('meterPrice').oninput=calc;f('agreed').oninput=()=>{manual=f('agreed').value!=='';};
+  (j?f('title'):f('customer')).focus();
+  m.box.querySelector('[data-save]').onclick=async()=>{
+    const customer=f('customer').value.trim(),title=f('title').value.trim();
+    const meters=jobR2(f('meters').value),meterPrice=jobR2(f('meterPrice').value),agreed=jobR2(f('agreed').value);
+    if(!customer)return daftarAlert('اكتب اسم العميل.');
+    if(!title)return daftarAlert('اكتب اسم الشغلانة (مثلاً: دهان شقة …).');
+    if(meters<0||meterPrice<0||agreed<0)return daftarAlert('راجع الأرقام.');
+    const x=j||{id:daftarNextId(),status:'open',materials:[]};
+    const oldCustomer=j?.customer;
+    Object.assign(x,{customer,title,meters,meterPrice,agreed,date:f('date').value||today(),note:f('note').value.trim()});
+    if(f('doneDate'))x.doneDate=f('doneDate').value||today();
+    if(!j)(db.jobs??=[]).push(x);
+    // العميل اتغيّر: دفعات الشغلانة تروح معاها
+    if(oldCustomer&&oldCustomer!==customer)for(const p of db.customerPayments)if(String(p.jobId)===String(x.id))p.customer=customer;
+    jobSyncDebt(x);
+    m.close();save();
+    if(!j){jobOpenId=String(x.id);daftarToast(`اتسجلت الشغلانة${agreed>0?` — ${money(agreed)} على حساب «${customer}»`:''}.`);}
+    else daftarToast('اتحفظ التعديل.');
+    scheduleRender();
+  };
+}
+
+// سحب خامة من المخزون
+function openJobMaterial(jid){
+  const j=jobById(jid);if(!j)return;
+  const prods=db.products.filter(p=>(+p.stock||0)>0).sort((a,b)=>String(a.name).localeCompare(String(b.name),'ar'));
+  if(!prods.length)return daftarAlert('مفيش أصناف في المخزون دلوقتي.');
+  const opt=p=>`<option value="${esc(String(p.id))}">${esc(p.name)}${p.sku?` — ${esc(p.sku)}`:''}${p.batchNo?` — باتش ${esc(p.batchNo)}`:''}${p.customerName&&p.customerName!=='المخزون العام'?` — محجوز لـ${esc(p.customerName)}`:''} — متاح ${+p.stock}</option>`;
+  const m=jobModal('daftarJobMaterial',esc(jobLabel(j)),'🧱 سحب خامة من المخزون',
+    `<label class="span-2">بحث<input data-q placeholder="اسم الصنف أو الكود أو الباتش" autocomplete="off"></label>
+<label class="span-2">الصنف<select data-p>${prods.map(opt).join('')}</select></label>
+<label>الكمية<input data-qty type="number" min="0" step="any" value="1"></label>
+<label>السعر للوحدة<input data-price type="number" min="0" step="0.01"></label>
+<label>التاريخ<input data-date type="date" value="${today()}"></label>
+<div class="notice span-2" data-hint></div>`,'سجّل السحب');
+  const sel=m.box.querySelector('[data-p]'),price=m.box.querySelector('[data-price]'),qty=m.box.querySelector('[data-qty]'),hint=m.box.querySelector('[data-hint]');
+  const cur=()=>db.products.find(p=>String(p.id)===sel.value);
+  const upd=(setPrice)=>{const p=cur();if(!p)return;if(setPrice)price.value=+p.price||'';const q=+qty.value||0;hint.innerHTML=`متاح ${+p.stock} — الإجمالي <strong>${money(q*(+price.value||0))}</strong>${q>(+p.stock||0)?' — <span class="treasury-neg">أكتر من المتاح</span>':''}`;};
+  sel.onchange=()=>upd(true);qty.oninput=()=>upd(false);price.oninput=()=>upd(false);
+  m.box.querySelector('[data-q]').oninput=e=>{const q=normalizeArabicName(e.target.value);const keep=sel.value;sel.innerHTML=prods.filter(p=>!q||normalizeArabicName(`${p.name} ${p.sku||''} ${p.batchNo||''}`).includes(q)).map(opt).join('');if([...sel.options].some(o=>o.value===keep))sel.value=keep;upd(sel.value!==keep);};
+  upd(true);m.box.querySelector('[data-q]').focus();
+  m.box.querySelector('[data-save]').onclick=()=>{
+    const p=cur(),q=+qty.value||0,pr=jobR2(price.value);
+    if(!p)return daftarAlert('اختار الصنف.');
+    if(!(q>0))return daftarAlert('اكتب الكمية.');
+    if(q>(+p.stock||0)+1e-9)return daftarAlert(`المتاح من «${p.name}» ${+p.stock} بس.`);
+    if(pr<0)return daftarAlert('راجع السعر.');
+    p.stock=Math.round(((+p.stock||0)-q)*1000)/1000;
+    (j.materials??=[]).push({id:daftarNextId(),productId:String(p.id),productName:p.name,sku:p.sku||'',batchNo:p.batchNo||'',qty:q,returned:0,price:pr,cost:jobR2(+p.cost||+p.factoryPrice||0),date:m.val('[data-date]')||today()});
+    m.close();save();scheduleRender();
+    daftarToast(`اتسحب ${q} «${p.name}» للشغلانة.`);
+  };
+}
+function jobMaterial(j,mid){return (j?.materials||[]).find(m=>String(m.id)===String(mid))||null;}
+// الكمية بترجع لنفس الصنف (أو صنف جديد بنفس الاسم لو اتمسح)
+function jobRestock(m,q){
+  if(!(q>0))return;
+  const p=db.products.find(x=>String(x.id)===String(m.productId))||db.products.find(x=>String(x.name||'').trim()===String(m.productName||'').trim()&&(x.batchNo||'')===(m.batchNo||''));
+  if(p)p.stock=Math.round(((+p.stock||0)+q)*1000)/1000;
+  else db.products.push({id:daftarNextId(),name:m.productName,baseName:m.productName,sku:m.sku||'',stock:q,price:+m.price||0,cost:+m.cost||0,factoryPrice:+m.cost||0,batchNo:m.batchNo||'',pebble:'',packageWeight:0});
+}
+async function returnJobMaterial(jid,mid){
+  const j=jobById(jid),m=jobMaterial(j,mid);if(!m)return;
+  const max=jobMatQty(m);if(!(max>0))return;
+  const q=Number.isInteger(max)?await daftarQuantityPrompt(`رجّع «${m.productName}» للمخزون`,max):max;
+  if(!q)return;
+  if(!Number.isInteger(max)&&!await daftarConfirm(`يرجع ${max} «${m.productName}» للمخزون؟`))return;
+  m.returned=Math.round(((+m.returned||0)+q)*1000)/1000;jobRestock(m,q);
+  save();scheduleRender();daftarToast(`رجع ${q} «${m.productName}» للمخزون، واتشال من تكلفة الشغلانة.`);
+}
+async function deleteJobMaterial(jid,mid){
+  const j=jobById(jid),m=jobMaterial(j,mid);if(!m)return;
+  const q=jobMatQty(m);
+  if(!await daftarConfirm(`حذف سحب «${m.productName}» (اتسحب بالغلط)؟${q>0?`\n${q} هيرجعوا المخزون.`:''}`))return;
+  jobRestock(m,q);j.materials=j.materials.filter(x=>x!==m);
+  save();scheduleRender();
+}
+
+// مصروف / عامل (extraPurchases)
+function openJobExpense(jid,part){
+  const j=jobById(jid);if(!j)return;
+  const labor=part==='labor';
+  const workers=[...new Set((db.extraPurchases||[]).filter(x=>x.jobPart==='labor'&&x.worker).map(x=>x.worker))];
+  const m=jobModal('daftarJobExpense',esc(jobLabel(j)),labor?'👷 عامل':'🚚 مصروف إضافي',labor
+    ?`<datalist id="jobWorkersList">${workers.map(w=>`<option value="${esc(w)}"></option>`).join('')}</datalist>
+<label class="span-2">العامل<input data-worker list="jobWorkersList" autocomplete="off" placeholder="اسم العامل"></label>
+<label>عدد الأيام<input data-days type="number" min="0" step="0.5" placeholder="اختياري"></label>
+<label>اليومية<input data-rate type="number" min="0" step="0.01" placeholder="اختياري"></label>
+<label>المبلغ<input data-amount type="number" min="0" step="0.01" placeholder="الأيام × اليومية"></label>
+<label>التاريخ<input data-date type="date" value="${today()}"></label>${jobAccField('out')}`
+    :`<label>النوع<select data-kind><option value="نقل">🚚 نقل</option><option value="">أخرى</option></select></label>
+<label>المبلغ<input data-amount type="number" min="0" step="0.01" placeholder="0"></label>
+<label class="span-2">البيان<input data-desc placeholder="مثلاً: نقل الخامات للموقع"></label>
+<label>التاريخ<input data-date type="date" value="${today()}"></label>${jobAccField('out')}`,labor?'سجّل العامل':'سجّل المصروف');
+  if(labor){
+    const a=m.box.querySelector('[data-amount]'),calc=()=>{const v=jobR2((+m.val('[data-days]')||0)*(+m.val('[data-rate]')||0));if(v>0)a.value=v;};
+    m.box.querySelector('[data-days]').oninput=calc;m.box.querySelector('[data-rate]').oninput=calc;
+    m.box.querySelector('[data-worker]').focus();
+  }else m.box.querySelector('[data-amount]').focus();
+  m.box.querySelector('[data-save]').onclick=()=>{
+    const amount=m.num('[data-amount]'),date=m.val('[data-date]')||today();
+    if(!(amount>0))return daftarAlert('اكتب المبلغ.');
+    let rec;
+    if(labor){
+      const worker=m.val('[data-worker]').trim();if(!worker)return daftarAlert('اكتب اسم العامل.');
+      const days=+m.val('[data-days]')||0,rate=m.num('[data-rate]');
+      rec={jobPart:'labor',worker,...(days>0?{days,rate}:{}),description:`شغلانة ${jobLabel(j)} — عمال: ${worker}${days>0?` (${days} يوم)`:''}`};
+    }else{
+      const kind=m.val('[data-kind]'),desc=m.val('[data-desc]').trim();
+      if(!kind&&!desc)return daftarAlert('اكتب بيان المصروف.');
+      const note=[kind,desc].filter(Boolean).join(': ');
+      rec={jobPart:'expense',jobNote:note,description:`شغلانة ${jobLabel(j)} — ${note}`};
+    }
+    const sel=m.box.querySelector('[data-jacc]');
+    const tr=treasuryPick(sel?.value||'','out',amount,null,sel);if(!tr)return;
+    db.extraPurchases.push({id:daftarNextId(),jobId:String(j.id),...rec,amount,date,...(tr.acc?{accountId:tr.acc}:{})});
+    m.close();save();scheduleRender();
+    daftarToast(labor?'اتسجل العامل.':'اتسجل المصروف.');
+  };
+}
+async function deleteJobExtra(jid,xid){
+  const x=(db.extraPurchases||[]).find(e=>String(e.id)===String(xid)&&String(e.jobId)===String(jid));if(!x)return;
+  if(!await daftarConfirm(`حذف «${x.jobPart==='labor'?x.worker:(x.jobNote||x.description)}» ${money(x.amount)}؟${x.accountId?`\nالمبلغ هيرجع لحساب «${treasuryAccountName(x.accountId)}».`:''}`))return;
+  markDeleted('extraPurchases',x.id);db.extraPurchases=db.extraPurchases.filter(e=>e!==x);
+  save();scheduleRender();
+}
+
+// دفعة من العميل (customerPayments)
+function openJobPayment(jid){
+  const j=jobById(jid);if(!j)return;
+  const t=jobTotals(j);
+  const m=jobModal('daftarJobPayment',esc(jobLabel(j)),'💵 دفعة من العميل',
+    `<label>المبلغ<input data-amount type="number" min="0" step="0.01" value="${t.remaining>0?t.remaining:''}"></label>
+<label>التاريخ<input data-date type="date" value="${today()}"></label>${jobAccField('in')}
+<label class="span-2">ملاحظة<input data-note placeholder="مثلاً: عربون / دفعة تانية"></label>
+<div class="notice span-2">الباقي على الشغلانة دلوقتي ${money(t.remaining)}.</div>`,'سجّل الدفعة');
+  m.box.querySelector('[data-amount]').focus();m.box.querySelector('[data-amount]').select();
+  m.box.querySelector('[data-save]').onclick=async()=>{
+    const a=m.num('[data-amount]');if(!(a>0))return daftarAlert('اكتب المبلغ.');
+    const sel=m.box.querySelector('[data-jacc]');
+    const tr=treasuryPick(sel?.value||'','in',a,null,sel);if(!tr)return;
+    const before=Math.max(0,customerBalance(j.customer)),extra=jobR2(a-before);
+    if(extra>0&&!await daftarConfirm(`الدفعة (${money(a)}) أكبر من اللي على «${j.customer}» كله (${money(before)}).\nالزيادة ${money(extra)} هتفضل رصيد ليه وتتخصم من أي شغل جديد.\nتكمّل؟`))return;
+    const note=m.val('[data-note]').trim();
+    db.customerPayments.push({id:daftarNextId(),customer:j.customer,amount:a,date:m.val('[data-date]')||today(),note:`شغلانة: ${j.title||''}${note?' — '+note:''}`,jobNote:note,paymentMethod:tr.method||'كاش',appliedToBalance:a,jobId:String(j.id),...(extra>0?{advance:true}:{}),...(tr.acc?{accountId:tr.acc}:{})});
+    m.close();save();scheduleRender();
+    daftarToast('اتسجلت الدفعة ونزلت من حساب العميل.');
+  };
+}
+async function deleteJobPayment(jid,pid){
+  const p=db.customerPayments.find(x=>String(x.id)===String(pid)&&String(x.jobId)===String(jid));if(!p)return;
+  const err=treasuryShortfall(treasuryRemovalDeltas('customerPayments',[p]),'مينفعش تحذف الدفعة دي:');if(err)return daftarAlert(err);
+  if(!await daftarConfirm(`حذف دفعة ${money(p.amount)} من «${p.customer}»؟\nهترجع على حسابه${p.accountId?`، وهتتشال من «${treasuryAccountName(p.accountId)}»`:''}.`))return;
+  markDeleted('customerPayments',p.id);db.customerPayments=db.customerPayments.filter(x=>x!==p);
+  save();scheduleRender();
+}
+
+// خلصت / رجّعها شغالة
+async function jobSetDone(jid,done){
+  const j=jobById(jid);if(!j)return;
+  if(done){
+    const t=jobTotals(j);
+    if(!await daftarConfirm(`الشغلانة ${jobLabel(j)} خلصت النهارده؟${t.remaining>0.004?`\nالباقي ${money(t.remaining)} هيفضل على «${j.customer}» في حسابه.`:''}\nربحها هيدخل صافي ربح الشهر ده.`))return;
+    j.status='done';j.doneDate=today();
+  }else{j.status='open';delete j.doneDate;}
+  save();scheduleRender();
+}
+// حذف الشغلانة كلها: الخامات ترجع، والمصاريف والدفعات والمديونية تتشال
+async function deleteJob(jid){
+  const j=jobById(jid);if(!j)return;
+  const t=jobTotals(j),mats=(j.materials||[]).filter(m=>jobMatQty(m)>0);
+  const err=treasuryShortfall(treasuryRemovalDeltas('customerPayments',t.payments),'مينفعش تحذف الشغلانة:');if(err)return daftarAlert(err);
+  if(!await daftarConfirm(`حذف الشغلانة ${jobLabel(j)} نهائيًا؟\n- ${mats.length} خامة هترجع المخزون\n- ${t.extras.length} مصروف وعامل هيتشالوا (والفلوس ترجع حساباتها)\n- ${t.payments.length} دفعة من العميل هتتشال\n- المتفق عليه (${money(t.agreed)}) هيتشال من حساب العميل`))return;
+  for(const m of mats)jobRestock(m,jobMatQty(m));
+  for(const x of t.extras)markDeleted('extraPurchases',x.id);
+  const exIds=new Set(t.extras.map(x=>x)),payIds=new Set(t.payments);
+  db.extraPurchases=db.extraPurchases.filter(x=>!exIds.has(x));
+  for(const p of t.payments)markDeleted('customerPayments',p.id);
+  db.customerPayments=db.customerPayments.filter(x=>!payIds.has(x));
+  j.agreed=0;jobSyncDebt(j);
+  markDeleted('jobs',j.id);db.jobs=db.jobs.filter(x=>x!==j);
+  jobOpenId=null;save();scheduleRender();daftarToast('اتحذفت الشغلانة.');
+}
+
+document.querySelector('#jobNewBtn')?.addEventListener('click',()=>openJobForm(''));
+document.querySelector('#jobSearch')?.addEventListener('input',()=>scheduleRender(150));
+document.querySelector('#jobStatusFilter')?.addEventListener('change',()=>scheduleRender());
+// فتح التبويب من الشريط = القايمة
+document.querySelector('#nav [data-page="jobs"]')?.addEventListener('click',()=>{jobOpenId=null;});
 </script>
 <style>
 #daftarA2hs{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:9000;display:flex;gap:10px;align-items:center;background:var(--surface,#fff);color:var(--ink,#111);border:1px solid var(--line,#ddd);border-radius:14px;padding:12px 14px;box-shadow:0 8px 28px rgba(0,0,0,.18);direction:rtl;max-width:560px;margin:0 auto}
