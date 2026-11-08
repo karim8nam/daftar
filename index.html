@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.14.0";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.15.0";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -177,7 +177,7 @@ html,body{background:#fff!important}
 #daftarPrintBox.statement-print.doc-sheet .dp-inner>.doc-contact{position:fixed;left:7mm;right:7mm;bottom:6mm;margin:0}
 #daftarPrintBox.statement-print.doc-sheet .dp-inner .total{break-inside:avoid}}</style></head><body><main class="shell">
 
-<header class="brand"><div class="mark">د</div><div><h1>دفتر</h1><p>إدارة المبيعات والمخزون والمشتريات <span id="appVersionTag" class="app-version"></span></p></div><div class="brand-status"><div id="supabaseStatus">☁️ لم تتم المزامنة بعد</div><div id="daftarAccountBar" style="display:none"><span id="daftarAccountText"></span><button type="button" id="daftarLogoutBtn">تسجيل الخروج</button></div></div></header><nav id="nav"><button class="active" data-page="dashboard">الرئيسية</button><button data-page="factory">كتالوج المصنع</button><button data-page="products">المخزون</button><button data-page="invoices">فواتير المبيعات</button><button data-page="quotes">عرض أسعار</button><button data-page="orders">الطلبيات</button><button data-page="customers">العملاء</button><button data-page="balances">الأرصدة والمشتريات</button><button data-page="treasury">الخزنة</button><button data-page="reports">التقارير</button><button data-page="settings">الإعدادات</button></nav><datalist id="customerNamesList"></datalist>
+<header class="brand"><div class="mark">د</div><div><h1>دفتر</h1><p>إدارة المبيعات والمخزون والمشتريات <span id="appVersionTag" class="app-version"></span></p></div><div class="brand-status"><div id="supabaseStatus">☁️ لم تتم المزامنة بعد</div><div id="daftarAccountBar" style="display:none"><span id="daftarAccountText"></span><button type="button" id="daftarLogoutBtn">تسجيل الخروج</button></div></div></header><nav id="nav"><button class="active" data-page="dashboard">الرئيسية</button><button data-page="factory">كتالوج المصنع</button><button data-page="products">المخزون</button><button data-page="invoices">فواتير المبيعات</button><button data-page="quotes">عرض أسعار</button><button data-page="orders">الطلبيات</button><button data-page="customers">العملاء</button><button data-page="returns">المرتجعات</button><button data-page="balances">الأرصدة والمشتريات</button><button data-page="treasury">الخزنة</button><button data-page="reports">التقارير</button><button data-page="settings">الإعدادات</button></nav><datalist id="customerNamesList"></datalist>
 <section id="dashboard" class="page"><div class="grid" id="summary"></div><div class="two" style="margin-top:16px"><article class="panel"><h2>نظرة سريعة</h2><div id="lowStock"></div></article><article class="panel"><h2>معلومات</h2><p class="notice">الطلبية لا تدخل المخزون إلا عند الاستلام. سعر المصنع هو تكلفة الشراء، وسعر البيع منفصل.</p></article></div><article class="panel" style="margin-top:16px"><h2>تنبيهات صلاحية أصناف المصنع</h2><p class="notice">بتظهر بس للأصناف الجايه من طلبية مصنع، بناءً على تاريخ الإنتاج (تقدر تعدّله من صفحة المخزون). عدّل تاريخ الإنتاج أو اضغط "المنتج سليم" لو مش عايز التنبيه ده يتكرر.</p><div id="expiryAlerts"></div></article></section>
 <section id="factory" class="page hidden"><article class="panel"><h2 id="factoryFormTitle">إضافة صنف في كتالوج المصنع</h2><form id="factoryForm" class="form"><input type="hidden" name="id"><label>اسم الصنف<input required name="name"></label><label>النوع<select name="packageType"><option value="شكارة">شكارة</option><option value="بستلة">بستلة</option></select></label><label>طريقة التسعير<select name="pricing"><option value="ton">بالطن (سعر العبوة بيتحسب من وزنها)</option><option value="unit">بالعبوة (سعر ثابت)</option></select></label><label><span id="factoryPriceLabel">سعر شراء الطن من المصنع</span><input required name="factoryPrice" type="number" min="0" step="0.01"></label><label><span id="salePriceLabel">سعر بيع الطن</span><input required name="salePrice" type="number" min="0" step="0.01"></label><label>الوزن الافتراضي للعبوة (كجم)<input name="packageWeight" type="number" min="0" step="0.001"></label><label>أوزان العبوات المتاحة (اختياري)<input name="weightOptions" placeholder="مثال: 20, 25"></label><details class="variant-editor" id="variantEditor"><summary>🎨 أكواد الألوان وأسعارها (للأصناف اللي كل لون فيها ليه سعر، زي المحارة الجاهزة) <span class="badge" id="variantCount">0</span></summary><p class="notice" style="margin:8px 0">كل كود ليه سعره. لما تعمل طلبية للصنف ده وتكتب الكود، السعر بيتحط لوحده. الأسعار هنا <strong id="variantUnitNote">بالطن</strong> زي سعر الصنف فوق. لو سبت سعر فاضي، بيتاخد سعر الصنف العادي.</p><div id="variantRows"></div><datalist id="colorSkuAllList"></datalist><div class="form-actions" style="margin-top:8px"><button type="button" class="secondary-btn" id="addVariantRow">➕ إضافة كود</button></div><details class="color-bulk" style="margin-top:10px"><summary>لصق أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر: الكود، سعر الشراء، سعر البيع (أو الكود وسعر البيع بس). مثال:<br><span dir="ltr">C-100, 9000, 11000</span></p><textarea id="variantBulkInput" rows="4" dir="ltr" placeholder="C-100, 9000, 11000"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="variantBulkAdd">إضافة للقايمة</button></div></details></details><button type="submit" class="primary">حفظ</button><button type="button" class="danger" id="cancelFactoryEdit">إلغاء التعديل</button></form></article><article class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">كتالوج المصنع</h2><div class="ft-actions"><button type="button" class="secondary-btn" id="colorCatalogBtn" style="flex:none;white-space:nowrap" onclick="openColorCatalog()">📖 كتالوج الألوان</button><button type="button" class="secondary-btn hidden" id="factoryPriceReviewBtn" style="flex:none;white-space:nowrap" onclick="openFactoryPriceReview()">💲 مراجعة أسعار المصنع</button></div></div><div id="factoryTable" style="margin-top:16px"></div></article><article class="panel" id="colorCodesPanel"><h2 id="colorFormTitle">🎨 درجات الألوان</h2><p class="notice">سجّل كود كل لون ودرجته. أي صنف في المخزون بنفس الكود هتظهر جنبه دايرة باللون ده لوحدها، وبتتزامن على كل الأجهزة. تقدر تختار أي درجة من مربع الألوان، أو تكتب كودها (#RRGGBB) لو معاك.</p><form id="colorCodeForm" class="form"><input type="hidden" name="id"><label>كود اللون<input required name="code" list="colorSkuList" autocomplete="off" dir="ltr" placeholder="مثلاً C-100"></label><label>اسم اللون (اختياري)<input name="name" placeholder="مثلاً أبيض ثلجي"></label><label>درجة اللون<span class="color-pick"><input type="color" name="hex" value="#c8102e" aria-label="اختيار درجة اللون"><input name="hexText" dir="ltr" maxlength="7" placeholder="#RRGGBB" aria-label="كود الدرجة"></span></label><button type="submit" class="primary" id="colorSaveBtn">حفظ اللون</button><button type="button" class="secondary-btn hidden" id="cancelColorEdit">إلغاء التعديل</button></form><datalist id="colorSkuList"></datalist><div id="colorMissing"></div><details class="color-bulk"><summary>إضافة أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر لون: الكود، واسم اللون (اختياري)، والدرجة — مفصولين بفاصلة. مثال:<br><span dir="ltr">C-100, أبيض ثلجي, #F4F4F0</span></p><textarea id="colorBulkInput" rows="5" dir="auto" placeholder="C-100, أبيض ثلجي, #F4F4F0"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="colorBulkSave">إضافة الأكواد</button></div></details><div class="color-search"><input id="colorSearch" type="search" placeholder="🔎 ابحث بالكود أو اسم اللون..." autocomplete="off"></div><div id="colorCodesTable"></div></article></section>
 <section id="products" class="page hidden"><article class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">الأصناف الموجودة في المخزون</h2><div style="display:flex;gap:10px;align-items:center;flex:1;justify-content:flex-end;flex-wrap:wrap"><button type="button" class="secondary-btn" style="flex:none;white-space:nowrap" onclick="openStockAdjustLog()">📋 سجل تسويات الجرد</button><div style="min-width:280px;flex:1;max-width:430px"><input id="productSearch" type="search" placeholder="🔎 ابحث بالاسم أو الكود أو الباتش أو صاحب الطلبية..." autocomplete="off" style="width:100%"></div></div></div><p class="notice">الأصناف تدخل المخزون عن طريق استلام الطلبيات، وتُحذف تلقائيًا عند بيع آخر كمية. لو العدد الفعلي مختلف (تالف، ضايع، فرق جرد): ⋮ جنب الصنف ← «⚖️ تسوية الكمية».</p><div id="productsTable" style="margin-top:16px"></div></article></section>
@@ -206,6 +206,7 @@ html,body{background:#fff!important}
   </div>
 </label><label>الكمية<input required name="quantity" type="number" min="1" step="1" value="1"></label><label>الكود<span class="sku-pick"><input name="itemSku" placeholder="اكتب رقم الكود…" list="orderSkuList" autocomplete="off" dir="auto"><button type="button" class="secondary-btn" id="orderSkuCatalogBtn" title="اختار اللون من كتالوج الألوان" aria-label="اختار اللون من كتالوج الألوان">📖</button></span><datalist id="orderSkuList"></datalist><datalist id="allSkuList"></datalist></label><label>وزن العبوة (كجم)<input name="itemWeight" type="number" min="0" step="0.001" list="orderWeightOptions" placeholder="بيتملي من الكتالوج"><datalist id="orderWeightOptions"></datalist></label><label>سعر بيع العبوة (قابل للتعديل)<input name="itemSalePrice" type="number" min="0" step="0.01" placeholder="بيتحسب من سعر الطن"></label><label>رقم الباتش<input name="batchNo" placeholder="يُسحب تلقائيًا من المصنع ويمكن تعديله"></label><label>الحصوة<select name="pebble"><option value="">بدون</option><option>ناعم</option><option>خشن</option><option>نص مللي</option><option>1 مللي</option><option>1.5 مللي</option><option>2 مللي</option><option>3 مللي</option></select></label><button type="button" class="primary" id="addOrderItem">إضافة صنف للطلبية</button><div id="orderCart" class="span-all"></div></div><div class="form-step"><div class="form-step-title"><b>3</b> العربون والحفظ</div><label>العربون<input name="deposit" type="number" min="0" step="0.01" value="0"></label><label class="treasury-pick hidden">حساب العربون<select name="accountId" data-treasury="in"></select></label><label>تاريخ الطلب<input required name="date" type="date"></label><div class="form-actions span-2"><button class="primary" id="orderSaveBtn">حفظ الطلبية</button></div><p class="notice span-all" style="margin:0">أضف أكثر من صنف للطلبية ثم احفظها كطلبية واحدة. عند الترحيل للمخزون تُضاف كل الأصناف والكميات دفعة واحدة، ولا تدخل المخزون قبل الترحيل.</p></div></form><div id="ordersJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">الطلبيات</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="orderSearch" type="search" placeholder="🔎 ابحث برقم الطلبية أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="ordersPendingWeightSummary" class="notice" style="margin-top:12px"></div><div id="ordersTable" style="margin-top:16px"></div></article></section>
 <section id="customers" class="page hidden"><article class="panel" id="customersListPanel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">العملاء</h2><div style="display:flex;gap:10px;align-items:center;flex:1;justify-content:flex-end;flex-wrap:wrap"><button type="button" class="primary" onclick="openAddCustomerDebt()">➕ إضافة مديونية / عميل جديد</button><div style="min-width:280px;flex:1;max-width:430px"><input id="customerSearch" type="search" placeholder="🔎 ابحث باسم العميل..." autocomplete="off" style="width:100%"></div></div></div><div id="customersTable" style="margin-top:16px"></div></article><article class="panel hidden" id="customerProfile"><div class="profile-bar"><button type="button" class="secondary-btn" id="customerBackBtn">→ رجوع للعملاء</button><h2 id="customerTitle"></h2><div class="profile-actions"><button type="button" class="primary" id="profilePayBtn">💵 دفعة جديدة</button><button type="button" class="secondary-btn" id="profileDebtBtn">➕ مديونية</button><button type="button" class="secondary-btn" id="profileStatementBtn">🧾 كشف حساب</button><button type="button" class="secondary-btn" id="profileWhatsBtn">واتساب</button><button type="button" class="secondary-btn hidden" id="profileRemindBtn">💬 تذكير بالمديونية</button><button type="button" class="secondary-btn hidden" id="profileFollowBtn">📝 متابعة الدين</button><button type="button" class="secondary-btn" id="profileReturnBtn">↩ مرتجع</button><button type="button" class="secondary-btn" id="profileEditBtn">⚙️ بيانات العميل</button></div></div><div id="customerDebtInfo" class="notice hidden"></div><div id="customerEditBox" class="profile-section hidden"><h3 class="profile-section-title">بيانات العميل</h3><div id="customerPhoneBox" class="customer-phone-hint" style="margin-bottom:12px"></div><div id="customerRepBox" class="form" style="margin-bottom:12px"></div><form id="balanceForm" class="form"><label>الرصيد الافتتاحي<input name="openingBalance" type="number" step="0.01"></label><button class="primary">حفظ الرصيد الافتتاحي</button></form></div><form id="paymentForm" class="form profile-pay"><h3 class="profile-section-title">تسجيل دفعة</h3><label>قيمة الدفعة<input required name="amount" type="number" min="0.01" step="0.01"></label><label data-treasury-method>طريقة الدفع<select name="paymentMethod"><option>كاش</option><option>محفظة</option><option>تحويل بنكي</option></select></label><label class="treasury-pick hidden">الحساب<select name="accountId" data-treasury="in"></select></label><label>التاريخ<input required name="date" type="date"></label><label>ملاحظة<input name="note"></label><button class="primary">تسجيل الدفعة</button></form><div id="returnBox"></div><details id="customerItemsDetails" class="profile-section"><summary>الأصناف اللي أخدها العميل</summary><div id="customerItemsSummary"></div></details><div id="customerHistory"></div></article><article class="panel" id="repsPanel"><details id="repsDetails" class="panel-collapse"><summary><h2>المناديب</h2><span class="badge" id="repsCount"></span></summary><div id="repsView"></div></details></article></section>
+<section id="returns" class="page hidden"><div class="page-views" data-page-views="returns"><button type="button" data-view="customers">👥 من العملاء</button><button type="button" data-view="factory">🏭 للمصنع</button></div><div data-view="customers"><article class="panel"><div class="returns-head"><h2>↩️ مرتجعات العملاء</h2><button type="button" class="primary" id="retNewCustomerBtn">+ مرتجع من عميل</button></div><p class="notice">المرتجع بكذا صنف من نفس الفاتورة مرة واحدة. <strong>«زيادة / العميل مش محتاجها»</strong>: بخصم % لو حبيت، والبضاعة سليمة ترجع المخزون أو تالفة (تسوية جرد). <strong>«عيب في المنتج»</strong>: من غير خصم، وصنف المصنع بيرجع للمصنع على طول بسعر الشراء + نصيبه من النقل.</p><div class="form returns-filter"><label>بحث<input id="retSearch" placeholder="اسم العميل أو الصنف" autocomplete="off"></label><div class="returns-sum" id="retCustomersSummary"></div></div><div id="retCustomersList"></div></article></div><div data-view="factory"><article class="panel"><div class="returns-head"><h2>🏭 المرتجع للمصنع</h2><button type="button" class="primary" id="retNewFactoryBtn">+ مرتجع للمصنع</button></div><p class="notice">كذا صنف مرة واحدة بسعر الشراء، و<strong>«خصم المصنع %»</strong> بتكتبه بإيدك (بيتخصم من صافي الربح). لو المشكلة من المصنع، نقل البضاعة بيتحسب عليه كمان. القيمة كلها بتتخصم من «حساب المصنع».</p><div class="form returns-filter"><label>بحث<input id="retFactorySearch" placeholder="اسم الصنف أو ملاحظة" autocomplete="off"></label><div class="returns-sum" id="retFactorySummary"></div></div><div id="retFactoryList"></div></article></div></section>
 <section id="balances" class="page hidden"><div class="grid" id="balanceSummary"></div><div class="page-views" data-page-views="balances"><button type="button" data-view="factory">🏭 حساب المصنع</button><button type="button" data-view="purchases">🧾 المشتريات</button><button type="button" data-view="extras">🚚 المصاريف الإضافية</button><button type="button" data-view="reps">👥 المناديب</button></div><div data-view="factory"><article class="panel" id="factoryAccountPanel"><h2>حساب المصنع (مديونية المصنع)</h2><p class="notice">حساب منفصل تمامًا عن المشتريات الإضافية وعن حساب أي عميل. بيزيد لما تسجل طلب من المصنع، وبينقص لما تسجل دفعة أو ترجع صنف للمصنع من المخزون.</p><div class="grid" id="factoryAccountSummary"></div><button type="button" class="danger" id="resetFactoryAccount" style="margin-top:10px">تصفير حساب المصنع (حذف قيود الطلبات والدفعات)</button><form id="factoryOpeningForm" class="form" style="margin-top:14px"><label>الرصيد الافتتاحي (مديونية سابقة قبل استخدام الحساب ده)<input name="opening" type="number" step="0.01"></label><button class="primary" type="submit">حفظ الرصيد الافتتاحي</button></form><div class="two" style="margin-top:16px"><form id="factoryDebitForm" class="form"><h3 style="margin:0 0 6px">تسجيل طلب من المصنع</h3><label>القيمة<input required name="amount" type="number" min="0.01" step="0.01"></label><label>التاريخ<input required name="date" type="date"></label><label>ملاحظة (اختياري)<input name="note" placeholder="مثلاً: طلبية جرافيتو 500 متر"></label><button class="primary" type="submit">تسجيل الطلب</button></form><form id="factoryPaymentForm" class="form"><h3 style="margin:0 0 6px">تسجيل دفعة للمصنع</h3><label>القيمة<input required name="amount" type="number" min="0.01" step="0.01"></label><label>التاريخ<input required name="date" type="date"></label><label data-treasury-method>طريقة الدفع<select name="method" id="factoryPaymentMethod"><option value="cash">كاش</option><option value="transfer">تحويل</option></select></label><div id="factoryTransferFields" class="hidden"><label>نوع التحويل<select name="transferType" id="factoryTransferType"><option value="bank">تحويل بنكي</option><option value="wallet">محفظة إلكترونية</option></select></label><label id="factoryAccountDetailLabel">اسم/رقم الحساب البنكي<input name="accountDetail" id="factoryAccountDetail" placeholder="مثلاً: حساب أحمد - البنك الأهلي"></label></div><label class="treasury-pick hidden">اتدفعت من حساب<select name="accountId" data-treasury="out"></select></label><label>ملاحظة (اختياري)<input name="note" placeholder="اختياري"></label><button class="primary" type="submit">تسجيل الدفعة</button></form></div><article class="panel" style="margin-top:16px"><h2>سجل حساب المصنع</h2><div id="factoryLedgerTable"></div></article></article></div><div data-view="purchases"><article class="panel"><h2>إضافة قيد مشتريات</h2><form id="ledgerForm" class="form"><label>اسم الصنف<input required name="description" list="ledgerNameList" autocomplete="off"></label><datalist id="ledgerNameList"></datalist><label>سعر الشراء للوحدة<input required name="unitPrice" type="number" min="0" step="0.01"></label><label>سعر البيع للوحدة<input required name="sellPrice" type="number" min="0" step="0.01"></label><label>الكمية<input required name="quantity" type="number" min="1" step="1"></label><label>رقم الباتش<input name="batchNo" placeholder="اختياري"></label><label>التاريخ<input required name="date" type="date"></label><label class="treasury-pick hidden">اتدفعت من حساب<select name="accountId" data-treasury="out"></select></label><button class="primary">حفظ وإضافة للمخزون</button></form><p class="notice">عند حفظ قيد المشتريات تُضاف الكمية للمخزون فورًا، ويُحفظ سعر الشراء كتكلـفة وسعر البيع كسعر الفواتير. لا يوجد ترحيل منفصل.</p></article><article class="panel"><h2>سجل المشتريات (من غير طلبيات المصنع)</h2><div id="ledgerTable"></div></article></div><div data-view="extras"><article class="panel"><h2>مشتريات إضافية — نقل ومصاريف لا تدخل المخزون</h2><form id="extraForm" class="form"><label>البيان<input required name="description" placeholder="نقل"></label><label>القيمة<input required name="amount" type="number" min="0" step="0.01"></label><label>التاريخ<input required name="date" type="date"></label><label class="treasury-pick hidden">اتدفعت من حساب<select name="accountId" data-treasury="out"></select></label><button class="primary">إضافة</button></form></article><article class="panel"><h2>المشتريات الإضافية</h2><div id="extraTable"></div></article></div><div data-view="reps"><article class="panel"><h2>حسابات المناديب</h2><div id="repPaymentsTable"></div></article></div></section>
 <section id="treasury" class="page hidden"><article class="panel"><div class="treasury-head"><h2>💰 الخزنة والحسابات</h2><div class="treasury-actions"><button type="button" class="primary" id="treasuryAddBtn">+ حساب جديد</button><button type="button" class="secondary-btn" id="treasuryTransferBtn">🔁 تحويل بين الحسابات</button></div></div><p class="notice">كل فلوس داخلة أو خارجة بتتسجل على حساب (الخزنة الكاش، أو محفظة، أو حساب بنكي): <strong>داخل</strong> = دفعات العملاء والمدفوع في الفواتير وعربون الطلبيات، و<strong>خارج</strong> = دفعات المصنع والمصاريف والمشتريات ودفعات المناديب ورد فلوس المرتجعات. الحساب مينفعش يصرف أكتر من اللي فيه. الحساب بيبدأ من «رصيد أول المدة» يوم ما بتعمله، والحركات اللي قبله مش بتتحسب فيه.</p><div id="treasuryBody"></div></article><article class="panel" id="treasuryMovesPanel"><h2>حركات الحساب</h2><div class="form treasury-filter"><label>الحساب<select id="treasuryAccSel"></select></label><label>من تاريخ<input type="date" id="treasuryFrom"></label><label>إلى تاريخ<input type="date" id="treasuryTo"></label><button type="button" class="secondary-btn" id="treasuryAllBtn">كل الحركات</button></div><div id="treasuryMoves"></div></article></section>
 <section id="reports" class="page hidden"><div class="page-views" data-page-views="reports"><button type="button" data-view="months">📅 الشهور والملخص</button><button type="button" data-view="stock">📦 الجرد الحالي</button></div><div data-view="months"><article class="panel">
@@ -1130,7 +1131,11 @@ function displayNo(collection,id){
 // أي كمية بترجع للمصنع (مرتجع صنف) لازم تتخصم من "المشتريات" هنا برضو، مش بس
 // من حساب المصنع (مديونية المورد) — لأنها بضاعة ماعادتش عندك ولا مديون بيها،
 // فتفضيلها في تكلفة المشتريات كان بيضخّم التكلفة ويقلّل الربح المحسوب بشكل دائم.
-function factoryReturnsTotal(){return (db.factoryLedger||[]).filter(x=>x.type==='return').reduce((s,x)=>s+(+x.amount||0),0);}
+// (2.15.0) قيد المرتجع ممكن يبقى فيه «خصم المصنع» أو «نقل على المصنع»: البضاعة بسعر الشراء (goodsAmount) هي اللي بتنزل من
+// المشتريات والمطابقة، و«amount» = اللي اتخصم من حساب المصنع. الفرق (النقل اللي اترد − خصم المصنع) بيدخل صافي الربح.
+function factoryReturnGoods(x){return x.goodsAmount!=null?(+x.goodsAmount||0):(+x.amount||0);}
+function factoryReturnProfitAdj(x){return x.goodsAmount!=null?Math.round(((+x.amount||0)-(+x.goodsAmount||0))*100)/100:0;}
+function factoryReturnsTotal(){return (db.factoryLedger||[]).filter(x=>x.type==='return').reduce((s,x)=>s+factoryReturnGoods(x),0);}
 function costPurchases(){const ledgerCost=db.ledgerEntries.reduce((s,x)=>s+(+x.total||(+x.unitPrice||0)*(+x.quantity||0)),0);const orderCost=db.orders.filter(x=>x.received).reduce((s,x)=>{const items=Array.isArray(x.items)&&x.items.length?x.items:[{factoryPrice:x.factoryPrice,quantity:x.quantity}];return s+items.reduce((a,i)=>a+(+i.factoryPrice||0)*(+i.quantity||0),0)},0);return ledgerCost+orderCost-factoryReturnsTotal()+repPaymentsTotal();}
 // تفصيل رقم "المشتريات" لمصادره، عشان لو الرقم زاد يبقى واضح زاد منين.
 function purchasesBreakdown(){
@@ -1352,7 +1357,8 @@ function monthData(y,m){
   const salesNet=salesGross-returnDeduction;
   const ledgerCost=ledger.reduce((s,x)=>s+(+x.total||(+x.unitPrice||0)*(+x.quantity||0)),0);
   const orderCost=orders.reduce((s,x)=>{const items=x.items?.length?x.items:[{factoryPrice:x.factoryPrice,quantity:x.quantity}];return s+items.reduce((a,i)=>a+(+i.factoryPrice||0)*(+i.quantity||0),0)},0);
-  const factoryReturnCost=factoryReturns.reduce((s,x)=>s+(+x.amount||0),0);
+  const factoryReturnCost=factoryReturns.reduce((s,x)=>s+factoryReturnGoods(x),0);
+  const factoryRetAdj=Math.round(factoryReturns.reduce((s,x)=>s+factoryReturnProfitAdj(x),0)*100)/100;   // (2.15.0) نقل اترد − خصم المصنع
   const repPays=(db.repPayments||[]).filter(x=>inMonth(x.date,y,m));
   const repPay=repPays.reduce((s,x)=>s+(+x.amount||0),0);
   // مدفوعات المناديب جزء من المشتريات (زي ما هي في صفحة الحسابات)، ومصروف بيتخصم من صافي الربح.
@@ -1361,7 +1367,7 @@ function monthData(y,m){
   const cogs=invoices.reduce((s,x)=>s+invoiceCost(x),0)-returns.reduce((s,x)=>s+returnCost(x),0);
   // (2.12.0) تسوية الجرد: الناقص (تالف / ضايع) بيتخصم من صافي الربح بسعر الشراء، والزيادة بتتزود
   const adjs=(db.stockAdjustments||[]).filter(x=>inMonth(x.date,y,m)),stockAdj=Math.round(adjs.reduce((s,a)=>s+stockAdjustValue(a),0)*100)/100;
-  return {invoices,paidReturns,returns,ledger,orders,extras,payments,repPays,adjs,salesGross,transport,returnDeduction,salesNet,purchases,repPay,extra,stockAdj,profit:salesNet-purchases-extra,cogs,netProfit:salesNet-cogs-extra-repPay+stockAdj};
+  return {invoices,paidReturns,returns,ledger,orders,extras,payments,repPays,adjs,factoryReturns,salesGross,transport,returnDeduction,salesNet,purchases,repPay,extra,stockAdj,factoryRetAdj,profit:salesNet-purchases-extra+factoryRetAdj,cogs,netProfit:salesNet-cogs-extra-repPay+stockAdj+factoryRetAdj};
 }
 // نسخة سريعة من monthData بتحسب شهور السنة الـ12 كلهم مرة واحدة بس، بدل ما كل
 // دالة (كروت الشهور والملخص السنوي) تعمل .filter() منفصل على كل القوائم لكل
@@ -1390,13 +1396,14 @@ function buildAllMonthsData(y){
     const salesNet=salesGross-returnDeduction;
     const ledgerCost=b.ledger.reduce((s,x)=>s+(+x.total||(+x.unitPrice||0)*(+x.quantity||0)),0);
     const orderCost=b.orders.reduce((s,x)=>{const items=x.items?.length?x.items:[{factoryPrice:x.factoryPrice,quantity:x.quantity}];return s+items.reduce((a,i)=>a+(+i.factoryPrice||0)*(+i.quantity||0),0)},0);
-    const factoryReturnCost=b.factoryReturns.reduce((s,x)=>s+(+x.amount||0),0);
+    const factoryReturnCost=b.factoryReturns.reduce((s,x)=>s+factoryReturnGoods(x),0);
+    const factoryRetAdj=Math.round(b.factoryReturns.reduce((s,x)=>s+factoryReturnProfitAdj(x),0)*100)/100;
     const repPay=b.repPays.reduce((s,x)=>s+(+x.amount||0),0);
     const purchases=ledgerCost+orderCost-factoryReturnCost+repPay;
     const extra=b.extras.reduce((s,x)=>s+(+x.amount||0),0);
     const cogs=b.invoices.reduce((s,x)=>s+invoiceCost(x),0)-b.returns.reduce((s,x)=>s+returnCost(x),0);
     const stockAdj=Math.round(b.adjs.reduce((s,a)=>s+stockAdjustValue(a),0)*100)/100;   // (2.12.0) تسوية الجرد
-    result.push({...b,salesGross,transport,returnDeduction,salesNet,purchases,repPay,extra,stockAdj,profit:salesNet-purchases-extra,cogs,netProfit:salesNet-cogs-extra-repPay+stockAdj});
+    result.push({...b,salesGross,transport,returnDeduction,salesNet,purchases,repPay,extra,stockAdj,factoryRetAdj,profit:salesNet-purchases-extra+factoryRetAdj,cogs,netProfit:salesNet-cogs-extra-repPay+stockAdj+factoryRetAdj});
   }
   return result; // فهرس 0 = شهر يناير (m=1) ... فهرس 11 = شهر ديسمبر (m=12)
 }
@@ -1414,8 +1421,8 @@ function renderMonthReports(monthsData){
 }
 function renderAnnualReportSummary(monthsData){
   const data=monthsData||buildAllMonthsData(reportYear);
-  let sales=0,purchases=0,extra=0,profit=0,cogs=0,netProfit=0,repPay=0,invoices=0,returns=0,transport=0,stockAdj=0;
-  for(const d of data){sales+=d.salesNet;purchases+=d.purchases;extra+=d.extra;profit+=d.profit;cogs+=d.cogs;netProfit+=d.netProfit;repPay+=d.repPay;invoices+=d.invoices.length;returns+=d.returns.length;transport+=d.transport||0;stockAdj+=d.stockAdj||0;}
+  let sales=0,purchases=0,extra=0,profit=0,cogs=0,netProfit=0,repPay=0,invoices=0,returns=0,transport=0,stockAdj=0,factoryRetAdj=0;
+  for(const d of data){sales+=d.salesNet;purchases+=d.purchases;extra+=d.extra;profit+=d.profit;cogs+=d.cogs;netProfit+=d.netProfit;repPay+=d.repPay;invoices+=d.invoices.length;returns+=d.returns.length;transport+=d.transport||0;stockAdj+=d.stockAdj||0;factoryRetAdj+=d.factoryRetAdj||0;}
   const inventorySaleValue=db.products.reduce((sum,x)=>sum+(+x.stock||0)*(+x.price||0),0);
   const inventoryPurchaseValue=db.products.reduce((sum,x)=>sum+(+x.stock||0)*(+(x.cost??x.factoryPrice)||0),0);
   // الربح المتوقع لو تم بيع كل المخزون الحالي بسعر البيع الحالي (حصر بيع كامل):
@@ -1423,9 +1430,9 @@ function renderAnnualReportSummary(monthsData){
   const inventoryExpectedProfit=inventorySaleValue-inventoryPurchaseValue;
   const factoryDebitsThisYear=db.factoryLedger.filter(x=>x.type==='debit'&&String(x.date||'').startsWith(String(reportYear))).reduce((s,x)=>s+(+x.amount||0),0);
   const factoryPaidThisYear=db.factoryLedger.filter(x=>x.type==='payment'&&String(x.date||'').startsWith(String(reportYear))).reduce((s,x)=>s+(+x.amount||0),0);
-  cards('#reportSummary',[['مبيعات السنة',money(sales)],['مشتريات السنة',money(purchases)],['منها مدفوعات المناديب',money(repPay)],['مشتريات إضافية (بتتخصم من الربح)',money(extra)],...(stockAdj?[[stockAdj<0?'تالف وعجز المخزون (بيتخصم من الربح)':'زيادة جرد المخزون',money(Math.abs(stockAdj))]]:[]),['تكلفة البضاعة المباعة',money(cogs)],['صافي ربح السنة (بعد كل المصاريف)',money(netProfit)],['المبيعات − كل المشتريات (فرق نقدي)',money(profit)],...(transport>0?[['نقل اتحسب على العملاء (خارج المبيعات والربح)',money(transport)]]:[]),['عدد الفواتير',invoices],['عدد المرتجعات',returns],['المخزون بسعر البيع',money(inventorySaleValue)],['المخزون بسعر الشراء',money(inventoryPurchaseValue)],['الربح المتوقع لكل المخزون الحالي',money(inventoryExpectedProfit)],['رصيد حساب المصنع الحالي (مديونية)',money(factoryBalance())],['طلبات من المصنع هذه السنة',money(factoryDebitsThisYear)],['مسدد للمصنع هذه السنة',money(factoryPaidThisYear)]]);
+  cards('#reportSummary',[['مبيعات السنة',money(sales)],['مشتريات السنة',money(purchases)],['منها مدفوعات المناديب',money(repPay)],['مشتريات إضافية (بتتخصم من الربح)',money(extra)],...(stockAdj?[[stockAdj<0?'تالف وعجز المخزون (بيتخصم من الربح)':'زيادة جرد المخزون',money(Math.abs(stockAdj))]]:[]),...(Math.abs(factoryRetAdj)>0.004?[[factoryRetAdj<0?'خصم المصنع على المرتجعات (بيتخصم من الربح)':'نقل رجع من المصنع على المرتجعات',money(Math.abs(factoryRetAdj))]]:[]),['تكلفة البضاعة المباعة',money(cogs)],['صافي ربح السنة (بعد كل المصاريف)',money(netProfit)],['المبيعات − كل المشتريات (فرق نقدي)',money(profit)],...(transport>0?[['نقل اتحسب على العملاء (خارج المبيعات والربح)',money(transport)]]:[]),['عدد الفواتير',invoices],['عدد المرتجعات',returns],['المخزون بسعر البيع',money(inventorySaleValue)],['المخزون بسعر الشراء',money(inventoryPurchaseValue)],['الربح المتوقع لكل المخزون الحالي',money(inventoryExpectedProfit)],['رصيد حساب المصنع الحالي (مديونية)',money(factoryBalance())],['طلبات من المصنع هذه السنة',money(factoryDebitsThisYear)],['مسدد للمصنع هذه السنة',money(factoryPaidThisYear)]]);
 }
-function openReportMonth(m,skipScroll){reportMonth=m;renderMonthReports();const names=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];const d=monthData(reportYear,m);document.querySelector('#monthDetailPanel').classList.remove('hidden');document.querySelector('#monthDetailTitle').textContent=`تفاصيل ${names[m-1]} ${reportYear}`;cards('#monthDetailSummary',[['المبيعات',money(d.salesNet)],['المشتريات',money(d.purchases)],['منها مدفوعات المناديب',money(d.repPay)],['مشتريات إضافية (بتتخصم من الربح)',money(d.extra)],...(d.stockAdj?[[d.stockAdj<0?'تالف وعجز المخزون (بيتخصم من الربح)':'زيادة جرد المخزون',money(Math.abs(d.stockAdj))]]:[]),['تكلفة البضاعة المباعة',money(d.cogs)],['صافي الربح (بعد كل المصاريف)',money(d.netProfit)],['المبيعات − كل المشتريات (فرق نقدي)',money(d.profit)],...(d.transport>0?[['نقل اتحسب على العملاء (خارج المبيعات والربح)',money(d.transport)]]:[])]);
+function openReportMonth(m,skipScroll){reportMonth=m;renderMonthReports();const names=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];const d=monthData(reportYear,m);document.querySelector('#monthDetailPanel').classList.remove('hidden');document.querySelector('#monthDetailTitle').textContent=`تفاصيل ${names[m-1]} ${reportYear}`;cards('#monthDetailSummary',[['المبيعات',money(d.salesNet)],['المشتريات',money(d.purchases)],['منها مدفوعات المناديب',money(d.repPay)],['مشتريات إضافية (بتتخصم من الربح)',money(d.extra)],...(d.stockAdj?[[d.stockAdj<0?'تالف وعجز المخزون (بيتخصم من الربح)':'زيادة جرد المخزون',money(Math.abs(d.stockAdj))]]:[]),...(Math.abs(d.factoryRetAdj||0)>0.004?[[d.factoryRetAdj<0?'خصم المصنع على المرتجعات (بيتخصم من الربح)':'نقل رجع من المصنع على المرتجعات',money(Math.abs(d.factoryRetAdj))]]:[]),['تكلفة البضاعة المباعة',money(d.cogs)],['صافي الربح (بعد كل المصاريف)',money(d.netProfit)],['المبيعات − كل المشتريات (فرق نقدي)',money(d.profit)],...(d.transport>0?[['نقل اتحسب على العملاء (خارج المبيعات والربح)',money(d.transport)]]:[])]);
 let html='';
 // بنبني خريطة الأرقام المعروضة مرة واحدة بس هنا (مش نستدعي displayNo لكل سطر
 // لوحده)، لإن displayNo بترتب القائمة الكاملة من الصفر في كل استدعاء — استدعاؤها
@@ -1660,6 +1667,7 @@ function renderNow(){
  }
  if(pageVisible('customers')){renderCustomerList();renderRepsPanel();}
  if(pageVisible('treasury')&&typeof renderTreasury==='function')renderTreasury();
+ if(pageVisible('returns')&&typeof renderReturnsPage==='function')renderReturnsPage();
  }finally{daftarRendering=false;}
 }
 function renderCart(){document.querySelector('#invoiceCart').innerHTML=invoiceCart.length?table(['الصنف','الكمية','السعر','الإجمالي',''],invoiceCart.map((x,i)=>`<tr><td>${esc(x.productName)}</td><td>${x.quantity}</td><td>${money(x.unitPrice)}</td><td>${money(x.total)}</td><td><button type="button" class="danger" onclick="invoiceCart.splice(${i},1);renderCart();refreshInvoiceCreditBox()">إزالة</button></td></tr>`)):'<div class="notice">لم تتم إضافة أصناف.</div>';}
@@ -1728,6 +1736,8 @@ async function deleteFactoryLedgerEntry(id){
   if(typeof ftLocked==='function'&&ftLocked(entry))return daftarAlert(entry.ft.state==='received'
     ?'خزنة الشركة استلمت الدفعة دي — مينفعش تتمسح من هنا. لو فيها غلط كلّم المصنع.'
     :'الدفعة دي اتبعتت لخزنة الشركة ومستنية التأكيد — مينفعش تتمسح دلوقتي.\nلو فيها غلط: خلّي الخزنة تقول «مش واصل»، وبعدين امسحها وسجّلها صح.');
+  // (2.15.0) المرتجع اللي جاي من مرتجع عميل (عيب في المنتج) بيتمسح مع مرتجع العميل نفسه
+  if(entry.type==='return'&&entry.customerReturnId)return daftarAlert('المرتجع ده جاي من مرتجع عميل (عيب في المنتج) — امسح مرتجع العميل نفسه من «المرتجعات ← من العملاء».');
   const typeLabel=entry.type==='debit'?(entry.factoryInvoiceId?'فاتورة المصنع':'طلب من المصنع'):entry.type==='return'?'مرتجع صنف':'دفعة';
   const ok=await daftarConfirm(`حذف قيد «${typeLabel}» بقيمة ${money(entry.amount)} بتاريخ ${esc(entry.date)}؟\nسيتم إرجاع تأثير هذا القيد من رصيد حساب المصنع.${entry.factoryInvoiceId?'\n\nالقيد ده فاتورة جت من المصنع (ربط المصنع). لو حذفته مش هيرجع تاني لوحده — احذفه بس لو الفاتورة دي اتسجلت عندك بطريقة تانية.':''}`);
   if(!ok)return;
@@ -1746,12 +1756,7 @@ async function deleteFactoryLedgerEntry(id){
   }
   markDeleted('factoryLedger',entry.id);
   db.factoryLedger=db.factoryLedger.filter(x=>String(x.id)!==String(entry.id));
-  if(restoreStock){
-    const q=+entry.quantity||0,unit=(+entry.amount||0)/q;
-    const existing=db.products.find(x=>String(x.id)===String(entry.productId))||db.products.find(x=>String(x.name||'').trim()===String(entry.productName||'').trim()&&x.orderId);
-    if(existing)existing.stock=(+existing.stock||0)+q;
-    else db.products.push({id:daftarNextId(),name:entry.productName||'صنف مسترجع',baseName:entry.productName||'صنف مسترجع',sku:'',stock:q,price:0,cost:unit,factoryPrice:unit,batchNo:'',pebble:'',packageWeight:0,customerName:'المخزون العام',orderId:'factory'});
-  }
+  if(restoreStock)restoreFactoryReturnStock(entry);
   save();
   scheduleRender();
   daftarToast('تم حذف القيد من حساب المصنع.'+(restoreStock?' وتمت إضافة الكمية للمخزون مرة أخرى.':''));
@@ -1889,17 +1894,31 @@ async function cancelOrder(id){
 // طلبية اتبعتت للمصنع (49-factory-link.js) ولسه مربوطة: فاتورة المصنع هي اللي بتتسجل في حساب المصنع
 function orderSentToFactory(o){return typeof factoryLinked==='function'&&factoryLinked(o);}
 const factoryAccountText=o=>orderSentToFactory(o)?'وفاتورة المصنع بتتسجل في «حساب المصنع» لوحدها':'وتسجيل قيمتها في حساب المصنع';
-function receiveOrder(id){
+function receiveOrder(id,transport){
   const o=db.orders.find(x=>String(x.id)===String(id));if(!o)return;if(o.received)return daftarAlert('هذه الطلبية تم ترحيلها بالفعل.');
   const err=receiveOrderCore(o);if(err)return daftarAlert(err);
-  afterOrderReceived(o,`تم ترحيل الطلبية إلى المخزون بكل أصنافها وكمياتها، ${factoryAccountText(o)}.`);
+  afterOrderReceived(o,`تم ترحيل الطلبية إلى المخزون بكل أصنافها وكمياتها، ${factoryAccountText(o)}.`,transport);
 }
-function afterOrderReceived(o,msg){
+// (2.15.0) بعد الترحيل: مفيش رسالة واتساب بتتفتح لوحدها ولا نافذة لازم تقفلها — رسالة صغيرة بس.
+// رسالة «الطلبية وصلت» للعميل من «رسائل الوصول» أو زرار واتساب في الطلبية لما تحب.
+// transport: {amount, acc} — نقل البضاعة من المصنع اللي اتدفع وقت الترحيل
+function afterOrderReceived(o,msg,transport){
+  if(transport&&+transport.amount>0)applyOrderTransport(o,+transport.amount,transport.acc||'');
   save();scheduleRender();document.querySelector('[data-page=products]').click();
-  // رسالة واتساب للعميل إن طلبيته وصلت: بتتفتح جاهزة على شات العميل، وانت بتضغط «إرسال» بس.
-  const phone=o.customer?normalizeWhatsAppPhone(getCustomerPhone(o.customer)):'';
-  if(phone){openWhatsAppTo(phone,orderArrivalMessage(o));o.arrivalMsgSent=today();save();}
-  daftarAlert(msg+(o.customer?(phone?`\n\nواتساب اتفتح على شات «${o.customer}» برسالة إن الطلبية وصلت — اضغط «إرسال».`:`\n\nمفيش رقم موبايل متسجل لـ«${o.customer}»، فما اتفتحتش رسالة واتساب. ضيف رقمه من ملف العميل، وتقدر تبعتله من زرار «واتساب» في الطلبيات.`):''));
+  daftarToast(msg.split('\n')[0]+(transport&&+transport.amount>0?` — ونقل ${money(transport.amount)} اتسجل مصروف.`:''));
+}
+// نقل البضاعة من المصنع للفرع: مصروف (extraPurchases — بيتخصم من الربح والخزنة زي ما كنت بتسجله بإيدك)، ونصيب كل وحدة منه
+// بيتحفظ على الصنف (transportUnit — بالوزن، وبالعدد لو مفيش أوزان) عشان لو رجع للمصنع بسبب مشكلة منه النقل يتحسب عليه.
+function applyOrderTransport(o,amount,acc){
+  amount=Math.round(amount*100)/100;if(!(amount>0))return;
+  const lines=(o.receivedLines||[]).map(l=>({l,p:db.products.find(x=>String(x.id)===String(l.productId))})).filter(x=>x.p&&+x.l.quantity>0);
+  const w=x=>(+x.l.quantity||0)*(+x.p.packageWeight||0),totalW=lines.reduce((s,x)=>s+w(x),0),totalQ=lines.reduce((s,x)=>s+(+x.l.quantity||0),0);
+  for(const x of lines){
+    const q=+x.l.quantity||0,share=totalW>0?amount*w(x)/totalW:amount*q/(totalQ||1),stock=+x.p.stock||0,old=+x.p.transportUnit||0;
+    x.p.transportUnit=stock>0?Math.round(((Math.max(0,stock-q)*old)+share)/stock*10000)/10000:Math.round(share/q*10000)/10000;
+  }
+  const e={id:daftarNextId(),description:`🚚 نقل طلبية #${displayNo('orders',o.id)} من المصنع${o.customer?` (${o.customer})`:''}`,amount,date:today(),orderId:o.id,kind:'transport',...(acc?{accountId:String(acc)}:{})};
+  db.extraPurchases.push(e);o.transportIn=amount;o.transportExtraId=e.id;
 }
 // ===== ترحيل جزء من الطلبية (اللي وصل بس) =====
 // نافذة الترحيل: «ترحيل الكمية كلها» زي الأول، أو تكتب اللي وصل من كل صنف (بالعبوة أو بالطن) و«ترحيل اللي وصل بس».
@@ -1917,6 +1936,7 @@ function openReceiveOrder(id){
     <div style="line-height:1.8;margin-bottom:8px">لو الطلبية وصلت كلها اضغط «ترحيل الكمية كلها». لو وصل جزء بس، اكتب اللي وصل من كل صنف (بالعبوة أو بالطن) واضغط «ترحيل اللي وصل بس» — والباقي هيفضل طلبية لسه ما اترحّلتش بنفس الأسعار.</div>
     ${table(['الصنف','المطلوب','اللي وصل (عبوة)','اللي وصل (طن)'],items.map((it,i)=>{const q=+it.quantity||0,w=+it.packageWeight||0;return `<tr><td><strong>${esc(it.productName)}</strong>${it.sku?` <small>(${esc(it.sku)})</small>`:''}</td><td>${q} عبوة${w?`<br><small>${tons(q,w)}</small>`:''}</td><td><input type="number" class="recv-qty" data-i="${i}" min="0" max="${q}" step="1" value="${q}" style="max-width:120px"></td><td>${w?`<input type="number" class="recv-ton" data-i="${i}" min="0" step="0.001" value="${+(q*w/1000).toFixed(3)}" style="max-width:120px">`:'—'}</td></tr>`;}))}
     <div class="notice" id="recvSummary" style="margin-top:10px"></div>
+    <div class="settlement-form" style="margin-top:10px"><label>🚚 نقل البضاعة من المصنع (اختياري)<input type="number" id="recvTransport" min="0" step="0.01" value="0"><small>بيتسجل مصروف، ونصيبه بيتحسب على المصنع لو صنف رجع بسبب مشكلة منه</small></label>${treasuryOn()?`<label>النقل اتدفع من حساب<select id="recvTransportAcc" data-treasury="out">${treasuryOptionsHtml()}</select></label>`:''}</div>
     <div class="settlement-actions"><button type="button" class="primary" data-all>📦 ترحيل الكمية كلها</button><button type="button" class="secondary-btn" data-part>ترحيل اللي وصل بس</button><button type="button" class="secondary-btn" data-close>إلغاء</button></div></div>`;
   document.body.appendChild(box);
   const close=()=>box.remove();
@@ -1933,17 +1953,23 @@ function openReceiveOrder(id){
   box.querySelectorAll('.recv-ton').forEach(el=>el.addEventListener('input',()=>{const it=items[+el.dataset.i],w=+it.packageWeight||0;if(w>0)qtyInputs[+el.dataset.i].value=Math.round((+el.value||0)*1000/w);summary();}));
   qtyInputs.forEach(el=>el.addEventListener('input',()=>{const t=box.querySelector(`.recv-ton[data-i="${el.dataset.i}"]`),w=+items[+el.dataset.i].packageWeight||0;if(t&&w>0)t.value=+((+el.value||0)*w/1000).toFixed(3);summary();}));
   summary();
-  box.querySelector('[data-all]').onclick=()=>{close();receiveOrder(o.id);};
+  // النقل (لو اتكتب): لازم يتحدد الحساب ويكون فيه الفلوس قبل ما الترحيل يحصل
+  const readTransport=()=>{const t=Math.round((+box.querySelector('#recvTransport').value||0)*100)/100;
+    if(t<0){daftarAlert('النقل مينفعش يبقى بالسالب.');return null;}
+    if(!(t>0))return {amount:0,acc:''};
+    const tr=treasuryFromForm(box,'out',t);return tr?{amount:t,acc:tr.acc}:null;};
+  box.querySelector('[data-all]').onclick=()=>{const t=readTransport();if(!t)return;close();receiveOrder(o.id,t);};
   box.querySelector('[data-part]').onclick=()=>{
+    const t=readTransport();if(!t)return;
     const rec=read();
     const bad=items.findIndex((it,i)=>!Number.isInteger(rec[i])||rec[i]<0||rec[i]>(+it.quantity||0));
     if(bad>=0)return daftarAlert(`«${items[bad].productName}»: اللي وصل لازم يبقى عدد عبوات صحيح من 0 لحد ${+items[bad].quantity||0}.`);
     if(!rec.some(x=>x>0))return daftarAlert('اكتب الكمية اللي وصلت من صنف واحد على الأقل (أو اقفل النافذة لو مفيش حاجة وصلت).');
     close();
-    if(items.every((it,i)=>rec[i]===(+it.quantity||0)))return receiveOrder(o.id);
+    if(items.every((it,i)=>rec[i]===(+it.quantity||0)))return receiveOrder(o.id,t);
     const res=receiveOrderPartial(o,rec);if(res.err)return daftarAlert(res.err);
-    if(!res.rest)return afterOrderReceived(o,`تم ترحيل الطلبية إلى المخزون بكل أصنافها وكمياتها، ${factoryAccountText(o)}.`);
-    afterOrderReceived(o,`تم ترحيل اللي وصل من طلبية #${displayNo('orders',o.id)} للمخزون ${orderSentToFactory(o)?'(وفاتورة المصنع بتتسجل في «حساب المصنع» لوحدها)':'وتسجيل قيمته في حساب المصنع'}.\nالباقي بقى طلبية #${displayNo('orders',res.rest.id)} لسه ما اترحّلتش${res.rest.deposit>0?` (ومعاها ${money(res.rest.deposit)} من العربون)`:''} — تلاقيها في «الطلبيات السابقة».`);
+    if(!res.rest)return afterOrderReceived(o,`تم ترحيل الطلبية إلى المخزون بكل أصنافها وكمياتها، ${factoryAccountText(o)}.`,t);
+    afterOrderReceived(o,`تم ترحيل اللي وصل من طلبية #${displayNo('orders',o.id)} للمخزون${orderSentToFactory(o)?' (وفاتورة المصنع بتتسجل في «حساب المصنع» لوحدها)':''} — والباقي بقى طلبية #${displayNo('orders',res.rest.id)} لسه ما اترحّلتش${res.rest.deposit>0?` (ومعاها ${money(res.rest.deposit)} من العربون)`:''}.`,t);
   };
 }
 function receiveOrderPartial(o,rec){
@@ -1997,6 +2023,7 @@ function receiveOrderCore(o){
     if(it.packageType&&!p.packageType)p.packageType=it.packageType;
     p.stock=(+p.stock||0)+qty;p.price=+it.salePrice||p.price;p.batchNo=it.batchNo||p.batchNo;p.pebble=it.pebble||p.pebble||'';p.customerName=owner;p.orderId=o.id;p.orderQuantity=qty;p.invoiceId=o.invoiceId||'';p.receivedDate=p.receivedDate||today();receivedProducts.push({productId:p.id,quantity:qty});}
   if(!receivedProducts.length)return 'لا توجد أصناف صحيحة في الطلبية.';o.received=true;o.receivedDate=today();o.receivedProductIds=receivedProducts.map(x=>x.productId);o.receivedProductId=receivedProducts[0].productId;
+  o.receivedLines=receivedProducts;   // (2.15.0) لتوزيع نقل المصنع على الأصناف (applyOrderTransport)
   // ترحيل الطلبية للمخزون بيعتبر فعليًا "طلب من المصنع" برضو — فبنسجله تلقائيًا
   // كقيد "طلب من المصنع" (debit) في حساب المصنع بنفس قيمة سعر المصنع للأصناف
   // المستلمة، بالظبط زي لو المستخدم كتبه يدويًا في فورم "تسجيل طلب من المصنع".
@@ -2070,10 +2097,9 @@ async function bulkReceiveOrders(){
   for(const o of orders){const err=receiveOrderCore(o);err?failed.push(`#${displayNo('orders',o.id)}: ${err}`):done.push(o);}
   window.daftarOrderSel.clear();
   save();scheduleRender();
+  // (2.15.0) مفيش قايمة رسائل بتفتح لوحدها بعد الترحيل — رسائل الوصول من زرارها لما تحب
   if(failed.length)daftarAlert(`اترحّل ${done.length} طلبية.\nدول ما اترحّلوش:\n${failed.join('\n')}`);
-  const withCustomer=done.filter(o=>o.customer);
-  if(withCustomer.length)openArrivalMessages(withCustomer.map(o=>o.id));
-  else if(!failed.length)daftarToast(`تم ترحيل ${done.length} طلبية للمخزون.`);
+  else daftarToast(`تم ترحيل ${done.length} طلبية للمخزون.`);
 }
 // قائمة إرسال رسائل للعملاء عميل عميل: زرار «إرسال» بيفتح شات الواتساب برسالة العميل ده
 // وبيعلّم ✓ اتبعتت. بتتستخدم لرسائل الوصول (بعد الترحيل) ورسائل ميعاد الاستلام الجديد.
@@ -2161,31 +2187,8 @@ function fillMessageTemplate(text,values){
   }
   return out.join('\n').trim();
 }
-// إرجاع كمية من صنف (اتسجّل أصلاً من طلبية مصنع) للمصنع — بينقص المخزون وبيخصم
-// قيمتها (بسعر شراء المصنع، مش سعر البيع للعميل) من رصيد "حساب المصنع".
-async function returnProductToFactory(id){
-  const p=db.products.find(x=>String(x.id)===String(id));
-  if(!p)return;
-  const available=Math.floor(+p.stock||0);
-  if(available<1)return daftarAlert('لا يوجد رصيد متاح من هذا الصنف لإرجاعه.');
-  const qty=await daftarQuantityPrompt(p.name||'الصنف',available);
-  if(!qty)return;
-  const unitCost=+p.cost||+p.factoryPrice||0;
-  const amount=unitCost*qty;
-  const ok=await daftarConfirm(`هيترجع ${qty} وحدة من «${p.name}» للمصنع بقيمة ${money(amount)} (بسعر شراء المصنع)، وهتتخصم من رصيد حساب المصنع.\nمتأكد؟`);
-  if(!ok)return;
-  p.stock=available-qty;
-  db.factoryLedger.push({id:daftarNextId(),type:'return',amount,date:today(),note:`مرتجع ${qty} وحدة من «${p.name}» للمصنع`,productId:p.id,productName:p.name,quantity:qty});
-  // لازم نسجّل "شاهد حذف" (tombstone) للصنف هنا قبل شيله من المخزون، وإلا
-  // المزامنة السحابية اللي بتحصل بعد كذا ثانية هتلاقي نسخة السحابة القديمة
-  // (قبل الإرجاع) لسه فيها الصنف ده، ومن غير شاهد حذف هتفتكر إنه صنف جديد
-  // لسه محدش عرفه على الجهاز ده، فترجّعه تاني في المخزون بالكمية القديمة —
-  // بالظبط المشكلة اللي كانت بترجّع الصنف بعد ثانيتين/تلاتة من عملية الإرجاع.
-  if(p.stock<=0){markDeleted('products',p.id);db.products=db.products.filter(x=>String(x.id)!==String(p.id));}
-  save();
-  scheduleRender();
-  daftarToast(`تم إرجاع ${qty} وحدة للمصنع وخصم ${money(amount)} من رصيد حساب المصنع.`);
-}
+// إرجاع صنف للمصنع (2.15.0): نفس فورم «المرتجعات ← للمصنع» والصنف ده مختار (كذا صنف، خصم المصنع %، والنقل) — 39-returns.js
+function returnProductToFactory(id){openFactoryReturn(id);}
 async function deleteInventoryItem(id){
   const p=db.products.find(x=>String(x.id)===String(id));
   if(!p)return;
@@ -2483,78 +2486,7 @@ function editInventoryBatch(id){
   setTimeout(()=>{input.focus();input.select();},0);
 }
 function createInvoiceFromOrder(orderId,productId){const o=orderId?db.orders.find(x=>String(x.id)===String(orderId)):null;if(!o)return daftarAlert('لم يتم العثور على الطلبية المرتبطة بهذا الصنف.');if(!o.received)return daftarAlert('يجب ترحيل الطلبية للمخزون أولاً.');if(o.invoiceId)return daftarAlert('تم إنشاء فاتورة لهذه الطلبية بالفعل.');const linked=db.products.filter(p=>String(p.orderId)===String(o.id)&&(p.customerName||'المخزون العام')!=='المخزون العام'&&(+p.stock||0)>0&&!p.invoiceId);if(!linked.length)return daftarAlert('لا توجد كميات متاحة في المخزون لهذه الطلبية.');invoiceCart=linked.map(p=>{const qty=Math.min(+p.orderQuantity||0,+p.stock||0);return {productId:p.id,productName:p.name,sku:p.sku||'',quantity:qty,unitPrice:+p.price||0,total:qty*(+p.price||0),packageWeight:p.packageWeight||0,batchNo:p.batchNo||'',factoryPrice:p.factoryPrice||p.cost||0,...invoiceItemSourceFields(p)};}).filter(x=>x.quantity>0);if(!invoiceCart.length)return daftarAlert('لا توجد كمية كافية في المخزون لإنشاء الفاتورة.');window.daftarPendingOrderInvoiceId=o.id;document.querySelector('[data-page=invoices]').click();showPageView('invoices','new');const cf=document.querySelector('#invoiceForm');cf.querySelector('[name=customer]').value=o.customer||'';cf.querySelector('[name=date]').value=today();setFormDiscount('#invoiceForm',0);renderCart();refreshInvoiceCreditBox();window.scrollTo({top:0,behavior:'smooth'});daftarAlert('تم تحويل الطلبية بكل أصنافها إلى فاتورة. يمكنك الآن إضافة أصناف أخرى قبل الحفظ والطباعة.');}
-function addReturn(name){
-  const invs=db.invoices.filter(x=>x.customer===name&&!isDebtRecord(x));
-  if(!invs.length)return daftarAlert('لا توجد فواتير للعميل.');
-  const box=document.querySelector('#returnBox');
-  box.innerHTML='<h3>إضافة مرتجع</h3><form id="returnForm" class="form">'+
-    '<label>الفاتورة<select name="inv">'+invs.map(x=>`<option value="${x.id}">#${displayNo('invoices',x.id)} — ${x.date}</option>`).join('')+'</select></label>'+
-    '<label>الصنف<select name="item"></select></label>'+ 
-    '<label>الكمية<input name="quantity" type="number" min="1" value="1"></label>'+ 
-    '<label>خصم المرتجع %<input name="discount" type="number" min="0" max="100" step="0.01" value="0"><small data-inv-disc></small></label>'+
-    '<label>صافي المرتجع<input name="netPreview" type="text" readonly></label>'+ 
-    '<label>المبلغ المستحق للعميل<input name="customerDuePreview" type="text" readonly></label>'+ 
-    '<label style="display:flex;align-items:center;gap:8px"><input name="paid" type="checkbox" style="width:auto"> تم الدفع للعميل</label>'+
-    (treasuryOn()?`<label class="hidden" id="returnAccLabel">اتدفع من حساب<select name="accountId" data-treasury="out">${treasuryOptionsHtml()}</select></label>`:'')+
-    '<label>التاريخ<input name="date" type="date" value="'+today()+'"></label>'+ 
-    '<button class="primary" type="submit">تسجيل المرتجع</button><button class="danger" type="button" id="cancelReturn">إلغاء</button></form>'+ 
-    '<p class="notice">قيمة المرتجع تُخصم من المبيعات في كل الحالات. تُخصم أولاً من مديونية العميل إن وجدت، والباقي: إذا لم يتم الدفع يبقى رصيدًا للعميل ويُستخدم تلقائيًا كعربون في أول طلبية جديدة له، وإذا تم الدفع يُسجل كمبلغ رُدّ للعميل.</p>';
-  const invSel=box.querySelector('[name=inv]'),itemSel=box.querySelector('[name=item]'),qEl=box.querySelector('[name=quantity]'),dEl=box.querySelector('[name=discount]'),netEl=box.querySelector('[name=netPreview]'),dueEl=box.querySelector('[name=customerDuePreview]');
-  const fill=()=>{
-    const inv=db.invoices.find(x=>String(x.id)===String(invSel.value));
-    if(!inv){itemSel.innerHTML='';return updatePreview();}
-    itemSel.innerHTML=inv.items.map((it,i)=>{
-      const returned=db.customerReturns.filter(r=>String(r.invoiceId)===String(inv.id)&&Number(r.itemIndex)===i).reduce((s,r)=>s+(+r.quantity||0),0);
-      const available=Math.max(0,(+it.quantity||0)-returned);
-      return available>0?`<option value="${i}">${esc(it.productName)} — المتاح: ${available} — ${money(it.unitPrice)}</option>`:'';
-    }).join('');
-    // (2.11.0) الفاتورة فيها خصم بالفلوس: المرتجع بياخد نفس نسبته (عشان العميل ميرجعلوش أكتر من اللي دفعه) — وتقدر تغيّرها
-    const disc=docDiscount(inv),iv=docItemsValue(inv),pct=disc>0&&iv>0?Math.round(disc/iv*10000)/100:0;
-    dEl.value=pct;
-    const hint=box.querySelector('[data-inv-disc]');if(hint)hint.textContent=pct?`الفاتورة فيها خصم ${money(disc)} = ${pct}%`:'';
-    updatePreview();
-  };
-  const updatePreview=()=>{
-    const inv=db.invoices.find(x=>String(x.id)===String(invSel.value));
-    const it=inv?.items?.[+itemSel.value];
-    const q=Math.max(0,+qEl.value||0),disc=Math.min(100,Math.max(0,+dEl.value||0));
-    const gross=q*(+it?.unitPrice||0),net=gross*(1-disc/100);
-    const currentBalance=customerBalance(name);
-    const amountDue=Math.max(0,net-Math.max(0,currentBalance));
-    netEl.value=money(net);dueEl.value=money(amountDue);
-  };
-  invSel.onchange=fill;itemSel.onchange=updatePreview;qEl.oninput=updatePreview;dEl.oninput=updatePreview;
-  // «اتدفع من حساب» بيظهر بس لما تعلّم «تم الدفع للعميل» (والخزنة فيها حسابات).
-  box.querySelector('[name=paid]').onchange=e=>box.querySelector('#returnAccLabel')?.classList.toggle('hidden',!e.target.checked);
-  // الإلغاء بيقفل فورم المرتجع (زرار "مرتجع" موجود في شريط ملف العميل اللي فوق).
-  box.querySelector('#cancelReturn').onclick=()=>{box.innerHTML='';};
-  box.querySelector('form').onsubmit=async e=>{
-    e.preventDefault();
-    const submitBtn=e.currentTarget.querySelector('button[type=submit]');
-    // منع الضغط المزدوج/السريع: تعطيل الزرار فورًا لحد ما العملية تخلص أو تتلغى.
-    if(submitBtn?.disabled)return;
-    const f=new FormData(e.currentTarget),inv=db.invoices.find(x=>String(x.id)===String(f.get('inv'))),itemIndex=+f.get('item'),it=inv?.items?.[itemIndex],q=+f.get('quantity'),disc=Math.min(100,Math.max(0,+f.get('discount')||0)),paid=f.get('paid')==='on';
-    const alreadyReturned=db.customerReturns.filter(r=>String(r.invoiceId)===String(inv?.id)&&Number(r.itemIndex)===itemIndex).reduce((s,r)=>s+(+r.quantity||0),0);
-    const available=Math.max(0,(+it?.quantity||0)-alreadyReturned);
-    if(!it||q<1||q>available)return daftarAlert('كمية المرتجع أكبر من الكمية المتاحة.');
-    const gross=q*(+it.unitPrice||0),net=gross*(1-disc/100),beforeBalance=customerBalance(name),appliedToDebt=Math.min(net,Math.max(0,beforeBalance)),amountDue=Math.max(0,net-appliedToDebt);
-    // الفلوس اللي اترجعت للعميل خارجة من حساب في الخزنة.
-    const tr=paid?treasuryFromForm(e.currentTarget,'out',amountDue):{acc:''};if(!tr)return;
-    // تأكيد صريح قبل التسجيل، عشان يبقى فيه وقفة واضحة تمنع أي تسجيل مكرر بالغلط.
-    const confirmMsg=`تسجيل مرتجع لـ«${it.productName}» × ${q}\nالصافي: ${money(net)}\n${appliedToDebt>0?('يُخصم من مديونية العميل: '+money(appliedToDebt)+'\n'):''}${paid?('سيُدفع للعميل: '+money(amountDue)+(tr.acc?` من «${tr.account.name}»`:'')):('سيُضاف كرصيد للعميل: '+money(amountDue))}\n\nهل تريد تأكيد تسجيل المرتجع؟`;
-    if(!await daftarConfirm(confirmMsg))return;
-    if(submitBtn?.disabled)return;
-    if(submitBtn)submitBtn.disabled=true;
-    // لو الصنف اتشال من المخزون (اتباعت آخر كمية منه)، بيرجع بنفس بياناته الأصلية،
-    // ومنها رقم طلبية المصنع — عشان يفضل معروف إنه صنف مصنع وزرار «مرتجع للمصنع» يظهر جنبه.
-    const p=restoreInvoiceItemStock(it,q);
-    db.customerReturns.push({id:daftarNextId(),customer:name,invoiceId:inv.id,itemIndex,productId:p.id,productName:it.productName,quantity:q,grossAmount:gross,discountPercent:disc,discountAmount:gross-net,netAmount:net,appliedToDebt,paid,refundAmount:paid?amountDue:0,creditAmount:paid?0:amountDue,creditUsed:0,date:f.get('date')||today(),...(tr.acc?{accountId:tr.acc}:{})});
-    save();scheduleRender();showCustomer(encodeURIComponent(name));
-    const debtNote=appliedToDebt>0?(' تم خصم '+money(appliedToDebt)+' من مديونية العميل.'):'';
-    daftarAlert(paid?('تم تسجيل المرتجع ودفع '+money(amountDue)+' للعميل.'+debtNote+' تم خصم قيمة المرتجع من المبيعات.'):('تم تسجيل المرتجع وخصم قيمته من المبيعات.'+debtNote+(amountDue>0?(' المبلغ '+money(amountDue)+' أصبح رصيدًا للعميل وسيُستخدم تلقائيًا كعربون في طلبية جديدة.'):'')));
-  };
-  fill();
-}
+// (مرتجع العميل اتنقل لـ39-returns.js — صفحة «المرتجعات» وبكذا صنف مرة واحدة)
 
 // ===== (2.12.0) تسوية الجرد: العدد الفعلي في المخزون مختلف عن البرنامج (تالف، ضايع، فرق عدّ، لقيت زيادة) =====
 // كل تسوية بتتسجل في stockAdjustments (qty = الفرق: سالب = ناقص) بقيمتها بسعر الشراء وقتها. الناقص بيتخصم من صافي الربح في
@@ -2673,7 +2605,8 @@ function invoiceItemOrigin(i){
 // يرجع بنفس بياناته (ويفضل زرار «مرتجع للمصنع» ظاهر جنبه).
 function invoiceItemSourceFields(p){
   const o=invoiceItemOrigin({productId:p.id,productName:p.name,sku:p.sku,batchNo:p.batchNo||''});
-  return {source:o.factory?'factory':'purchase',orderId:o.factory?(o.orderId||''):'',pebble:p.pebble||o.pebble||'',productionDate:p.productionDate||p.receivedDate||''};
+  return {source:o.factory?'factory':'purchase',orderId:o.factory?(o.orderId||''):'',pebble:p.pebble||o.pebble||'',productionDate:p.productionDate||p.receivedDate||'',
+    ...(+p.transportUnit>0?{transportUnit:+p.transportUnit}:{})};   // (2.15.0) نصيب الوحدة من نقل المصنع — لو رجعت للمصنع بعيب
 }
 // أصناف رجعت للمخزون بمرتجع عميل قبل الإصلاح اتسجلت من غير رقم طلبية المصنع
 // (فزرار «مرتجع للمصنع» اختفى من جنبها). بنستنتج أصلها من فاتورة المرتجع نفسه.
@@ -3629,17 +3562,14 @@ async function deleteCustomerPayment(id){
 async function deleteCustomerReturn(id){
   const r=db.customerReturns.find(x=>String(x.id)===String(id));
   if(!r)return daftarAlert('لم يتم العثور على المرتجع.');
-  if(+r.creditUsed>0)return daftarAlert(`رصيد المرتجع ده (${money(r.creditUsed)}) اتستخدم كعربون في طلبية، فمينفعش يتحذف.\nلو الطلبية دي غلط، ألغِها الأول.`);
+  // (2.15.0) الفحص والحذف في 39-returns.js: التالف بيتشال من تسوية الجرد، واللي رجع للمصنع من حساب المصنع
+  const prob=customerReturnDeleteProblem(r);if(prob)return daftarAlert(prob);
   const q=+r.quantity||0;
-  const p=db.products.find(x=>String(x.id)===String(r.productId));
-  if(!p||(+p.stock||0)<q)return daftarAlert(`مينفعش تحذف المرتجع ده، لأن الكمية اللي رجعت (${q}) مش موجودة كلها في المخزون دلوقتي (اتباعت تاني أو اترجعت للمصنع).`);
   const refundNote=r.paid&&+r.refundAmount>0?`\n\nملحوظة: المرتجع ده متسجل إنك دفعت للعميل ${money(r.refundAmount)} كاش.`:'';
-  const ok=await daftarConfirm(`حذف مرتجع «${r.productName}» × ${q} للعميل «${r.customer}»؟\n\n- الكمية هتتشال من المخزون.\n- قيمته (${money(r.netAmount)}) هترجع على حساب العميل وعلى المبيعات.${refundNote}`);
+  const where=r.factoryReturnId?'- قيد المرتجع للمصنع بتاعه هيتشال من حساب المصنع.':r.adjId?'- التالف هيتشال من تسوية الجرد.':'- الكمية هتتشال من المخزون.';
+  const ok=await daftarConfirm(`حذف مرتجع «${r.productName}» × ${q} للعميل «${r.customer}»؟\n\n${where}\n- قيمته (${money(r.netAmount)}) هترجع على حساب العميل وعلى المبيعات.${refundNote}`);
   if(!ok)return;
-  p.stock=(+p.stock||0)-q;
-  if(p.stock<=0){markDeleted('products',p.id);db.products=db.products.filter(x=>String(x.id)!==String(p.id));}
-  markDeleted('customerReturns',r.id);
-  db.customerReturns=db.customerReturns.filter(x=>String(x.id)!==String(r.id));
+  removeCustomerReturnRecord(r);
   save();scheduleRender();refreshOpenCustomerProfile(r.customer);
   daftarToast('تم حذف المرتجع.');
 }
@@ -4372,6 +4302,15 @@ function bindCustomerPhoneHint(inputEl,hintEl){
 }
 
 function shareDocumentMarkup(kind,id){
+  if(kind==='creturn'){
+    // (2.15.0) إيصال مرتجع العميل — id = رقم المرتجع الداخلي (groupId)
+    const d=customerReturnDoc(id);if(!d)return null;
+    const box=document.createElement('div');box.id='daftarShareBox';box.className='doc-sheet';
+    box.dataset.customer=d.customer||'';box.dataset.amount=money(d.net);box.dataset.date=d.date;box.dataset.no=d.no;
+    box.innerHTML=`${salesDocBgHtml(daftarBg.receiptBackground)}<div class="dp-inner">${d.html}</div>`;
+    document.body.appendChild(box);
+    return box;
+  }
   if(kind==='receipt'){
     // id هنا بالشكل "نوع:رقم" (payment / invoice / order).
     const s=String(id),sep=s.indexOf(':');
@@ -4491,10 +4430,10 @@ async function shareDocumentWhatsApp(kind,id){
   if(!box){daftarToast('لم يتم العثور على المستند.','error');return;}
   const customerName=box.dataset.customer||'';
   const phone=normalizeWhatsAppPhone(getCustomerPhone(customerName));
-  const isReceipt=kind==='receipt';
-  const docLabel=isReceipt?'إيصال الاستلام':kind==='statement'?'كشف الحساب':kind==='order'?'الطلبية':'عرض السعر';
+  const isReceipt=kind==='receipt',isRet=kind==='creturn';
+  const docLabel=isReceipt?'إيصال الاستلام':isRet?'إيصال المرتجع':kind==='statement'?'كشف الحساب':kind==='order'?'الطلبية':'عرض السعر';
   const shareCollection=kind==='order'?'orders':kind==='quote'?'quotes':'invoices';
-  const displayId=isReceipt?(box.dataset.date||today()):kind==='statement'?today():displayNo(shareCollection,id);
+  const displayId=isReceipt?(box.dataset.date||today()):isRet?box.dataset.no:kind==='statement'?today():displayNo(shareCollection,id);
   box.style.display='none';
   document.body.appendChild(box);
   try{
@@ -4502,7 +4441,7 @@ async function shareDocumentWhatsApp(kind,id){
     // في المتصفح وجوه Electron على حد سواء).
     daftarToast('جاري تجهيز صورة المستند...');
     const blob=await renderDocumentToImageBlob(box);
-    const fileName=`${isReceipt?'ايصال-استلام':kind==='statement'?'كشف-حساب':kind==='order'?'طلبية':'عرض-سعر'}-${displayId}.png`;
+    const fileName=`${isReceipt?'ايصال-استلام':isRet?'مرتجع':kind==='statement'?'كشف-حساب':kind==='order'?'طلبية':'عرض-سعر'}-${displayId}.png`;
     const caption=isReceipt?`${docLabel} بمبلغ ${box.dataset.amount} بتاريخ ${displayId}`:kind==='statement'?`${docLabel} بتاريخ ${displayId}`:`${docLabel} رقم #${displayId}`;
 
     // 1) جوه Electron: نبعت الصورة الجاهزة لـ Electron نفسه يحطها في حافظة الجهاز
@@ -6553,7 +6492,7 @@ const CC_BOXES=[[120,90,635,740],[740,430,980,740],[1070,430,1310,740],
 const CC_TEXTURE=[200,200,530,530];
 const ccState={tab:0,zoom:1,sel:null,slots:[{code:'',tex:0,texSet:false},{code:'',tex:0,texSet:false}],pick:null,customer:false};
 // صفحة الزبون (catalog-page/ ← web-catalog/): نفس الكود ده لوحده من غير البرنامج، على موقع منفصل.
-const CC_PUBLIC_DEFAULT='https://karim8nam.github.io/emek-colors/';
+const CC_PUBLIC_DEFAULT='https://karim8nam.github.io/emekcolors/';
 let ccTok=0;
 function ccDigits(s){return String(s||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).trim();}
 function ccSpot(code){
@@ -6814,6 +6753,318 @@ document.querySelector('#orderSkuCatalogBtn')?.addEventListener('click',()=>{
   const inp=document.querySelector('#orderForm [name=itemSku]');
   openColorCatalog({code:inp?.value,pick:code=>{if(!inp)return;inp.value=code;inp.dispatchEvent(new Event('input',{bubbles:true}));inp.focus();}});
 });
+// ===== (2.15.0) ↩️ المرتجعات: صفحة لوحدها (من العملاء / للمصنع) + مرتجع بكذا صنف مرة واحدة =====
+// مرتجع العميل: كل صنف سجل في customerReturns (نفس الحسابات القديمة بالظبط)، والأصناف اللي اتسجلت مع بعض ليها نفس groupId.
+//  - «زيادة / العميل مش محتاجها»: بخصم % (بيتملي من خصم الفاتورة). البضاعة «سليمة» ترجع المخزون، أو «تالفة» = تسوية جرد تالف (adjId).
+//  - «عيب في المنتج»: من غير خصم. صنف المصنع بيرجع للمصنع على طول (قيد مرتجع في حساب المصنع بسعر الشراء + نصيبه من نقل المصنع —
+//    factoryReturnId) ومبيدخلش المخزون. صنف المشتريات (مش من المصنع) بيرجع سليم أو تالف زي الزيادة.
+// مرتجع للمصنع: كذا صنف، والسعر بسعر الشراء (ويتعدّل)، و«خصم المصنع %» بالإيد على البضاعة، والنقل بيتحسب على المصنع لو المشكلة منه.
+//  قيد المرتجع: amount = اللي بيتخصم من حساب المصنع، goodsAmount = البضاعة بسعر الشراء (هي اللي بتنزل من المشتريات والمطابقة)،
+//  والفرق (نقل اترد − خصم المصنع) بيدخل صافي الربح (factoryReturnProfitAdj في 07).
+const CRET_REASONS={extra:'زيادة / العميل مش محتاجها',defect:'عيب في المنتج'};
+const CRET_CONDITIONS={good:'سليمة — ترجع المخزون',damaged:'تالفة — متترجعش المخزون'};
+const FRET_REASONS={factory:'مشكلة من المصنع (النقل على المصنع)',extra:'زيادة / مش محتاجينها'};
+const retMoney2=v=>Math.round((+v||0)*100)/100;
+const retGroupKey=r=>String(r.groupId||r.id);
+function retGroups(list){const m=new Map();for(const r of list){const k=retGroupKey(r);if(!m.has(k))m.set(k,[]);m.get(k).push(r);}return [...m.values()].sort((a,b)=>(+b[0].id)-(+a[0].id));}
+// رقم المرتجع: بترتيب أول سجل في كل مرتجع (زي أرقام الفواتير)
+function customerReturnNoMap(){
+  return cachedLookup('customerReturnNos',db.customerReturns,()=>{const m=new Map();retGroups(db.customerReturns).reverse().forEach((g,i)=>m.set(retGroupKey(g[0]),i+1));return m;});
+}
+function customerReturnNo(r){return customerReturnNoMap().get(retGroupKey(r))||'';}
+// نصيب الوحدة من نقل المصنع (اتسجل وقت الترحيل): على سطر الفاتورة، وإلا من الصنف في المخزون
+function itemTransportUnit(it){if(it?.transportUnit!=null)return +it.transportUnit||0;const p=db.products.find(x=>String(x.id)===String(it?.productId));return +p?.transportUnit||0;}
+
+// ———————————————————— مرتجع من عميل
+function addReturn(name){openCustomerReturn(name||'');}
+function openCustomerReturn(name,invoiceId){
+  document.getElementById('customerReturnModal')?.remove();
+  const box=document.createElement('div');box.id='customerReturnModal';
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:860px"><div class="settlement-title"><div><small>↩️ مرتجع من عميل</small><h3 id="retTitle">${esc(name)||'اختار العميل'}</h3></div><button type="button" class="settlement-close" data-close>×</button></div>
+    <form id="returnForm"><div class="settlement-form">
+      <label>العميل<input name="customer" list="customerNamesList" autocomplete="off" value="${esc(name)}" placeholder="اسم العميل"></label>
+      <label>الفاتورة<select name="inv"></select></label>
+      <label>سبب المرتجع<select name="reason">${Object.entries(CRET_REASONS).map(([k,l])=>`<option value="${k}">${l}</option>`).join('')}</select></label>
+      <label id="retCondLabel">حالة البضاعة<select name="condition">${Object.entries(CRET_CONDITIONS).map(([k,l])=>`<option value="${k}">${l}</option>`).join('')}</select></label>
+      <label>خصم المرتجع %<input name="discount" type="number" min="0" max="100" step="0.01" value="0"><small data-inv-disc></small></label>
+      <label>التاريخ<input name="date" type="date" value="${today()}"></label>
+    </div>
+    <div id="retItems" style="margin-top:12px"></div>
+    <div class="settlement-form" style="margin-top:8px">
+      <label style="display:flex;align-items:center;gap:8px"><input name="paid" type="checkbox" style="width:auto"> تم الدفع للعميل</label>
+      ${treasuryOn()?`<label class="hidden" id="returnAccLabel">اتدفع من حساب<select name="accountId" data-treasury="out">${treasuryOptionsHtml()}</select></label>`:''}
+    </div>
+    <div class="notice" id="retPreview" style="margin-top:12px"></div>
+    <div class="settlement-actions"><button class="primary" type="submit">تسجيل المرتجع</button><button class="secondary-btn" type="button" id="cancelReturn">إلغاء</button></div></form></div>`;
+  document.body.appendChild(box);
+  const f=box.querySelector('#returnForm'),custEl=f.querySelector('[name=customer]'),invSel=f.querySelector('[name=inv]'),reasonEl=f.querySelector('[name=reason]'),condEl=f.querySelector('[name=condition]'),dEl=f.querySelector('[name=discount]');
+  const close=()=>box.remove();
+  box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);box.querySelector('.settlement-backdrop').onclick=close;
+  box.querySelector('#cancelReturn').onclick=close;
+  let invDiscPct=0;
+  const cust=()=>custEl.value.trim();
+  const curInv=()=>db.invoices.find(x=>String(x.id)===String(invSel.value));
+  const returnedOf=(inv,i)=>db.customerReturns.filter(r=>String(r.invoiceId)===String(inv.id)&&Number(r.itemIndex)===i).reduce((s,r)=>s+(+r.quantity||0),0);
+  const fillInvoices=()=>{
+    const invs=db.invoices.filter(x=>x.customer===cust()&&!isDebtRecord(x)).sort((a,b)=>(+b.id)-(+a.id));
+    box.querySelector('#retTitle').textContent=cust()||'اختار العميل';
+    invSel.innerHTML=invs.length?invs.map(x=>`<option value="${x.id}">#${displayNo('invoices',x.id)} — ${esc(x.date)} — ${money(x.total)}</option>`).join(''):'<option value="">مفيش فواتير للعميل ده</option>';
+    if(invoiceId&&invs.some(x=>String(x.id)===String(invoiceId)))invSel.value=String(invoiceId);
+    fillItems();
+  };
+  const fillItems=()=>{
+    const inv=curInv(),holder=box.querySelector('#retItems');
+    if(!inv){holder.innerHTML=cust()?'<div class="empty">العميل ده مالوش فواتير.</div>':'';invDiscPct=0;return preview();}
+    const rows=(inv.items||[]).map((it,i)=>({it,i,avail:Math.max(0,(+it.quantity||0)-returnedOf(inv,i))}));
+    const one=rows.filter(r=>r.avail>0).length===1;
+    holder.innerHTML=table(['الصنف','اتباع','رجع قبل كده','المتاح','الكمية الراجعة','السعر'],rows.map(({it,i,avail})=>{const fac=invoiceItemOrigin(it).factory;
+      return `<tr><td><strong>${esc(it.productName)}</strong>${fac?' <small class="badge">مصنع</small>':''}</td><td>${+it.quantity||0}</td><td>${(+it.quantity||0)-avail}</td><td>${avail}</td><td>${avail>0?`<input type="number" class="ret-qty" data-i="${i}" min="0" max="${avail}" step="1" value="${one?1:0}" style="max-width:110px">`:'—'}</td><td>${money(it.unitPrice)}</td></tr>`;}));
+    // (2.11.0) الفاتورة فيها خصم بالفلوس: المرتجع بياخد نفس نسبته — وتقدر تغيّرها
+    const disc=docDiscount(inv),iv=docItemsValue(inv);invDiscPct=disc>0&&iv>0?Math.round(disc/iv*10000)/100:0;
+    if(reasonEl.value!=='defect')dEl.value=invDiscPct;
+    const hint=box.querySelector('[data-inv-disc]');if(hint)hint.textContent=invDiscPct?`الفاتورة فيها خصم ${money(disc)} = ${invDiscPct}%`:'';
+    holder.querySelectorAll('.ret-qty').forEach(el=>el.oninput=preview);
+    preview();
+  };
+  // السطور اللي هترجع: [{it,i,q,gross,net,factory,cond}]
+  const lines=()=>{
+    const inv=curInv();if(!inv)return [];
+    const defect=reasonEl.value==='defect',disc=defect?0:Math.min(100,Math.max(0,+dEl.value||0));
+    return [...box.querySelectorAll('.ret-qty')].map(el=>{const i=+el.dataset.i,it=inv.items[i],q=+el.value||0;
+      const factory=defect&&invoiceItemOrigin(it).factory,gross=q*(+it.unitPrice||0);
+      return {it,i,q,max:+el.max||0,gross,net:retMoney2(gross*(1-disc/100)),disc,factory,cond:factory?'factory':condEl.value};}).filter(l=>l.q!==0);
+  };
+  const plan=()=>{
+    const ls=lines(),paid=f.querySelector('[name=paid]').checked;let bal=customerBalance(cust());
+    for(const l of ls){l.applied=retMoney2(Math.min(l.net,Math.max(0,bal)));l.due=retMoney2(l.net-l.applied);bal-=l.applied;if(!paid)bal-=l.due;}
+    return {ls,paid,due:retMoney2(ls.reduce((s,l)=>s+l.due,0)),net:retMoney2(ls.reduce((s,l)=>s+l.net,0)),applied:retMoney2(ls.reduce((s,l)=>s+l.applied,0))};
+  };
+  const preview=()=>{
+    const defect=reasonEl.value==='defect';
+    dEl.disabled=defect;if(defect)dEl.value=0;
+    const p=plan(),facN=p.ls.filter(l=>l.factory).length;
+    const anyNonFactory=!defect||p.ls.some(l=>!l.factory)||!p.ls.length;
+    box.querySelector('#retCondLabel').classList.toggle('hidden',defect&&!anyNonFactory);
+    box.querySelector('#retPreview').innerHTML=!p.ls.length?'اكتب الكمية الراجعة من صنف واحد على الأقل.':
+      `صافي المرتجع: <strong>${money(p.net)}</strong>${p.applied>0?` — منه ${money(p.applied)} من مديونية العميل`:''} — ${p.paid?`هيتدفع للعميل: <strong>${money(p.due)}</strong>`:`هيبقى رصيد للعميل: <strong>${money(p.due)}</strong>`}`+
+      (defect?`<br>عيب في المنتج: من غير خصم.${facN?` ${facN===p.ls.length?'الأصناف':'أصناف المصنع'} هترجع للمصنع على طول بسعر الشراء + نصيبها من النقل (من غير ما تدخل المخزون).`:''}`:'')+
+      (p.ls.some(l=>!l.factory&&l.cond==='damaged')?'<br>التالف هيتسجل في «تسوية الجرد» (بيتخصم من صافي الربح) ومش هيرجع المخزون.':'');
+  };
+  custEl.addEventListener('change',fillInvoices);custEl.addEventListener('input',()=>{if(db.invoices.some(x=>x.customer===cust()))fillInvoices();});
+  invSel.onchange=fillItems;reasonEl.onchange=()=>{if(reasonEl.value!=='defect')dEl.value=invDiscPct;preview();};condEl.onchange=preview;dEl.oninput=preview;
+  // «اتدفع من حساب» بيظهر بس لما تعلّم «تم الدفع للعميل» (والخزنة فيها حسابات).
+  f.querySelector('[name=paid]').onchange=e=>{box.querySelector('#returnAccLabel')?.classList.toggle('hidden',!e.target.checked);preview();};
+  f.onsubmit=async e=>{
+    e.preventDefault();
+    const submitBtn=f.querySelector('button[type=submit]');if(submitBtn?.disabled)return;
+    const name=cust(),inv=curInv();
+    if(!name||!inv)return daftarAlert('اختار العميل والفاتورة.');
+    const p=plan();
+    if(!p.ls.length)return daftarAlert('اكتب الكمية الراجعة من صنف واحد على الأقل.');
+    const bad=p.ls.find(l=>!Number.isInteger(l.q)||l.q<1||l.q>l.max);
+    if(bad)return daftarAlert(`«${bad.it.productName}»: الكمية لازم تبقى عدد صحيح من 1 لحد ${bad.max}.`);
+    // الفلوس اللي اترجعت للعميل خارجة من حساب في الخزنة.
+    const tr=p.paid?treasuryFromForm(f,'out',p.due):{acc:''};if(!tr)return;
+    const reason=reasonEl.value;
+    const msg=`تسجيل مرتجع «${CRET_REASONS[reason]}» للعميل «${name}»:\n${p.ls.map(l=>`- ${l.it.productName} × ${l.q} = ${money(l.net)}${l.factory?' (يرجع للمصنع)':l.cond==='damaged'?' (تالف)':''}`).join('\n')}\nالصافي: ${money(p.net)}\n${p.applied>0?('يُخصم من مديونية العميل: '+money(p.applied)+'\n'):''}${p.paid?('سيُدفع للعميل: '+money(p.due)+(tr.acc?` من «${tr.account.name}»`:'')):('سيُضاف كرصيد للعميل: '+money(p.due))}\n\nهل تريد تأكيد تسجيل المرتجع؟`;
+    if(!await daftarConfirm(msg))return;
+    if(submitBtn?.disabled)return;if(submitBtn)submitBtn.disabled=true;
+    const date=f.querySelector('[name=date]').value||today();let gid='';
+    for(const l of p.ls){
+      const id=daftarNextId();gid=gid||String(id);
+      const rec={id,groupId:gid,customer:name,invoiceId:inv.id,itemIndex:l.i,productName:l.it.productName,quantity:l.q,grossAmount:l.gross,discountPercent:l.disc,discountAmount:retMoney2(l.gross-l.net),netAmount:l.net,appliedToDebt:l.applied,paid:p.paid,refundAmount:p.paid?l.due:0,creditAmount:p.paid?0:l.due,creditUsed:0,date,reason,condition:l.cond,...(tr.acc&&p.paid?{accountId:tr.acc}:{})};
+      if(l.cond==='factory'){
+        // عيب في صنف المصنع: بيرجع للمصنع على طول — مبيدخلش المخزون (المطابقة: رجع من العميل + راح للمصنع = صفر)
+        const cost=invoiceItemUnitCost(l.it),tU=itemTransportUnit(l.it),goods=retMoney2(cost*l.q),trAmt=retMoney2(tU*l.q),fid=daftarNextId();
+        db.factoryLedger.push({id:fid,type:'return',amount:retMoney2(goods+trAmt),goodsAmount:goods,transportAmount:trAmt,discountPercent:0,discountAmount:0,unitPrice:cost,date,
+          note:`مرتجع عيب من العميل «${name}» — ${l.q} من «${l.it.productName}»`,productId:l.it.productId||'',productName:l.it.productName,quantity:l.q,reason:'factory',groupId:'c'+gid,customerReturnId:String(id)});
+        rec.productId=l.it.productId||'';rec.factoryReturnId=String(fid);
+      }else{
+        // لو الصنف اتشال من المخزون (اتباعت آخر كمية منه)، بيرجع بنفس بياناته الأصلية، ومنها رقم طلبية المصنع.
+        const pr=restoreInvoiceItemStock(l.it,l.q);rec.productId=pr.id;
+        if(l.cond==='damaged'){
+          const before=+pr.stock||0,{id:_i,updatedAt:_u,...snap}=pr;
+          const a={id:daftarNextId(),date,productId:pr.id,productName:pr.name,sku:pr.sku||'',batchNo:pr.batchNo||'',before,after:before-l.q,qty:-l.q,unitCost:stockAdjustUnitCost(pr),
+            reason:'damaged',reasonLabel:STOCK_ADJ_REASONS.damaged,note:`مرتجع تالف من «${name}»`,snapshot:{...snap,stock:0},customerReturnId:String(id)};
+          a.value=stockAdjustValue(a);(db.stockAdjustments??=[]).push(a);
+          pr.stock=before-l.q;rec.adjId=String(a.id);
+          if(pr.stock<=0){markDeleted('products',pr.id);db.products=db.products.filter(x=>String(x.id)!==String(pr.id));}
+        }
+      }
+      db.customerReturns.push(rec);
+    }
+    save();close();scheduleRender();refreshOpenCustomerProfile(name);
+    daftarAlert(`تم تسجيل المرتجع رقم ${customerReturnNo({id:gid,groupId:gid})} وخصم قيمته من المبيعات.`+(p.applied>0?` تم خصم ${money(p.applied)} من مديونية العميل.`:'')+(p.paid?` واتدفع ${money(p.due)} للعميل.`:(p.due>0?` المبلغ ${money(p.due)} أصبح رصيدًا للعميل وسيُستخدم تلقائيًا كعربون في طلبية جديدة.`:'')));
+  };
+  fillInvoices();
+  (name?invSel:custEl).focus();
+}
+
+// حذف سجل مرتجع عميل: المشكلة (لو فيه) أو '' + تنفيذ الحذف
+function customerReturnDeleteProblem(r){
+  if(+r.creditUsed>0)return `رصيد المرتجع «${r.productName}» (${money(r.creditUsed)}) اتستخدم كعربون في طلبية، فمينفعش يتحذف.\nلو الطلبية دي غلط، ألغِها الأول.`;
+  if(r.factoryReturnId||r.adjId)return '';
+  const q=+r.quantity||0,p=db.products.find(x=>String(x.id)===String(r.productId));
+  if(!p||(+p.stock||0)<q)return `مينفعش تحذف مرتجع «${r.productName}»، لأن الكمية اللي رجعت (${q}) مش موجودة كلها في المخزون دلوقتي (اتباعت تاني أو اترجعت للمصنع).`;
+  return '';
+}
+function removeCustomerReturnRecord(r){
+  if(r.factoryReturnId){markDeleted('factoryLedger',r.factoryReturnId);db.factoryLedger=db.factoryLedger.filter(x=>String(x.id)!==String(r.factoryReturnId));}
+  else if(r.adjId){markDeleted('stockAdjustments',r.adjId);db.stockAdjustments=(db.stockAdjustments||[]).filter(x=>String(x.id)!==String(r.adjId));}
+  else{
+    const q=+r.quantity||0,p=db.products.find(x=>String(x.id)===String(r.productId));
+    if(p){p.stock=(+p.stock||0)-q;if(p.stock<=0){markDeleted('products',p.id);db.products=db.products.filter(x=>String(x.id)!==String(p.id));}}
+  }
+  markDeleted('customerReturns',r.id);
+  db.customerReturns=db.customerReturns.filter(x=>String(x.id)!==String(r.id));
+}
+async function deleteCustomerReturnGroup(gid){
+  const rs=db.customerReturns.filter(r=>retGroupKey(r)===String(gid));if(!rs.length)return daftarAlert('لم يتم العثور على المرتجع.');
+  const prob=rs.map(customerReturnDeleteProblem).find(Boolean);if(prob)return daftarAlert(prob);
+  const refund=rs.reduce((s,r)=>s+(r.paid?+r.refundAmount||0:0),0),net=rs.reduce((s,r)=>s+(+r.netAmount||0),0);
+  const ok=await daftarConfirm(`حذف المرتجع رقم ${customerReturnNo(rs[0])} للعميل «${rs[0].customer}»؟\n${rs.map(r=>`- ${r.productName} × ${r.quantity}`).join('\n')}\n\n- قيمته (${money(net)}) هترجع على حساب العميل وعلى المبيعات.\n- السليم هيتشال من المخزون، والتالف من تسوية الجرد، واللي رجع للمصنع من حساب المصنع.${refund>0?`\n\nملحوظة: متسجل إنك دفعت للعميل ${money(refund)}.`:''}`);
+  if(!ok)return;
+  for(const r of rs)removeCustomerReturnRecord(r);
+  save();scheduleRender();refreshOpenCustomerProfile(rs[0].customer);
+  daftarToast('تم حذف المرتجع.');
+}
+
+// ———————————————————— مرتجع للمصنع
+function factoryReturnableProducts(){return db.products.filter(p=>(+p.stock||0)>=1&&productFactoryOrderId(p));}
+function openFactoryReturn(productId){
+  const list=factoryReturnableProducts();
+  if(!list.length)return daftarAlert('مفيش أصناف مصنع في المخزون ترجع للمصنع.');
+  document.getElementById('factoryReturnModal')?.remove();
+  const box=document.createElement('div');box.id='factoryReturnModal';
+  const opt=sel=>list.map(p=>`<option value="${p.id}"${String(p.id)===String(sel)?' selected':''}>${esc(p.name)}${p.sku?` (${esc(p.sku)})`:''}${p.batchNo?` — باتش ${esc(p.batchNo)}`:''} — متاح ${Math.floor(+p.stock||0)}${(p.customerName||'المخزون العام')!=='المخزون العام'?` — محجوز لـ${esc(p.customerName)}`:''}</option>`).join('');
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:900px"><div class="settlement-title"><div><small>↩️ مرتجع للمصنع</small><h3>البضاعة اللي راجعة للمصنع</h3></div><button type="button" class="settlement-close" data-close>×</button></div>
+    <form id="factoryReturnForm"><div class="settlement-form">
+      <label>السبب<select name="reason">${Object.entries(FRET_REASONS).map(([k,l])=>`<option value="${k}">${l}</option>`).join('')}</select></label>
+      <label>خصم المصنع %<input name="discount" type="number" min="0" max="100" step="0.01" value="0"><small>اللي المصنع بيخصمه من قيمة البضاعة</small></label>
+      <label>التاريخ<input name="date" type="date" value="${today()}" max="${today()}"></label>
+      <label>ملاحظة (اختياري)<input name="note" placeholder="مثلاً: لون مختلف عن الكتالوج"></label>
+    </div>
+    <table class="fr-table" style="margin-top:12px"><thead><tr><th style="width:42%">الصنف</th><th>الكمية</th><th>سعر الوحدة (شراء)</th><th class="fr-tr">نقل / وحدة</th><th style="width:52px"></th></tr></thead><tbody id="frRows"></tbody></table>
+    <button type="button" class="secondary-btn" id="frAdd" style="margin-top:8px">+ صنف تاني</button>
+    <div class="notice" id="frPreview" style="margin-top:12px"></div>
+    <div class="settlement-actions"><button class="primary" type="submit">تسجيل المرتجع للمصنع</button><button class="secondary-btn" type="button" data-close>إلغاء</button></div></form></div>`;
+  document.body.appendChild(box);
+  const f=box.querySelector('#factoryReturnForm'),rowsEl=box.querySelector('#frRows'),reasonEl=f.querySelector('[name=reason]'),dEl=f.querySelector('[name=discount]');
+  const close=()=>box.remove();
+  box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);box.querySelector('.settlement-backdrop').onclick=close;
+  const fillRow=tr=>{const p=list.find(x=>String(x.id)===tr.querySelector('.fr-p').value);if(!p)return;
+    tr.querySelector('.fr-q').max=Math.floor(+p.stock||0);tr.querySelector('.fr-c').value=retMoney2(stockAdjustUnitCost(p));tr.querySelector('.fr-t').value=retMoney2(+p.transportUnit||0);};
+  const addRow=sel=>{const tr=document.createElement('tr');
+    tr.innerHTML=`<td><select class="fr-p">${opt(sel)}</select></td><td><input type="number" class="fr-q" min="1" step="1" value="1"></td><td><input type="number" class="fr-c" min="0" step="0.01"></td><td class="fr-tr"><input type="number" class="fr-t" min="0" step="0.01"></td><td><button type="button" class="danger" data-del title="شيل السطر">×</button></td>`;
+    rowsEl.appendChild(tr);fillRow(tr);
+    tr.querySelector('.fr-p').onchange=()=>{fillRow(tr);preview();};
+    tr.querySelectorAll('input').forEach(el=>el.oninput=preview);
+    tr.querySelector('[data-del]').onclick=()=>{if(rowsEl.children.length>1)tr.remove();preview();};
+  };
+  const lines=()=>{const onF=reasonEl.value==='factory',disc=Math.min(100,Math.max(0,+dEl.value||0));
+    return [...rowsEl.children].map(tr=>{const p=list.find(x=>String(x.id)===tr.querySelector('.fr-p').value),q=+tr.querySelector('.fr-q').value||0,c=+tr.querySelector('.fr-c').value||0,t=onF?+tr.querySelector('.fr-t').value||0:0;
+      const priced=retMoney2(c*q),discAmt=retMoney2(priced*disc/100),trAmt=retMoney2(t*q);
+      return {p,q,c,t,disc,priced,discAmt,trAmt,goods:retMoney2(stockAdjustUnitCost(p||{})*q),amount:retMoney2(priced-discAmt+trAmt)};});};
+  const preview=()=>{const onF=reasonEl.value==='factory';box.querySelectorAll('.fr-tr').forEach(el=>el.classList.toggle('hidden',!onF));
+    const ls=lines(),sum=k=>retMoney2(ls.reduce((s,l)=>s+l[k],0)),loss=retMoney2(sum('discAmt'));
+    box.querySelector('#frPreview').innerHTML=`البضاعة بسعرها: <strong>${money(sum('priced'))}</strong>${loss?` − خصم المصنع ${money(loss)}`:''}${sum('trAmt')?` + النقل ${money(sum('trAmt'))}`:''} = <strong>${money(sum('amount'))}</strong> هتتخصم من حساب المصنع.`+
+      (loss?`<br>خصم المصنع (${money(loss)}) خسارة بتتخصم من صافي الربح.`:'')+(sum('trAmt')?`<br>النقل (${money(sum('trAmt'))}) المصنع بيرجّعه، فبيتزود على صافي الربح (كان اتحسب مصروف وقت الترحيل).`:'');};
+  reasonEl.onchange=preview;dEl.oninput=preview;
+  box.querySelector('#frAdd').onclick=()=>{addRow();preview();};
+  addRow(productId);preview();
+  f.onsubmit=async e=>{
+    e.preventDefault();
+    const btn=f.querySelector('button[type=submit]');if(btn.disabled)return;
+    const ls=lines(),seen=new Set();
+    for(const l of ls){
+      if(!l.p)return daftarAlert('اختار الصنف.');
+      if(seen.has(String(l.p.id)))return daftarAlert(`«${l.p.name}» مكتوب مرتين — اكتب الكمية كلها في سطر واحد.`);seen.add(String(l.p.id));
+      const avail=Math.floor(+l.p.stock||0);
+      if(!Number.isInteger(l.q)||l.q<1||l.q>avail)return daftarAlert(`«${l.p.name}»: الكمية لازم تبقى عدد صحيح من 1 لحد ${avail}.`);
+      if(!(l.c>=0)||!(l.t>=0))return daftarAlert(`«${l.p.name}»: راجع السعر والنقل.`);
+    }
+    const date=f.querySelector('[name=date]').value||today();if(date>today())return daftarAlert('التاريخ لسه مجاش.');
+    const total=retMoney2(ls.reduce((s,l)=>s+l.amount,0)),reason=reasonEl.value,note=f.querySelector('[name=note]').value.trim();
+    if(!await daftarConfirm(`مرتجع للمصنع («${FRET_REASONS[reason]}»):\n${ls.map(l=>`- ${l.p.name} × ${l.q} = ${money(l.amount)}`).join('\n')}\n\nهيتخصم ${money(total)} من حساب المصنع، والكميات هتطلع من المخزون.\nمتأكد؟`))return;
+    btn.disabled=true;
+    const gid='f'+daftarNextId();
+    for(const l of ls){
+      db.factoryLedger.push({id:daftarNextId(),type:'return',amount:l.amount,goodsAmount:l.goods,transportAmount:l.trAmt,discountPercent:l.disc,discountAmount:l.discAmt,unitPrice:l.c,date,reason,groupId:gid,
+        note:`مرتجع ${l.q} وحدة من «${l.p.name}» للمصنع${note?` — ${note}`:''}`,productId:l.p.id,productName:l.p.name,quantity:l.q});
+      l.p.stock=(+l.p.stock||0)-l.q;
+      // «شاهد الحذف» قبل ما الصنف يتشال، وإلا المزامنة هترجّعه بالكمية القديمة
+      if(l.p.stock<=0){markDeleted('products',l.p.id);db.products=db.products.filter(x=>String(x.id)!==String(l.p.id));}
+    }
+    save();close();scheduleRender();
+    daftarToast(`تم المرتجع للمصنع وخصم ${money(total)} من رصيد حساب المصنع.`);
+  };
+}
+// حذف مرتجع للمصنع (كله): الكميات ترجع المخزون، والقيمة ترجع على حساب المصنع والمشتريات
+async function deleteFactoryReturnGroup(gid){
+  const es=(db.factoryLedger||[]).filter(x=>x.type==='return'&&retGroupKey(x)===String(gid));if(!es.length)return;
+  if(es.some(x=>x.customerReturnId))return daftarAlert('المرتجع ده جاي من مرتجع عميل (عيب في المنتج) — امسح مرتجع العميل نفسه من «من العملاء».');
+  if(es.length===1)return deleteFactoryLedgerEntry(es[0].id);
+  if(!await daftarConfirm(`حذف المرتجع للمصنع؟\n${es.map(x=>`- ${x.productName} × ${x.quantity}`).join('\n')}\n\nالكميات هترجع المخزون، و${money(es.reduce((s,x)=>s+(+x.amount||0),0))} هترجع على حساب المصنع.`))return;
+  for(const x of es){markDeleted('factoryLedger',x.id);restoreFactoryReturnStock(x);}
+  const ids=new Set(es.map(x=>String(x.id)));db.factoryLedger=db.factoryLedger.filter(x=>!ids.has(String(x.id)));
+  save();scheduleRender();daftarToast('تم حذف المرتجع للمصنع ورجوع الكميات للمخزون.');
+}
+function restoreFactoryReturnStock(entry){
+  const q=+entry.quantity||0;if(!(q>0))return;const unit=factoryReturnGoods(entry)/q;
+  const existing=db.products.find(x=>String(x.id)===String(entry.productId))||db.products.find(x=>String(x.name||'').trim()===String(entry.productName||'').trim()&&x.orderId);
+  if(existing)existing.stock=(+existing.stock||0)+q;
+  else db.products.push({id:daftarNextId(),name:entry.productName||'صنف مسترجع',baseName:entry.productName||'صنف مسترجع',sku:'',stock:q,price:0,cost:unit,factoryPrice:unit,batchNo:'',pebble:'',packageWeight:0,customerName:'المخزون العام',orderId:'factory'});
+}
+
+// ———————————————————— إيصال المرتجع (طباعة + صورة واتساب)
+function customerReturnDoc(gid){
+  const rs=db.customerReturns.filter(r=>retGroupKey(r)===String(gid));if(!rs.length)return null;
+  const r0=rs[0],net=retMoney2(rs.reduce((s,r)=>s+(+r.netAmount||0),0)),gross=retMoney2(rs.reduce((s,r)=>s+(+r.grossAmount||0),0));
+  const applied=retMoney2(rs.reduce((s,r)=>s+(+r.appliedToDebt||0),0)),refund=retMoney2(rs.reduce((s,r)=>s+(r.paid?+r.refundAmount||0:0),0)),credit=retMoney2(rs.reduce((s,r)=>s+(r.paid?0:+r.creditAmount||0),0));
+  const inv=db.invoices.find(x=>String(x.id)===String(r0.invoiceId)),no=customerReturnNo(r0);
+  const meta=[`رقم المرتجع: #${no}`,`التاريخ: ${esc(r0.date||today())}`,`العميل: <strong>${esc(r0.customer)||'—'}</strong>`,...(inv?[`من فاتورة: #${displayNo('invoices',inv.id)}`]:[])];
+  const rows=rs.map((r,n)=>{const it=inv?.items?.[+r.itemIndex];return `<tr><td>${n+1}</td><td>${esc(r.productName)}</td><td>${r.quantity||0}</td><td>${money(it?.unitPrice??((+r.grossAmount||0)/(+r.quantity||1)))}</td><td>${money(r.netAmount)}</td></tr>`;}).join('');
+  const html=salesDocHeaderHtml('إيصال مرتجع',meta)+`<table><tr><th>#</th><th>الصنف</th><th>الكمية</th><th>السعر</th><th>الصافي</th></tr>${rows}</table>`+
+    `<div class="total">${gross-net>0.004?`قيمة الأصناف: ${money(gross)}<br>خصم المرتجع: ${money(gross-net)}<br>`:''}صافي المرتجع: ${money(net)}${applied>0?`<br>اتخصم من الحساب: ${money(applied)}`:''}${refund>0?`<br>اترد للعميل: ${money(refund)}`:''}${credit>0?`<br>رصيد للعميل: ${money(credit)}`:''}</div>`+
+    `<div class="receipt-meta">سبب المرتجع: ${esc(CRET_REASONS[r0.reason]||CRET_REASONS.extra)}</div><div class="doc-sign">التوقيع: ____________________</div>`+salesDocContactHtml();
+  return {rs,no,net,html,customer:r0.customer,date:r0.date||today()};
+}
+function printCustomerReturn(gid){
+  const d=customerReturnDoc(gid);if(!d)return daftarAlert('لم يتم العثور على المرتجع.');
+  document.getElementById('daftarPrintBox')?.remove();
+  const box=document.createElement('div');box.id='daftarPrintBox';box.className='doc-sheet';
+  box.innerHTML=`${salesDocBgHtml(daftarBg.receiptBackground)}<div class="dp-inner">${d.html}<div class="dp-actions"><button id="dpPrintRet">طباعة</button><button id="dpWaRet">إرسال واتساب</button><button id="dpCloseRet">إغلاق</button></div></div>`;
+  document.body.appendChild(box);
+  document.getElementById('dpPrintRet').onclick=()=>window.print();
+  document.getElementById('dpWaRet').onclick=()=>shareDocumentWhatsApp('creturn',gid);
+  document.getElementById('dpCloseRet').onclick=()=>box.remove();
+}
+
+// ———————————————————— صفحة «↩️ المرتجعات»
+function renderReturnsPage(){
+  const view=daftarPageView.returns||'customers';
+  if(view==='customers'){
+    const q=normalizeArabicName(document.querySelector('#retSearch')?.value||'');
+    const groups=retGroups(db.customerReturns).filter(g=>!q||normalizeArabicName(g[0].customer+' '+g.map(r=>r.productName).join(' ')).includes(q));
+    const net=groups.reduce((s,g)=>s+g.reduce((a,r)=>a+(+r.netAmount||0),0),0);
+    document.querySelector('#retCustomersSummary').innerHTML=`${groups.length} مرتجع — صافي <strong>${money(net)}</strong>`;
+    document.querySelector('#retCustomersList').innerHTML=pagedTable('returnsCustomers',['رقم','التاريخ','العميل','الأصناف','السبب','الصافي','اترد / رصيد',''],groups,g=>{const r0=g[0],net=g.reduce((s,r)=>s+(+r.netAmount||0),0),refund=g.reduce((s,r)=>s+(r.paid?+r.refundAmount||0:0),0),credit=g.reduce((s,r)=>s+(r.paid?0:+r.creditAmount||0),0);
+      const tag=r=>r.condition==='factory'?' <small class="badge">رجع للمصنع</small>':r.condition==='damaged'?' <small class="badge">تالف</small>':'';
+      return `<tr><td>#${customerReturnNo(r0)}</td><td>${esc(r0.date)}</td><td>${esc(r0.customer)}</td><td>${g.map(r=>`${esc(r.productName)} × ${r.quantity}${tag(r)}`).join('<br>')}</td><td>${esc(CRET_REASONS[r0.reason]||CRET_REASONS.extra)}</td><td>${money(net)}</td><td>${refund>0?`اترد ${money(refund)}`:''}${credit>0?`${refund>0?'<br>':''}رصيد ${money(credit)}`:''}${!refund&&!credit?'من المديونية':''}</td><td><div class="row-actions"><button type="button" class="secondary-btn" onclick="printCustomerReturn('${retGroupKey(r0)}')">🖨️ إيصال</button><button type="button" class="danger" onclick="deleteCustomerReturnGroup('${retGroupKey(r0)}')">حذف</button></div></td></tr>`;},q);
+  }else{
+    const q=normalizeArabicName(document.querySelector('#retFactorySearch')?.value||'');
+    const groups=retGroups((db.factoryLedger||[]).filter(x=>x.type==='return')).filter(g=>!q||normalizeArabicName(g.map(x=>x.productName+' '+(x.note||'')).join(' ')).includes(q));
+    const sum=(g,k)=>g.reduce((s,x)=>s+(+x[k]||0),0);
+    const total=groups.reduce((s,g)=>s+sum(g,'amount'),0);
+    document.querySelector('#retFactorySummary').innerHTML=`${groups.length} مرتجع — اتخصم من حساب المصنع <strong>${money(total)}</strong>`;
+    document.querySelector('#retFactoryList').innerHTML=pagedTable('returnsFactory',['التاريخ','الأصناف','البضاعة','خصم المصنع','النقل','اتخصم من حساب المصنع','السبب',''],groups,g=>{const x0=g[0];
+      const why=x0.customerReturnId?'عيب — من مرتجع عميل':x0.reason?FRET_REASONS[x0.reason]||'':'—';
+      return `<tr><td>${esc(x0.date)}</td><td>${g.map(x=>`${esc(x.productName)} × ${x.quantity||0}`).join('<br>')}${x0.note&&g.length===1?`<br><small>${esc(x0.note)}</small>`:''}</td><td>${money(g.reduce((s,x)=>s+factoryReturnGoods(x),0))}</td><td>${sum(g,'discountAmount')?`${money(sum(g,'discountAmount'))}${x0.discountPercent?` (${x0.discountPercent}%)`:''}`:'—'}</td><td>${sum(g,'transportAmount')?money(sum(g,'transportAmount')):'—'}</td><td><strong>${money(sum(g,'amount'))}</strong></td><td>${esc(why)}</td><td>${x0.customerReturnId?'':`<button type="button" class="danger" onclick="deleteFactoryReturnGroup('${retGroupKey(x0)}')">حذف</button>`}</td></tr>`;},q);
+  }
+}
+document.querySelector('#retNewCustomerBtn')?.addEventListener('click',()=>openCustomerReturn(''));
+document.querySelector('#retNewFactoryBtn')?.addEventListener('click',()=>openFactoryReturn());
+['#retSearch','#retFactorySearch'].forEach(s=>document.querySelector(s)?.addEventListener('input',()=>scheduleRender(150)));
 </script>
 
 <!-- مكتبة Supabase متضمنة جوه البرنامج () عشان تشتغل حتى لو البرنامج اتفتح من غير نت،
@@ -7138,6 +7389,13 @@ details.panel-collapse[open]>summary{margin-bottom:14px}
 .treasury-stopped{margin-top:14px}
 .treasury-stopped summary{cursor:pointer;font-weight:bold;margin-bottom:10px}
 .treasury-filter{margin-bottom:12px}
+/* (2.15.0) ↩️ المرتجعات */
+.returns-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.returns-head h2{margin:0!important}
+.returns-filter{margin-bottom:12px;align-items:end}
+.returns-sum{align-self:center;color:var(--muted)}
+.fr-table{width:100%;table-layout:fixed}
+.fr-table select,.fr-table input{width:100%;min-width:0;box-sizing:border-box}
 #treasuryMovesPanel{scroll-margin-top:calc(var(--nav-h,60px) + 10px)}
 .treasury-in{color:var(--good)}.treasury-out,.treasury-neg{color:var(--danger)}
 /* خانة «حساب العربون» في الطلبية بتاخد مكان: زرار الحفظ ياخد خانة واحدة بدل اتنين عشان يفضلوا في نفس السطر */
