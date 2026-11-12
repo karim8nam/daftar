@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.18.0";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.19.0";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -177,7 +177,7 @@ html,body{background:#fff!important}
 #daftarPrintBox.statement-print.doc-sheet .dp-inner>.doc-contact{position:fixed;left:7mm;right:7mm;bottom:6mm;margin:0}
 #daftarPrintBox.statement-print.doc-sheet .dp-inner .total{break-inside:avoid}}</style></head><body><main class="shell">
 
-<header class="brand"><div class="mark">د</div><div><h1>دفتر</h1><p>إدارة المبيعات والمخزون والمشتريات <span id="appVersionTag" class="app-version"></span></p></div><div class="brand-status"><div id="supabaseStatus">☁️ لم تتم المزامنة بعد</div><div id="daftarAccountBar" style="display:none"><span id="daftarAccountText"></span><button type="button" id="daftarLogoutBtn">تسجيل الخروج</button></div></div></header><nav id="nav"><button class="active" data-page="dashboard">الرئيسية</button><button data-page="factory">كتالوج المصنع</button><button data-page="products">المخزون</button><button data-page="invoices">فواتير المبيعات</button><button data-page="quotes">عرض أسعار</button><button data-page="orders">الطلبيات</button><button data-page="customers">العملاء</button><button data-page="returns">المرتجعات</button><button data-page="jobs">الشغلانات</button><button data-page="balances">الأرصدة والمشتريات</button><button data-page="treasury">الخزنة</button><button data-page="reports">التقارير</button><button data-page="settings">الإعدادات</button></nav><datalist id="customerNamesList"></datalist>
+<header class="brand"><div class="mark">د</div><div><h1>دفتر</h1><p>إدارة المبيعات والمخزون والمشتريات <span id="appVersionTag" class="app-version"></span></p></div><div class="brand-status"><button type="button" class="primary quick-pay-btn" id="quickPayBtn" title="F6">💵 دفعة عميل</button><div id="supabaseStatus">☁️ لم تتم المزامنة بعد</div><div id="daftarAccountBar" style="display:none"><span id="daftarAccountText"></span><button type="button" id="daftarLogoutBtn">تسجيل الخروج</button></div></div></header><nav id="nav"><button class="active" data-page="dashboard">الرئيسية</button><button data-page="factory">كتالوج المصنع</button><button data-page="products">المخزون</button><button data-page="invoices">فواتير المبيعات</button><button data-page="quotes">عرض أسعار</button><button data-page="orders">الطلبيات</button><button data-page="customers">العملاء</button><button data-page="returns">المرتجعات</button><button data-page="jobs">الشغلانات</button><button data-page="balances">الأرصدة والمشتريات</button><button data-page="treasury">الخزنة</button><button data-page="reports">التقارير</button><button data-page="settings">الإعدادات</button></nav><datalist id="customerNamesList"></datalist>
 <section id="dashboard" class="page"><div class="grid" id="summary"></div><div class="two" style="margin-top:16px"><article class="panel"><h2>نظرة سريعة</h2><div id="lowStock"></div></article><article class="panel"><h2>معلومات</h2><p class="notice">الطلبية لا تدخل المخزون إلا عند الاستلام. سعر المصنع هو تكلفة الشراء، وسعر البيع منفصل.</p></article></div><article class="panel" style="margin-top:16px"><h2>تنبيهات صلاحية أصناف المصنع</h2><p class="notice">بتظهر بس للأصناف الجايه من طلبية مصنع، بناءً على تاريخ الإنتاج (تقدر تعدّله من صفحة المخزون). عدّل تاريخ الإنتاج أو اضغط "المنتج سليم" لو مش عايز التنبيه ده يتكرر.</p><div id="expiryAlerts"></div></article></section>
 <section id="factory" class="page hidden"><article class="panel"><h2 id="factoryFormTitle">إضافة صنف في كتالوج المصنع</h2><form id="factoryForm" class="form"><input type="hidden" name="id"><label>اسم الصنف<input required name="name"></label><label>النوع<select name="packageType"><option value="شكارة">شكارة</option><option value="بستلة">بستلة</option></select></label><label>طريقة التسعير<select name="pricing"><option value="ton">بالطن (سعر العبوة بيتحسب من وزنها)</option><option value="unit">بالعبوة (سعر ثابت)</option></select></label><label><span id="factoryPriceLabel">سعر شراء الطن من المصنع</span><input required name="factoryPrice" type="number" min="0" step="0.01"></label><label><span id="salePriceLabel">سعر بيع الطن</span><input required name="salePrice" type="number" min="0" step="0.01"></label><label>الوزن الافتراضي للعبوة (كجم)<input name="packageWeight" type="number" min="0" step="0.001"></label><label>أوزان العبوات المتاحة (اختياري)<input name="weightOptions" placeholder="مثال: 20, 25"></label><details class="variant-editor" id="variantEditor"><summary>🎨 أكواد الألوان وأسعارها (للأصناف اللي كل لون فيها ليه سعر، زي المحارة الجاهزة) <span class="badge" id="variantCount">0</span></summary><p class="notice" style="margin:8px 0">كل كود ليه سعره. لما تعمل طلبية للصنف ده وتكتب الكود، السعر بيتحط لوحده. الأسعار هنا <strong id="variantUnitNote">بالطن</strong> زي سعر الصنف فوق. لو سبت سعر فاضي، بيتاخد سعر الصنف العادي.</p><div id="variantRows"></div><datalist id="colorSkuAllList"></datalist><div class="form-actions" style="margin-top:8px"><button type="button" class="secondary-btn" id="addVariantRow">➕ إضافة كود</button></div><details class="color-bulk" style="margin-top:10px"><summary>لصق أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر: الكود، سعر الشراء، سعر البيع (أو الكود وسعر البيع بس). مثال:<br><span dir="ltr">C-100, 9000, 11000</span></p><textarea id="variantBulkInput" rows="4" dir="ltr" placeholder="C-100, 9000, 11000"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="variantBulkAdd">إضافة للقايمة</button></div></details></details><button type="submit" class="primary">حفظ</button><button type="button" class="danger" id="cancelFactoryEdit">إلغاء التعديل</button></form></article><article class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">كتالوج المصنع</h2><div class="ft-actions"><button type="button" class="secondary-btn" id="colorCatalogBtn" style="flex:none;white-space:nowrap" onclick="openColorCatalog()">📖 كتالوج الألوان</button><button type="button" class="secondary-btn hidden" id="factoryPriceReviewBtn" style="flex:none;white-space:nowrap" onclick="openFactoryPriceReview()">💲 مراجعة أسعار المصنع</button></div></div><div id="factoryTable" style="margin-top:16px"></div></article><article class="panel" id="colorCodesPanel"><h2 id="colorFormTitle">🎨 درجات الألوان</h2><p class="notice">سجّل كود كل لون ودرجته. أي صنف في المخزون بنفس الكود هتظهر جنبه دايرة باللون ده لوحدها، وبتتزامن على كل الأجهزة. تقدر تختار أي درجة من مربع الألوان، أو تكتب كودها (#RRGGBB) لو معاك.</p><form id="colorCodeForm" class="form"><input type="hidden" name="id"><label>كود اللون<input required name="code" list="colorSkuList" autocomplete="off" dir="ltr" placeholder="مثلاً C-100"></label><label>اسم اللون (اختياري)<input name="name" placeholder="مثلاً أبيض ثلجي"></label><label>درجة اللون<span class="color-pick"><input type="color" name="hex" value="#c8102e" aria-label="اختيار درجة اللون"><input name="hexText" dir="ltr" maxlength="7" placeholder="#RRGGBB" aria-label="كود الدرجة"></span></label><button type="submit" class="primary" id="colorSaveBtn">حفظ اللون</button><button type="button" class="secondary-btn hidden" id="cancelColorEdit">إلغاء التعديل</button></form><datalist id="colorSkuList"></datalist><div id="colorMissing"></div><details class="color-bulk"><summary>إضافة أكواد كتير مرة واحدة</summary><p class="notice" style="margin-top:8px">كل سطر لون: الكود، واسم اللون (اختياري)، والدرجة — مفصولين بفاصلة. مثال:<br><span dir="ltr">C-100, أبيض ثلجي, #F4F4F0</span></p><textarea id="colorBulkInput" rows="5" dir="auto" placeholder="C-100, أبيض ثلجي, #F4F4F0"></textarea><div class="form-actions" style="margin-top:8px"><button type="button" class="primary" id="colorBulkSave">إضافة الأكواد</button></div></details><div class="color-search"><input id="colorSearch" type="search" placeholder="🔎 ابحث بالكود أو اسم اللون..." autocomplete="off"></div><div id="colorCodesTable"></div></article></section>
 <section id="products" class="page hidden"><article class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">الأصناف الموجودة في المخزون</h2><div style="display:flex;gap:10px;align-items:center;flex:1;justify-content:flex-end;flex-wrap:wrap"><button type="button" class="secondary-btn" style="flex:none;white-space:nowrap" onclick="openStockAdjustLog()">📋 سجل تسويات الجرد</button><div style="min-width:280px;flex:1;max-width:430px"><input id="productSearch" type="search" placeholder="🔎 ابحث بالاسم أو الكود أو الباتش أو صاحب الطلبية..." autocomplete="off" style="width:100%"></div></div></div><p class="notice">الأصناف تدخل المخزون عن طريق استلام الطلبيات، وتُحذف تلقائيًا عند بيع آخر كمية. لو العدد الفعلي مختلف (تالف، ضايع، فرق جرد): ⋮ جنب الصنف ← «⚖️ تسوية الكمية».</p><div id="productsTable" style="margin-top:16px"></div></article></section>
@@ -3895,6 +3895,50 @@ function printReceipt(kind,id){
   document.getElementById('dpWhatsAppReceipt').onclick=()=>sendReceiptWhatsApp(kind,id);
   document.getElementById('dpCloseReceipt').onclick=()=>box.remove();
 }
+// ===== (2.19.0) «💵 دفعة عميل» من أي صفحة (الزرار اللي فوق أو F6) — نفس دفعة ملف العميل بالظبط
+// (من غير فاتورة: بتنزّل رصيده، والزيادة عن اللي عليه بتفضل رصيد ليه)، والعميل لازم يكون موجود (عشان غلطة في الاسم متعملش عميل جديد).
+function openQuickPayment(pre){
+  document.getElementById('daftarQuickPay')?.remove();
+  const box=document.createElement('div');box.id='daftarQuickPay';
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:520px"><div class="settlement-title"><div><small>من غير ما تفتح صفحة العملاء</small><h3>💵 دفعة من عميل</h3></div><button type="button" class="settlement-close" data-close>×</button></div>
+<div class="form job-form"><label class="span-2">العميل<input data-c list="customerNamesList" autocomplete="off" placeholder="اكتب اسم العميل واختاره" value="${esc(pre||'')}"></label>
+<div class="notice span-2" data-bal>اختار العميل عشان تشوف اللي عليه.</div>
+<label>المبلغ<input data-a type="number" min="0" step="0.01" placeholder="0"></label>
+${treasuryOn()?`<label>الحساب<select data-acc>${treasuryOptionsHtml()}</select></label>`:`<label>طريقة الدفع<select data-m><option>كاش</option><option>محفظة</option><option>تحويل بنكي</option></select></label>`}
+<label>التاريخ<input data-d type="date" value="${today()}"></label>
+<label>ملاحظة<input data-n placeholder="اختياري"></label></div>
+<div class="settlement-actions"><button type="button" class="primary" data-save>سجّل الدفعة</button><button type="button" class="secondary-btn" data-save-print>سجّل واعرض الإيصال</button><button type="button" class="secondary-btn" data-close>إلغاء</button></div></div>`;
+  document.body.appendChild(box);
+  const q=s=>box.querySelector(s),close=()=>box.remove();
+  box.querySelectorAll('[data-close]').forEach(b=>b.onclick=close);q('.settlement-backdrop').onclick=close;
+  const name=()=>q('[data-c]').value.trim(),known=n=>!!n&&customers().includes(n);
+  const showBal=()=>{
+    const n=name(),el=q('[data-bal]');
+    if(!n){el.textContent='اختار العميل عشان تشوف اللي عليه.';return;}
+    if(!known(n)){el.innerHTML='<span class="treasury-neg">العميل ده مش موجود — اختاره من الاقتراحات.</span>';return;}
+    const b=customerBalance(n);
+    el.innerHTML=b>0.004?`عليه <strong class="treasury-neg">${money(b)}</strong> — <button type="button" class="secondary-btn" data-all>ادفع الكل</button>`:b<-0.004?`ليه رصيد <strong>${money(-b)}</strong> (مفيش عليه حاجة)`:'مفيش عليه حاجة دلوقتي.';
+    const all=el.querySelector('[data-all]');if(all)all.onclick=()=>{q('[data-a]').value=Math.round(b*100)/100;q('[data-a]').focus();};
+  };
+  q('[data-c]').addEventListener('input',showBal);q('[data-c]').addEventListener('change',()=>{showBal();if(known(name()))q('[data-a]').focus();});
+  showBal();(pre?q('[data-a]'):q('[data-c]')).focus();
+  const submit=async print=>{
+    const n=name(),a=Math.round((+q('[data-a]').value||0)*100)/100;
+    if(!known(n))return daftarAlert(n?`«${n}» مش موجود في العملاء — اختار الاسم من الاقتراحات.`:'اختار العميل.');
+    if(!(a>0))return daftarAlert('اكتب المبلغ.');
+    const sel=q('[data-acc]');
+    const tr=treasuryPick(sel?.value||'','in',a,null,sel);if(!tr)return;
+    const before=Math.max(0,customerBalance(n)),extra=Math.round((a-before)*100)/100;
+    if(extra>0&&!await daftarConfirm(`الدفعة (${money(a)}) أكبر من المستحق على «${n}» (${money(before)}).\nالزيادة ${money(extra)} هتفضل رصيد ليه وتتخصم تلقائيًا من أي فاتورة أو طلبية جديدة ليه.\nتكمّل؟`))return;
+    const p={id:daftarNextId(),customer:n,amount:a,date:q('[data-d]').value||today(),note:q('[data-n]').value.trim(),paymentMethod:tr.method||q('[data-m]')?.value||'كاش',appliedToBalance:a,...(extra>0?{advance:true}:{}),...(tr.acc?{accountId:tr.acc}:{})};
+    db.customerPayments.push(p);
+    close();save();scheduleRender();refreshOpenCustomerProfile(n);
+    daftarToast(`اتسجلت دفعة ${money(a)} من «${n}»${extra>0?` — ${money(extra)} بقوا رصيد ليه`:` — الباقي عليه ${money(Math.max(0,customerBalance(n)))}`}.`);
+    if(print)setTimeout(()=>printReceipt('payment',p.id),80);
+  };
+  q('[data-save]').onclick=()=>submit(false);q('[data-save-print]').onclick=()=>submit(true);
+}
+document.getElementById('quickPayBtn')?.addEventListener('click',()=>openQuickPayment(''));
 // إرسال إيصال الاستلام كصورة على واتساب العميل (نفس طريقة إرسال الفواتير).
 function sendReceiptWhatsApp(kind,id){
   const d=receiptDocData(kind,id);
@@ -7567,6 +7611,7 @@ details.panel-collapse[open]>summary{margin-bottom:14px}
 .form-step:has(.treasury-pick:not(.hidden)) .form-actions.span-2{grid-column:span 1}
 /* حالة المزامنة والحساب جوه رأس البرنامج (على الشمال) بدل ما يطفوا فوق الصفحة ويغطوا الجداول. */
 .brand-status{margin-inline-start:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;min-width:0}
+.quick-pay-btn{white-space:nowrap;padding:8px 14px;border-radius:999px;font-weight:700}   /* (2.19.0) «💵 دفعة عميل» من أي صفحة */
 #supabaseStatus{font:12px Tahoma,"Segoe UI",sans-serif;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);max-width:420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #daftarAccountBar{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:12px;color:var(--muted)}
 #daftarAccountBar button{font:inherit;cursor:pointer;border:0;background:transparent;color:var(--blue)}
@@ -9770,6 +9815,7 @@ const DAFTAR_SHORTCUTS=[
   ['F2','فاتورة جديدة'],
   ['F3','طلبية جديدة'],
   ['F4','عرض سعر جديد'],
+  ['F6','💵 دفعة من عميل (من أي صفحة)'],
   ['Ctrl + S','حفظ: الفاتورة / عرض السعر / الطلبية — أو زرار «حفظ» في النافذة المفتوحة'],
   ['Ctrl + P','حفظ وطباعة (الفاتورة وعرض السعر)'],
   ['Esc','يقفل النافذة المفتوحة'],
@@ -9836,6 +9882,7 @@ window.addEventListener('keydown',e=>{
   if(ctrl||e.altKey)return;
   const go={F2:'invoices',F3:'orders',F4:'quotes'}[e.key];
   if(go){e.preventDefault();if(!card)openNewDoc(go);return;}
+  if(e.key==='F6'){e.preventDefault();if(!card)openQuickPayment('');return;}
   if(e.key==='F1'){e.preventDefault();if(!card)showShortcutsHelp();}
 },true);
 
