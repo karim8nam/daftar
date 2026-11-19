@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.19.0";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.21.0";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -105,7 +105,7 @@
 <style id="daftarShareStyle">#daftarShareBox{position:fixed;left:50%;top:20px;transform:translateX(-50%);width:min(900px,calc(100vw - 40px));box-sizing:border-box;background:#fff;z-index:1000000;padding:30px;direction:rtl;color:#14213d;font-family:Tahoma,"Segoe UI",sans-serif;border:1px solid #cbd5e1;box-shadow:0 20px 60px rgba(0,0,0,.2)}#daftarShareBox .dp-bg{position:absolute;inset:0;background-position:bottom center;background-size:contain;background-repeat:no-repeat;opacity:.14;z-index:0;pointer-events:none}#daftarShareBox .dp-inner{position:relative;z-index:1}#daftarShareBox h1{text-align:center;margin:0 0 16px;color:#2563eb}#daftarShareBox table{width:100%;border-collapse:collapse;margin-top:20px}#daftarShareBox th,#daftarShareBox td{border:1px solid #cbd5e1;padding:9px;text-align:right}#daftarShareBox th{background:#eff6ff}#daftarShareBox .total{margin-top:20px;font-size:18px;font-weight:bold;line-height:2}</style><style id="daftarBackgroundPrintStyle">#daftarPrintBox{position:fixed;inset:0;background:#fff;z-index:999999;overflow:auto;padding:30px;direction:rtl;color:#14213d;font-family:Tahoma,"Segoe UI",sans-serif}#daftarPrintBox .dp-bg{position:absolute;inset:0;background-position:bottom center;background-size:contain;background-repeat:no-repeat;opacity:.14;z-index:0;pointer-events:none}#daftarPrintBox .dp-inner{position:relative;z-index:1;max-width:900px;margin:0 auto}#daftarPrintBox h1,#daftarPrintBox .total,#daftarPrintBox p,#daftarPrintBox table{position:relative;z-index:1}@media print{#daftarPrintBox{position:relative!important;inset:auto!important;overflow:visible!important;padding:0!important;height:auto!important;display:flow-root!important;box-sizing:border-box!important;min-height:193mm!important}#daftarPrintBox .dp-inner{max-width:100%}#daftarPrintBox .dp-bg{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style><style id="receiptPrintStyle">#daftarPrintBox .receipt-box{margin-top:45px;font-size:20px;line-height:2.1}#daftarPrintBox .receipt-meta{margin-top:35px;border-top:1px solid #cbd5e1;padding-top:18px;line-height:2}
 /* كشف حساب العميل بيتطبع على A4 (طويل)، وباقي المستندات (الفاتورة/العرض/الإيصال) A5 زي ما هي. */
 .row-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.row-actions button{height:34px!important;padding:0 12px!important;margin:0!important;font-size:13px!important;border-radius:8px!important;white-space:nowrap;line-height:1}.row-actions button.danger{border:1px solid currentColor!important;background:transparent}.row-actions .badge{white-space:nowrap}
-.statement-table{font-size:13px}.statement-table td,.statement-table th{padding:6px!important;vertical-align:top}.statement-table small{color:#64748b}
+.statement-table{font-size:13px}.statement-table td,.statement-table th{padding:6px!important;vertical-align:top}.statement-table td:first-child{white-space:nowrap}.statement-table small{color:#64748b}
 /* مسافات أصغر شوية في طباعة A5 عشان فاتورة فيها حوالي 12 صنف تفضل في ورقة واحدة. */
 @media print{#daftarPrintBox:not(.statement-print) table{font-size:12px;margin-top:12px}#daftarPrintBox:not(.statement-print) th,#daftarPrintBox:not(.statement-print) td{padding:5px 6px}#daftarPrintBox:not(.statement-print) h1{font-size:24px;margin:0 0 8px;padding-bottom:8px}#daftarPrintBox:not(.statement-print) .total{font-size:15px;margin-top:12px;line-height:1.7}}
 @media print{@page statementA4{size:A4;margin:10mm}#daftarPrintBox.statement-print{page:statementA4;min-height:276mm!important}#daftarPrintBox.statement-print .statement-table{font-size:11px}#daftarPrintBox.statement-print tr{break-inside:avoid}}
@@ -339,6 +339,8 @@ html,body{background:#fff!important}
       </article></div></div><div data-view="factory"><article class="panel" id="factoryLinkPanel"></article></div></section>
 </main>
 <!-- مكتبة توليد الباركود (QR) لروابط الواتساب والفيسبوك في الطباعة — متضمنة جوه البرنامج عشان تشتغل من غير نت. -->
+<!-- (2.20.0) أي غلطة وملفات البرنامج بتتحمّل بتتجمع هنا — 52-boot-ready.js بيبعتها (التحديث الخفيف اللي بيتجرّب بيرجع لو فيه أخطاء) -->
+<script>window.__daftarBootErrors=[];window.addEventListener('error',function(e){var b=window.__daftarBootErrors;if(b)b.push(String((e&&e.message)||'خطأ'));});</script>
 <script src="qrcode.js"></script>
 <script>
 // رقم نسخة البرنامج: على الكمبيوتر من البرنامج نفسه، وعلى الموبايل بيتكتب في الصفحة وقت تجهيز نسخة الموقع.
@@ -661,24 +663,16 @@ function customers(){return [...new Set([...db.invoices,...db.orders,...db.custo
 // الاستخدام الحقيقي للبرنامج (أُكِّد بقياس فعلي: مع عشرات الآلاف من السجلات كانت صفحة
 // العملاء وحدها بتاخد أكتر من 8 ثواني رندر واحد). المنطق هنا مطابق تمامًا لـ
 // customerBalance() سطر بسطر، فقط بيُحسب مرة واحدة لكل الجداول بدل تكراره.
+// (2.21.0) نفس محرك حساب العميل (customerBalanceFrom في 17-customer-ledger.js) بالظبط.
 function computeAllCustomerBalances(names){
-  const invByC=new Map(),ordByC=new Map(),payByC=new Map(),retByC=new Map();
-  for(const x of db.invoices){const k=x.customer;invByC.set(k,(invByC.get(k)||0)+(x.remaining!=null?+x.remaining:+x.total||0));}
+  const by=new Map(),g=n=>{if(!by.has(n))by.set(n,{inv:[],pay:[],ret:[]});return by.get(n);};
+  for(const n of names)g(n);
   // الطلبية مش عليه لحد ما تتفوتر، وعربونها محجوز ليها (بيتخصم من فاتورتها) — فالاتنين برا الرصيد.
-  for(const x of db.customerPayments){if(x.invoiceId)continue;const k=x.customer;payByC.set(k,(payByC.get(k)||0)+(+x.amount||0));}
-  for(const x of db.customerReturns){const k=x.customer;if(!retByC.has(k))retByC.set(k,[]);retByC.get(k).push(x);}
+  for(const x of db.invoices)if(by.has(x.customer))g(x.customer).inv.push(x);
+  for(const x of db.customerPayments)if(!x.invoiceId&&by.has(x.customer))g(x.customer).pay.push(x);
+  for(const x of db.customerReturns)if(by.has(x.customer))g(x.customer).ret.push(x);
   const result=new Map();
-  for(const name of names){
-    const opening=+db.customerBalances[name]||0;
-    let bal=opening+(invByC.get(name)||0)+(ordByC.get(name)||0)-(payByC.get(name)||0);
-    const rets=retByC.get(name)||[];
-    for(const r of rets){
-      const applied=r.appliedToDebt!=null?+r.appliedToDebt:Math.min(+r.netAmount||0,Math.max(0,bal));
-      bal-=applied;
-    }
-    bal-=unusedReturnCreditOf(rets);
-    result.set(name,bal);
-  }
+  for(const name of names)result.set(name,customerBalanceFrom(name,by.get(name)));
   return result;
 }
 function renderCustomerList(){
@@ -753,9 +747,10 @@ function orderRowHtml(o,orderNo,withSel,withStatus){
 function rowMenuButton(onclick,label){return `<button type="button" class="secondary-btn row-menu-btn" title="الأوامر" aria-label="${label}" aria-haspopup="menu" onclick="${onclick}">⋮</button>`;}
 // أعمدة وسطور قوايم الطلبيات والفواتير وعروض الأسعار (نفس السطر في «السابقة» وفي «اتسجلت دلوقتي» تحت الفورم).
 var ORDER_LIST_HEAD=['رقم','التاريخ','العميل','الأصناف','إجمالي الطلبية','الدفعة المقدمة'];
-var INVOICE_LIST_HEAD=['رقم','التاريخ','العميل','الأصناف','الإجمالي','المدفوع','المتبقي',''];
+var INVOICE_LIST_HEAD=['رقم','التاريخ','العميل','الأصناف','الإجمالي','المسدَّد','المتبقي',''];
 var QUOTE_LIST_HEAD=['رقم','التاريخ','العميل','الأصناف','الإجمالي','الحالة',''];
-function invoiceRowHtml(x,invNo){const rem=Math.max(0,+x.remaining||0),paid=Math.max(0,(+x.total||0)-rem);return `<tr><td>#${invNo.get(String(x.id))}</td><td>${x.date}</td><td>${esc(x.customer)}</td><td>${x.items.map(i=>esc(i.productName)+' × '+i.quantity).join('، ')}${transportNote(x)}</td><td>${money(x.total)}</td><td>${money(paid)}</td><td>${money(rem)}</td><td><div class="row-actions">${rowMenuButton(`openInvoiceMenu('${x.id}',this)`,'أوامر الفاتورة')}</div></td></tr>`;}
+// (2.21.0) المسدَّد والمتبقي دلوقتي (بعد سندات القبض والمرتجعات اللي جت بعد الفاتورة) — مش اللي اتكتب وقت ما اتعملت
+function invoiceRowHtml(x,invNo){const due=invoiceDue(x),rem=due.remaining,paid=due.paid;return `<tr><td>#${invNo.get(String(x.id))}</td><td>${x.date}</td><td>${esc(x.customer)}</td><td>${x.items.map(i=>esc(i.productName)+' × '+i.quantity).join('، ')}${transportNote(x)}</td><td>${money(x.total)}</td><td>${money(paid)}</td><td>${money(rem)}</td><td><div class="row-actions">${rowMenuButton(`openInvoiceMenu('${x.id}',this)`,'أوامر الفاتورة')}</div></td></tr>`;}
 function quoteRowHtml(x,quoteNo){return `<tr><td>#${quoteNo.get(String(x.id))}</td><td>${x.date}</td><td>${esc(x.customer)}</td><td>${x.items.map(i=>esc(i.productName)+' × '+quoteQtyText(i)).join('، ')}${transportNote(x)}</td><td>${money(x.total)}</td><td>${x.convertedTo?`<span class="badge">${quoteConvertedLabel(x)}</span>`:'—'}</td><td><div class="row-actions">${rowMenuButton(`openQuoteMenu('${x.id}',this)`,'أوامر عرض السعر')}</div></td></tr>`;}
 // ===== «اتسجلت دلوقتي» تحت فورم الجديد =====
 // الطلبية/الفاتورة/عرض السعر اللي لسه متسجل بيظهر تحت الفورم على طول (تراجعه أو تطبعه أو تبعته من ⋮)،
@@ -1323,7 +1318,10 @@ function sales(){const gross=salesInvoices().reduce((s,x)=>s+invoiceSalesValue(x
 function invoiceItemUnitCost(i){if(+i.factoryPrice)return +i.factoryPrice;const p=db.products.find(x=>String(x.id)===String(i.productId));return p?(+p.cost||+p.factoryPrice||0):0;}
 function invoiceCost(inv){return (inv.items||[]).reduce((s,i)=>s+invoiceItemUnitCost(i)*(+i.quantity||0),0);}
 function returnCost(r){const inv=db.invoices.find(x=>String(x.id)===String(r.invoiceId));const it=inv?.items?.[+r.itemIndex];return it?invoiceItemUnitCost(it)*(+r.quantity||0):0;}
-function customerBalance(name){const opening=+db.customerBalances[name]||0,inv=db.invoices.filter(x=>x.customer===name).reduce((s,x)=>s+(x.remaining!=null?+x.remaining:+x.total||0),0),ord=0,pay=db.customerPayments.filter(x=>x.customer===name&&!x.invoiceId).reduce((s,x)=>s+(+x.amount||0),0),rets=db.customerReturns.filter(x=>x.customer===name);let bal=opening+inv+ord-pay;for(const r of rets){const applied=r.appliedToDebt!=null?+r.appliedToDebt:Math.min(+r.netAmount||0,Math.max(0,bal));bal-=applied;}bal-=unusedReturnCreditOf(rets);return bal;}
+// (2.21.0) من محرك حساب العميل (17-customer-ledger.js) — من الحركات نفسها، مش «الباقي» المتخزن على الفاتورة
+function customerBalance(name){return customerBalanceFrom(name,customerRecords(name));}
+// (2.21.0) الطريقة القديمة (من «الباقي» المتخزن وتوزيع المرتجع وقت تسجيله) — لفحص البيانات بس (مقارنة القديم بالجديد)
+function legacyCustomerBalance(name){const opening=+db.customerBalances[name]||0,inv=db.invoices.filter(x=>x.customer===name).reduce((s,x)=>s+(x.remaining!=null?+x.remaining:+x.total||0),0),pay=db.customerPayments.filter(x=>x.customer===name&&!x.invoiceId).reduce((s,x)=>s+(+x.amount||0),0),rets=db.customerReturns.filter(x=>x.customer===name);let bal=opening+inv-pay;for(const r of rets){const applied=r.appliedToDebt!=null?+r.appliedToDebt:Math.min(+r.netAmount||0,Math.max(0,bal));bal-=applied;}bal-=unusedReturnCreditOf(rets);return bal;}
 // ===== رصيد مقدم للعميل (دفع أكتر من المستحق) =====
 // أي مبلغ زيادة عن المستحق (دفعة أكبر من مديونيته، أو دفعة مقدمة أكبر من قيمة الطلبية،
 // أو مدفوع أكبر من قيمة الفاتورة) بيتسجل دفعة مستقلة على حساب العميل — بنفس طريقة
@@ -2969,37 +2967,95 @@ function getCustomerLedger(name){
   const returns=db.customerReturns.filter(x=>x.customer===name).map(x=>({kind:'return',id:x.id,date:x.date||'',ref:x,sortId:String(x.id)}));
   return [...invoices,...orders,...payments,...returns].sort((a,b)=>String(b.date).localeCompare(String(a.date))||b.sortId.localeCompare(a.sortId,undefined,{numeric:true}));
 }
-function buildCustomerAllocation(name){
-  // المستحق على العميل = الفواتير بس. الطلبية اللي لسه ما اتفوترتش مش عليه، وعربونها محجوز ليها
-  // (بيظهر في سطر الطلبية، وبيتخصم من فاتورتها لما تتعمل).
-  const docs=[...db.invoices.filter(x=>x.customer===name).map(x=>({kind:'invoice',ref:x,total:+x.total||0,basePaid:+x.deposit||0,date:x.date||'',id:x.id}))]
-    .sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.id).localeCompare(String(b.id),undefined,{numeric:true}));
-  const paidByDoc=new Map(docs.map(d=>[d.kind+':'+d.id,Math.min(d.total,Math.max(0,d.basePaid))]));
-  const openingStart=Math.max(0,+db.customerBalances[name]||0);
-  let opening=openingStart;
-  // كل اللي بيقلل مديونية العميل بيتوزع على أقدم مستحق أولًا: الدفعات، والجزء من
-  // المرتجعات اللي اتخصم من المديونية، ورصيد المرتجعات اللي لسه ما اتستخدمش — بنفس
-  // منطق customerBalance بالظبط، عشان إجمالي الباقي في الكشف يطابق الرصيد الحالي.
-  const rets=db.customerReturns.filter(x=>x.customer===name);
-  const credits=[
-    ...db.customerPayments.filter(x=>x.customer===name&&!x.invoiceId).map(x=>({amount:+x.amount||0,date:x.date||'',id:x.id})),
-    ...rets.filter(r=>(+r.appliedToDebt||0)>0).map(r=>({amount:+r.appliedToDebt||0,date:r.date||'',id:r.id}))
-  ];
-  const unusedCredit=unusedReturnCreditOf(rets);
-  if(unusedCredit>0)credits.push({amount:unusedCredit,date:'9999',id:'credit'});
-  credits.sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.id).localeCompare(String(b.id),undefined,{numeric:true}));
-  const allocations=new Map();
-  let totalCredits=0;
-  for(const p of credits){
-    let amount=Math.max(0,p.amount);
-    totalCredits+=amount;
-    if(opening>0){const u=Math.min(opening,amount);opening-=u;amount-=u;}
-    for(const d of docs){if(amount<=0)break;const key=d.kind+':'+d.id;const already=paidByDoc.get(key)||0;const u=Math.min(Math.max(0,d.total-already),amount);if(u){paidByDoc.set(key,already+u);allocations.set(key,(allocations.get(key)||0)+u);amount-=u;}}
-  }
-  const allocatedTotal=[...allocations.values()].reduce((s,v)=>s+v,0);
-  return {docs,paidByDoc,allocations,openingRemaining:opening,unallocated:totalCredits-allocatedTotal-(openingStart-opening)};
-}
 
+// ===== (2.21.0) حساب العميل — محرك واحد لكل الشاشات =====
+// الرصيد بيتحسب من الحركات الحقيقية بس (مش من «الباقي» اللي كان بيتخزن على الفاتورة وقت ما اتعملت):
+//   الرصيد = الرصيد الافتتاحي + كل فاتورة/مديونية − اللي اتسدد فيها نفسها (المدفوع وقتها + الدفعة المقدمة من طلبيتها)
+//            − سندات القبض − المرتجعات (صافي قيمتها − اللي اترد نقدًا) + رصيد مرتجع اتحجز دفعة مقدمة لطلبية
+// عربون الطلبية اللي لسه ما اتفوترتش محجوز ليها: برا الرصيد (بيظهر لوحده)، وبيدخل لما يتخصم من فاتورتها.
+// نفس الحساب في: رصيد العميل، قايمة العملاء، ملف العميل، كشف الحساب، المتبقي على كل فاتورة. ومفيش «تسوية» بتخبّي فرق.
+const cR2=n=>Math.round((+n||0)*100)/100;
+const custByDateId=(a,b)=>String(a.date||'').localeCompare(String(b.date||''))||String(a.id).localeCompare(String(b.id),undefined,{numeric:true});
+// اللي اتسدد في الفاتورة نفسها (مش أكتر من قيمتها): المدفوع وقتها + الدفعة المقدمة اللي اتخصمت من طلبيتها.
+// (فواتير قديمة قبل خانة cashDeposit: «deposit» كان هو الاتنين مع بعض)
+function invoiceOwnPaid(x){
+  const own=x.cashDeposit!=null?Math.max(0,+x.cashDeposit||0)+Math.max(0,+x.orderDepositUsed||0):Math.max(0,+x.deposit||0);
+  return cR2(Math.min(Math.max(0,+x.total||0),own));
+}
+function invoiceOwnCash(x){return cR2(x.cashDeposit!=null?Math.max(0,+x.cashDeposit||0):Math.max(0,(+x.deposit||0)-(+x.orderDepositUsed||0)));}
+// أثر المرتجع على الحساب: صافي قيمته − اللي اترد للعميل نقدًا − اللي اتحجز منه دفعة مقدمة لطلبية
+function returnBalanceCredit(r){return cR2((+r.netAmount||0)-(r.paid?Math.max(0,+r.refundAmount||0):0)-Math.max(0,+r.creditUsed||0));}
+// سجلات العميل اللي بتأثر على حسابه (سندات القبض المربوطة بفاتورة من نسخ قديمة جدًا محسوبة في الفاتورة نفسها)
+function customerRecords(name){
+  return {inv:db.invoices.filter(x=>x.customer===name),pay:db.customerPayments.filter(x=>x.customer===name&&!x.invoiceId),ret:db.customerReturns.filter(x=>x.customer===name)};
+}
+function customerBalanceFrom(name,g){
+  let b=+db.customerBalances[name]||0;
+  for(const x of g.inv)b+=Math.max(0,+x.total||0)-invoiceOwnPaid(x);
+  for(const p of g.pay)b-=+p.amount||0;
+  for(const r of g.ret)b-=returnBalanceCredit(r);
+  return cR2(b);
+}
+// توزيع اللي اتدفع على الفواتير: كل فاتورة بياخد اللي اتسدد فيها نفسها الأول، وبعدين سندات القبض والمرتجعات
+// بالترتيب (الأقدم الأول) على الرصيد الافتتاحي وبعده أقدم فاتورة لسه عليها فلوس. اللي يفضل = رصيد للعميل.
+function customerAllocationFrom(name,g){
+  const opening=cR2(+db.customerBalances[name]||0);
+  const docs=g.inv.map(x=>({kind:'invoice',ref:x,id:x.id,date:x.date||'',total:cR2(Math.max(0,+x.total||0)),basePaid:invoiceOwnPaid(x)})).sort(custByDateId);
+  const paidByDoc=new Map(docs.map(d=>['invoice:'+d.id,d.basePaid])),allocations=new Map();
+  const credits=[...g.pay.map(p=>({date:p.date||'',id:p.id,amount:cR2(+p.amount||0)})),...g.ret.map(r=>({date:r.date||'',id:r.id,amount:returnBalanceCredit(r)}))].sort(custByDateId);
+  let openingLeft=Math.max(0,opening),avail=Math.max(0,-opening),totalCredits=0;
+  for(const c of credits){
+    totalCredits+=c.amount;avail=cR2(avail+c.amount);
+    if(avail<=0)continue;
+    if(openingLeft>0){const u=Math.min(openingLeft,avail);openingLeft=cR2(openingLeft-u);avail=cR2(avail-u);}
+    for(const d of docs){if(avail<=0)break;const k='invoice:'+d.id,already=paidByDoc.get(k)||0,u=cR2(Math.min(Math.max(0,d.total-already),avail));if(u>0){paidByDoc.set(k,cR2(already+u));allocations.set(k,cR2((allocations.get(k)||0)+u));avail=cR2(avail-u);}}
+  }
+  // رصيد افتتاحي «له» أو فلوس قبل الفواتير: بتتوزع برضو على الفواتير (من غير ما تبقى «سند قبض»)
+  if(avail>0){for(const d of docs){if(avail<=0)break;const k='invoice:'+d.id,already=paidByDoc.get(k)||0,u=cR2(Math.min(Math.max(0,d.total-already),avail));if(u>0){paidByDoc.set(k,cR2(already+u));avail=cR2(avail-u);}}}
+  const remainingByDoc=new Map(docs.map(d=>[String(d.id),cR2(Math.max(0,d.total-(paidByDoc.get('invoice:'+d.id)||0)))]));
+  return {docs,paidByDoc,allocations,remainingByDoc,openingRemaining:openingLeft,unallocated:avail,totalCredits,balance:customerBalanceFrom(name,g)};
+}
+function buildCustomerAllocation(name){return customerAllocationFrom(name,customerRecords(name));}
+// المسدَّد والمتبقي على كل فاتورة دلوقتي (بعد سندات القبض والمرتجعات اللي جت بعدها) — لقوايم الفواتير.
+// بيتحسب مرة واحدة لكل حفظة (لكل العملاء مع بعض).
+let daftarInvoiceDueCache=null;
+function invoiceDueMap(){
+  const key=daftarDataRevision+'|'+db.invoices.length+'|'+db.customerPayments.length+'|'+db.customerReturns.length;
+  if(daftarInvoiceDueCache&&daftarInvoiceDueCache.key===key&&daftarInvoiceDueCache.db===db)return daftarInvoiceDueCache.map;
+  const by=new Map(),g=n=>{if(!by.has(n))by.set(n,{inv:[],pay:[],ret:[]});return by.get(n);};
+  for(const x of db.invoices)g(x.customer).inv.push(x);
+  for(const p of db.customerPayments)if(!p.invoiceId&&by.has(p.customer))g(p.customer).pay.push(p);
+  for(const r of db.customerReturns)if(by.has(r.customer))g(r.customer).ret.push(r);
+  const map=new Map();
+  for(const [name,grp] of by){const a=customerAllocationFrom(name,grp);for(const d of a.docs){const rem=a.remainingByDoc.get(String(d.id))||0;map.set(String(d.id),{paid:cR2(d.total-rem),remaining:rem});}}
+  daftarInvoiceDueCache={key,db,map};
+  return map;
+}
+function invoiceDue(x){return invoiceDueMap().get(String(x.id))||{paid:invoiceOwnPaid(x),remaining:cR2(Math.max(0,(+x.total||0)-invoiceOwnPaid(x)))};}
+
+// حركات حساب العميل بالترتيب — كل حركة في سطر (مدين = عليه، دائن = له). نفس الرصيد بالظبط.
+// {date, id, label, doc, details, debit, credit, kind, ref}
+function customerAccountEntries(name){
+  const g=customerRecords(name),ev=[];
+  const ordByInv=new Map();for(const o of db.orders)if(o.customer===name&&o.invoiceId)ordByInv.set(String(o.invoiceId),o);
+  for(const x of g.inv){
+    const no=displayNo('invoices',x.id),total=cR2(Math.max(0,+x.total||0));
+    if(isDebtRecord(x))ev.push({date:x.date||'',id:+x.id||0,seq:0,kind:'debt',ref:x,label:x.jobId?'شغلانة':'إشعار مديونية',doc:'',details:esc(x.note||'')||'مديونية على العميل',debit:total,credit:0});
+    else ev.push({date:x.date||'',id:+x.id||0,seq:0,kind:'invoice',ref:x,label:'عرض سعر',doc:'#'+no,details:customerItemsText(x.items,true)+(docDiscount(x)>0?`<br>الخصم: ${money(docDiscount(x))}`:'')+(docTransport(x)>0?`<br>مصروفات النقل: ${money(docTransport(x))}`:''),debit:total,credit:0});
+    const own=invoiceOwnPaid(x),cash=Math.min(invoiceOwnCash(x),own),fromOrder=cR2(own-cash);
+    if(cash>0)ev.push({date:x.date||'',id:+x.id||0,seq:1,kind:'cash',ref:x,label:'سند قبض',doc:'#'+no,details:`مدفوع مع ${isDebtRecord(x)?'المديونية':'عرض سعر #'+no}${x.paymentMethod?' — '+esc(x.paymentMethod):''}`,debit:0,credit:cash});
+    if(fromOrder>0){const o=ordByInv.get(String(x.id));ev.push({date:x.date||'',id:+x.id||0,seq:2,kind:'orderDeposit',ref:x,label:'دفعة مقدمة',doc:o?'طلبية #'+displayNo('orders',o.id):'',details:`اتخصمت من عرض سعر #${no}`,debit:0,credit:fromOrder});}
+  }
+  for(const p of g.pay)ev.push({date:p.date||'',id:+p.id||0,seq:0,kind:'payment',ref:p,label:p.advance?'دفعة على الحساب':'سند قبض',doc:'',details:`${esc(p.paymentMethod||'كاش')}${p.note?' — '+esc(p.note):''}`,debit:0,credit:cR2(+p.amount||0)});
+  for(const r of g.ret){
+    ev.push({date:r.date||'',id:+r.id||0,seq:0,kind:'return',ref:r,label:'مرتجع مبيعات',doc:r.invoiceId?'عرض سعر #'+displayNo('invoices',r.invoiceId):'',details:`${esc(r.productName||'')} × ${r.quantity||0}`,debit:0,credit:cR2(+r.netAmount||0)});
+    if(r.paid&&+r.refundAmount>0)ev.push({date:r.date||'',id:+r.id||0,seq:1,kind:'refund',ref:r,label:'رد نقدية للعميل',doc:'',details:`قيمة المرتجع اترد له نقدًا`,debit:cR2(+r.refundAmount),credit:0});
+    if(+r.creditUsed>0)ev.push({date:r.date||'',id:+r.id||0,seq:2,kind:'creditHold',ref:r,label:'تحويل لدفعة مقدمة',doc:'',details:'من رصيد المرتجع لدفعة مقدمة طلبية',debit:cR2(+r.creditUsed),credit:0});
+  }
+  return ev.sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.id-b.id||a.seq-b.seq);
+}
+// نص الأصناف في الكشف (الكود والحصوة والباتش)
+function customerItemsText(items,isInvoice){return (items||[]).map(i=>{const d=isInvoice?invoiceItemOrigin(i):{sku:i.sku||'',batchNo:i.batchNo||'',pebble:i.pebble||''};const det=[d.sku&&('كود '+esc(d.sku)),d.pebble&&('حصوة '+esc(d.pebble)),d.batchNo&&('باتش '+esc(d.batchNo))].filter(Boolean).join('، ');return `${esc(i.productName)}${det?` <small>(${det})</small>`:''} × ${i.quantity||0}${i.unitPrice!=null||i.salePrice!=null?` × ${money(i.unitPrice??i.salePrice)}`:''}`;}).join('<br>');}
 // ===== اختبارات فعلية على الحسابات (بتشتغل على بيانات وهمية مؤقتة، وترجّع بياناتك
 // الحقيقية زي ما هي 100% بعد ما تخلص، حتى لو حصل خطأ غير متوقع أثناء التشغيل) =====
 function daftarAssertEqual(actual,expected,label,results){
@@ -3034,7 +3090,7 @@ function runDaftarTests(){
     // 4) رصيد العميل = الرصيد الافتتاحي + المستحقات − الدفعات
     db=structuredClone(initial);
     db.customerBalances={'سارة':100};
-    db.invoices=[{id:1,customer:'سارة',total:200,remaining:150}];
+    db.invoices=[{id:1,customer:'سارة',total:200,deposit:50,remaining:150}];
     db.customerPayments=[{id:1,customer:'سارة',amount:80}];
     daftarAssertEqual(customerBalance('سارة'),170,'رصيد العميل = افتتاحي + مستحقات − مدفوعات',results);
 
@@ -3126,7 +3182,7 @@ function runDaftarTests(){
     db.invoices=[{id:1,customer:'ط',date:'2026-01-02',total:1000,deposit:300,cashDeposit:300,remaining:700,items:[{productName:'أ',quantity:2,unitPrice:500}]}];
     db.orders=[{id:2,customer:'ط',date:'2026-01-03',total:400,deposit:150,cashDeposit:100,creditUsed:50,depositUsed:0,received:false,items:[{productName:'ب',quantity:1,salePrice:400}]}];
     db.customerPayments=[{id:3,customer:'ط',amount:200,date:'2026-01-04'}];
-    db.customerReturns=[{id:4,customer:'ط',invoiceId:1,itemIndex:0,productName:'أ',quantity:1,netAmount:500,appliedToDebt:420,paid:false,creditAmount:80,creditUsed:50,date:'2026-01-05'},{id:5,customer:'ط',invoiceId:1,itemIndex:0,productName:'أ',quantity:0,netAmount:0,appliedToDebt:30,paid:true,refundAmount:0,creditAmount:0,date:'2026-01-06'}];
+    db.customerReturns=[{id:4,customer:'ط',invoiceId:1,itemIndex:0,productName:'أ',quantity:1,netAmount:500,appliedToDebt:420,paid:false,creditAmount:80,creditUsed:50,date:'2026-01-05'},{id:5,customer:'ط',invoiceId:1,itemIndex:0,productName:'أ',quantity:0,netAmount:30,appliedToDebt:30,paid:true,refundAmount:0,creditAmount:0,date:'2026-01-06'}];
     // الطلبية (400) لسه ما اتسلمتش، فمش داخلة في الكشف — الدفعة المقدمة الكاش بتاعها (100) بس اللي ظاهر.
     const st=customerStatementData('ط');
     daftarAssertEqual([st.balance,st.rows.filter(r=>!r.info).slice(-1)[0].balance,st.rows.some(r=>r.label==='تسوية'),st.pending.total,customerBalance('ط')],[170,170,false,400,170],'كشف الحساب المطبوع = رصيد البرنامج، من غير الطلبيات اللي لسه ما اتسلمتش',results);
@@ -3212,6 +3268,21 @@ function runDaftarTests(){
     db.customerPayments=[{id:53,customer:'ع',date:'2026-05-04',amount:400}];
     const st24=customerStatementData('ع'),al24=buildCustomerAllocation('ع');
     daftarAssertEqual([customerBalance('ع'),st24.balance,st24.rows.some(r=>r.label==='تسوية'),sales(),monthData(2026,5).invoices.length,displayNo('invoices',52),al24.paidByDoc.get('invoice:51'),customers().includes('ع')],[1100,1100,false,500,2,2,100,true],'المديونية اليدوية في الرصيد والكشف ومش في المبيعات',results);
+
+    // 28) (2.21.0) حساب العميل من الحركات: المتبقي على عرض السعر بيقل بسند القبض اللي جه بعده (مش الرقم اللي اتكتب وقتها)،
+    //     والكشف كل حركة في سطر (عرض السعر مدين وسند القبض اللي معاه دائن لوحده)، والقديم = الجديد لو البيانات سليمة
+    db=structuredClone(initial);
+    db.invoices=[{id:90,customer:'ف',date:'2026-06-01',total:1000,deposit:400,cashDeposit:400,orderDepositUsed:0,remaining:600,items:[{productName:'أ',quantity:2,unitPrice:500}]},
+      {id:92,customer:'ف',date:'2026-06-03',total:300,deposit:0,cashDeposit:0,remaining:300,items:[{productName:'ب',quantity:1,unitPrice:300}]}];
+    db.customerPayments=[{id:91,customer:'ف',date:'2026-06-02',amount:700}];
+    db.customerReturns=[{id:93,customer:'ف',invoiceId:92,itemIndex:0,productName:'ب',quantity:1,netAmount:300,appliedToDebt:200,paid:true,refundAmount:100,creditAmount:0,creditUsed:0,date:'2026-06-04'}];
+    const st28=customerStatementData('ف'),d90=invoiceDue(db.invoices[0]),d92=invoiceDue(db.invoices[1]);
+    daftarAssertEqual([customerBalance('ف'),legacyCustomerBalance('ف'),d90.paid,d90.remaining,d92.remaining,st28.balance,st28.rows.map(r=>r.label)],
+      [0,0,1000,0,0,0,['عرض سعر','سند قبض','سند قبض','عرض سعر','مرتجع مبيعات','رد نقدية للعميل']],'(2.21.0) المتبقي من الحركات وكل حركة في سطر في الكشف',results);
+    // 29) (2.21.0) «الباقي» المتخزن غلط (بيانات قديمة): الحساب الجديد من الحركات، والقديم بيبان مختلف في «فحص البيانات»
+    db=structuredClone(initial);
+    db.invoices=[{id:95,customer:'ص',date:'2026-06-01',total:500,deposit:0,cashDeposit:0,remaining:100,items:[{productName:'أ',quantity:1,unitPrice:500}]}];
+    daftarAssertEqual([customerBalance('ص'),legacyCustomerBalance('ص'),invoiceDue(db.invoices[0]).remaining,customerStatementData('ص').balance],[500,100,500,500],'(2.21.0) الرصيد من الحركات مش من «الباقي» المتخزن',results);
 
     // 25) الخزنة: الرصيد = أول المدة + الداخل − الخارج ± التحويلات، من السجلات اللي عليها حساب بس،
     //     والحساب مينفعش يصرف أكتر من اللي فيه
@@ -4707,56 +4778,24 @@ async function convertQuoteToOrder(id){
 // ===== طباعة كشف حساب العميل (A4) =====
 // كل حركة بتأثر على الحساب بالترتيب: مدين (عليه) ودائن (له) والرصيد بعدها. الرصيد
 // النهائي لازم يساوي رصيد العميل في البرنامج؛ لو فيه فرق من بيانات قديمة، بيظهر كسطر تسوية.
+// (2.21.0) من محرك حساب العميل (customerAccountEntries): كل حركة في سطر — عرض السعر مدين، وسند القبض اللي معاه
+// سطر دائن لوحده — والرصيد بعد كل سطر. آخر رصيد = رصيد العميل في البرنامج بالظبط (نفس الحساب)، فمفيش «تسوية».
+// عربون الطلبية اللي لسه ما اتسلمتش محجوز ليها ومش في الرصيد: سطر للعلم بس + ملحوظة تحت الكشف.
 function customerStatementData(name){
-  const ev=[];
-  const itemsText=(items,isInvoice)=>(items||[]).map(i=>{const d=isInvoice?invoiceItemOrigin(i):{sku:i.sku||'',batchNo:i.batchNo||'',pebble:i.pebble||''};const det=[d.sku&&('كود '+esc(d.sku)),d.pebble&&('حصوة '+esc(d.pebble)),d.batchNo&&('باتش '+esc(d.batchNo))].filter(Boolean).join('، ');return `${esc(i.productName)}${det?` <small>(${det})</small>`:''} × ${i.quantity||0}${i.unitPrice!=null||i.salePrice!=null?` × ${money(i.unitPrice??i.salePrice)}`:''}`;}).join('<br>');
-  // الكشف المطبوع = الحركة الفعلية بس: البضاعة اللي خرجت (الفواتير) والفلوس (الدفعات
-  // والعرابين والمرتجعات). الطلبية اللي لسه ما اتسلمتش مش بتتحسب عليه — بيظهر بس الدفعة المقدمة
-  // اللي دفعه فيها (فلوس دخلت فعلاً)، وبتتذكر تحت الكشف كملاحظة.
   const orderCash=o=>Math.max(0,(o.cashDeposit!=null?+o.cashDeposit:(+o.deposit||0)-(+o.creditUsed||0)));
-  const ordersById=new Map(db.orders.map(o=>[String(o.id),o]));
-  for(const o of db.orders.filter(x=>x.customer===name)){
-    const cash=orderCash(o);
-    if(o.invoiced){
-      if(cash>0)ev.push({date:o.date||'',id:+o.id||0,label:'دفعة مقدمة طلبية',details:`طلبية #${displayNo('orders',o.id)} (اتسلمت في عرض سعر #${displayNo('invoices',o.invoiceId)})`,debit:0,credit:cash});
-      continue;
-    }
-    // طلبية لسه ما اتفوترتش: عربونها محجوز ليها ومش داخل في الرصيد — سطر للعلم بس. ولو جزء منه
-    // جه من رصيد مرتجعات، سطر المرتجع بيحسبه للعميل، فبنرجّعه هنا (اتحجز للطلبية).
+  const ev=customerAccountEntries(name);
+  for(const o of db.orders.filter(x=>x.customer===name&&!x.invoiced)){
     const held=orderUnusedDeposit(o);
-    if(held>0)ev.push({date:o.date||'',id:+o.id||0,label:'دفعة مقدمة طلبية (محجوز)',details:`طلبية #${displayNo('orders',o.id)} لسه ما اتسلمتش — الدفعة المقدمة ${money(held)} بيتخصم من قيمتها عند الاستلام، ومش داخل في الرصيد`,debit:0,credit:0,info:true,infoAmount:held});
-    const fromRet=Math.min(+o.creditUsed||0,held);
-    if(fromRet>0)ev.push({date:o.date||'',id:(+o.id||0)+1,label:'رصيد مرتجعات اتحجز كعربون',details:`لطلبية #${displayNo('orders',o.id)}`,debit:fromRet,credit:0});
+    if(held>0)ev.push({date:o.date||'',id:+o.id||0,seq:9,kind:'held',label:'دفعة مقدمة (محجوزة)',doc:'طلبية #'+displayNo('orders',o.id),details:`الطلبية لسه ما اتسلمتش — ${money(held)} بتتخصم من قيمتها عند التسليم، ومش داخلة في الرصيد`,debit:0,credit:0,info:true,infoAmount:held});
   }
-  for(const x of db.invoices.filter(x=>x.customer===name)){
-    if(isDebtRecord(x)){ev.push({date:x.date||'',id:+x.id||0,label:x.jobId?'شغلانة':'مديونية',details:esc(x.note)||'مديونية على العميل',debit:+x.total||0,credit:0});continue;}
-    // دفعة مقدمة الطلبية ظهر في سطره وقت ما اندفع، فمش بيتحسب تاني هنا. الجزء اللي جه من
-    // رصيد المرتجعات ظاهر في سطر المرتجع نفسه.
-    const linked=db.orders.find(o=>String(o.invoiceId)===String(x.id));
-    const alreadyShown=linked?orderCash(linked)+(+linked.creditUsed||0):0;
-    const fromOrder=Math.max(0,(+x.orderDepositUsed||0)-alreadyShown);
-    const credit=(+x.cashDeposit||0)+fromOrder;
-    const parts=[];if(+x.cashDeposit>0)parts.push('مدفوع '+money(x.cashDeposit));if(linked&&+x.orderDepositUsed>0)parts.push('مخصوم منه دفعة مقدمة طلبية #'+displayNo('orders',linked.id)+' '+money(x.orderDepositUsed));
-    ev.push({date:x.date||'',id:+x.id||0,label:`عرض سعر #${displayNo('invoices',x.id)}`,details:itemsText(x.items,true)+(docDiscount(x)>0?`<br>الخصم: ${money(docDiscount(x))}`:'')+(docTransport(x)>0?`<br>مصروفات النقل: ${money(docTransport(x))}`:'')+(parts.length?`<br><small>${parts.join(' — ')}</small>`:''),debit:+x.total||0,credit});
-  }
-  for(const p of db.customerPayments.filter(x=>x.customer===name&&!x.invoiceId))ev.push({date:p.date||'',id:+p.id||0,label:'دفعة',details:`${esc(p.paymentMethod)||'كاش'}${p.note?' — '+esc(p.note):''}`,debit:0,credit:+p.amount||0});
-  for(const r of db.customerReturns.filter(x=>x.customer===name)){
-    const credit=(+r.appliedToDebt||0)+(r.paid?0:(+r.creditAmount||0));
-    ev.push({date:r.date||'',id:+r.id||0,label:'مرتجع',details:`${esc(r.productName)} × ${r.quantity||0} — صافي ${money(r.netAmount||0)}${r.paid&&+r.refundAmount>0?`<br><small>رُدّ للعميل نقدًا ${money(r.refundAmount)}</small>`:''}`,debit:0,credit});
-  }
-  ev.sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.id-b.id);
-  const opening=+db.customerBalances[name]||0;
+  ev.sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.id-b.id||a.seq-b.seq);
+  const opening=cR2(+db.customerBalances[name]||0);
   const rows=[];let bal=0,totalDebit=0,totalCredit=0;
-  if(opening){bal=opening;rows.push({date:'',label:'رصيد افتتاحي',details:'',debit:opening>0?opening:0,credit:opening<0?-opening:0,balance:bal});if(opening>0)totalDebit+=opening;else totalCredit+=-opening;}
-  for(const e of ev){bal+=e.debit-e.credit;totalDebit+=e.debit;totalCredit+=e.credit;rows.push({...e,balance:bal});}
-  // رصيد البرنامج = الفواتير بس (الطلبيات اللي لسه ما اتفوترتش مش داخلة فيه)، فالكشف لازم
-  // يطابقه بالظبط. لو فيه فرق من بيانات قديمة، بيظهر كسطر تسوية.
+  if(opening){bal=opening;rows.push({date:'',label:'رصيد افتتاحي',doc:'',details:'',debit:opening>0?opening:0,credit:opening<0?-opening:0,balance:bal});if(opening>0)totalDebit+=opening;else totalCredit+=-opening;}
+  for(const e of ev){if(!e.info){bal=cR2(bal+e.debit-e.credit);totalDebit+=e.debit;totalCredit+=e.credit;}rows.push({...e,balance:bal});}
   const pending=db.orders.filter(o=>o.customer===name&&!o.invoiced);
-  const pendingTotal=pending.reduce((s,o)=>s+(+o.total||0),0);
   const appBalance=customerBalance(name);
-  const real=Math.round(appBalance*100)/100,diff=Math.round((real-bal)*100)/100;
-  if(Math.abs(diff)>=0.01){bal=real;rows.push({date:'',label:'تسوية',details:'فرق من بيانات قديمة',debit:diff>0?diff:0,credit:diff<0?-diff:0,balance:bal});if(diff>0)totalDebit+=diff;else totalCredit+=-diff;}
-  return {rows,totalDebit,totalCredit,balance:real,pending:{count:pending.length,total:pendingTotal,deposits:pending.reduce((s,o)=>s+orderCash(o),0)},appBalance};
+  return {rows,totalDebit:cR2(totalDebit),totalCredit:cR2(totalCredit),balance:bal,pending:{count:pending.length,total:pending.reduce((s,o)=>s+(+o.total||0),0),deposits:pending.reduce((s,o)=>s+orderCash(o),0)},appBalance};
 }
 function customerStatementInnerHtml(name){
   const s=customerStatementData(name);
@@ -4765,7 +4804,7 @@ function customerStatementInnerHtml(name){
   // نفس تصميم الفاتورة: إطار العنوان والشعار فوق، والاسم والرقم والباركود تحت.
   const meta=[`العميل: <strong>${esc(name)}</strong>`,phone?`الموبايل: <span dir="ltr">${esc(phone)}</span>`:'',`تاريخ الكشف: ${today()}`].filter(Boolean);
   return salesDocHeaderHtml('كشف حساب عميل',meta)+
-    `<table class="statement-table"><tr><th>التاريخ</th><th>البيان</th><th>التفاصيل</th><th>مدين</th><th>دائن</th><th>الرصيد بعد الحركة</th></tr>${s.rows.map(r=>`<tr${r.info?' style="color:#64748b"':''}><td>${esc(r.date)||'—'}</td><td>${esc(r.label)}</td><td>${r.details||'—'}</td><td>${r.debit?money(r.debit):'—'}</td><td>${r.credit?money(r.credit):'—'}</td><td>${r.info?'—':balText(r.balance)}</td></tr>`).join('')||'<tr><td colspan="6">لا توجد حركات.</td></tr>'}</table>`+
+    `<table class="statement-table"><tr><th>التاريخ</th><th>البيان</th><th>المستند</th><th>التفاصيل</th><th>مدين</th><th>دائن</th><th>الرصيد</th></tr>${s.rows.map(r=>`<tr${r.info?' style="color:#64748b"':''}><td>${esc(r.date)||'—'}</td><td>${esc(r.label)}</td><td>${esc(r.doc||'')||'—'}</td><td>${r.details||'—'}</td><td>${r.debit?money(r.debit):'—'}</td><td>${r.credit?money(r.credit):'—'}</td><td>${r.info?'—':balText(r.balance)}</td></tr>`).join('')||'<tr><td colspan="7">لا توجد حركات.</td></tr>'}</table>`+
     `<div class="total">إجمالي المدين: ${money(s.totalDebit)}<br>إجمالي الدائن: ${money(s.totalCredit)}<br>الرصيد الحالي: ${balText(s.balance)}</div>`+
     (s.pending.count?`<p class="doc-note">ملحوظة: فيه ${s.pending.count} طلبية مطلوبة لسه ما اتسلمتش بإجمالي ${money(s.pending.total)} — مش داخلة في الكشف، وقيمتها هتتحسب عند التسليم${s.pending.deposits?`، والدفعة المقدمة المدفوع فيها (${money(s.pending.deposits)}) محجوز ليها وهيتخصم منها عند الاستلام`:''}.</p>`:'')+
     salesDocContactHtml();
@@ -8706,10 +8745,20 @@ function runDataCheck(){
   }
   // 2) أرقام فاتورة مش منطقية
   for(const inv of db.invoices){
-    const total=+inv.total||0,rem=+inv.remaining||0,dep=+inv.deposit||0,no=displayNo('invoices',inv.id);
-    if(rem<-0.009||rem>total+0.009)add('warn',`فاتورة #${no} لـ«${inv.customer}»: الباقي (${money(rem)}) مش منطقي مع قيمتها (${money(total)})`,'الباقي لازم يبقى بين صفر وقيمة الفاتورة.',goSearch('invoices','list','#invoiceSearch',String(no)));
-    else if(dep>total+0.009)add('warn',`فاتورة #${no} لـ«${inv.customer}»: المدفوع (${money(dep)}) أكبر من قيمتها (${money(total)})`,'المدفوع في الفاتورة المفروض ميزدش عن قيمتها (الزيادة بتتسجل رصيد للعميل لوحدها).',goSearch('invoices','list','#invoiceSearch',String(no)));
+    const total=+inv.total||0,dep=+inv.deposit||0,no=displayNo('invoices',inv.id);
+    if(dep>total+0.009)add('warn',`فاتورة #${no} لـ«${inv.customer}»: المدفوع (${money(dep)}) أكبر من قيمتها (${money(total)})`,'المدفوع في الفاتورة المفروض ميزدش عن قيمتها (الزيادة بتتسجل رصيد للعميل لوحدها).',goSearch('invoices','list','#invoiceSearch',String(no)));
     if(!isDebtRecord(inv)&&!(inv.items||[]).length)add('warn',`فاتورة #${no} لـ«${inv.customer}» مفيهاش أصناف`,'فاتورة بيع من غير أصناف — غالبًا اتسجلت بالغلط.',goSearch('invoices','list','#invoiceSearch',String(no)));
+  }
+  // 2ب) (2.21.0) الرصيد من الحركات (الحساب الجديد) مختلف عن الحساب القديم (من «الباقي» اللي كان بيتخزن على الفاتورة،
+  //     وتوزيع المرتجع وقت تسجيله). الجديد هو اللي في كل حتة دلوقتي — الفرق معناه سجل قديم أرقامه مش راكبة على بعض.
+  const balText2=b=>b>0.004?`${money(b)} مدين`:b<-0.004?`${money(-b)} دائن`:money(0);
+  for(const n of names){
+    const nb=cR2(bals.get(n)||0),ob=cR2(legacyCustomerBalance(n));if(Math.abs(nb-ob)<0.01)continue;
+    const why=[];
+    for(const x of db.invoices.filter(i=>i.customer===n)){if(x.remaining==null)continue;const calc=cR2(Math.max(0,(+x.total||0)-invoiceOwnPaid(x)));if(Math.abs(calc-(+x.remaining||0))>=0.01)why.push(`${isDebtRecord(x)?'مديونية':'عرض سعر #'+displayNo('invoices',x.id)} (${x.date||''}): «الباقي» المتخزن ${money(x.remaining)} لكن قيمتها ${money(x.total)} − اللي اتسدد فيها ${money(invoiceOwnPaid(x))} = ${money(calc)}`);}
+    for(const r of db.customerReturns.filter(x=>x.customer===n)){const parts=cR2((+r.appliedToDebt||0)+(r.paid?(+r.refundAmount||0):(+r.creditAmount||0)));if(Math.abs(parts-(+r.netAmount||0))>=0.01)why.push(`مرتجع «${r.productName||''}» (${r.date||''}): صافي قيمته ${money(r.netAmount||0)} لكن متسجل منه ${money(parts)}`);}
+    add('warn',`«${n}»: الرصيد من الحركات ${balText2(nb)} — الحساب القديم كان ${balText2(ob)} (فرق ${money(Math.abs(nb-ob))})`,
+      `من 2.21.0 الرصيد بيتحسب من الحركات نفسها في كل حتة (ملف العميل وكشف الحساب والأرصدة). راجع كشف حسابه وصحّح لو لازم (مديونية أو سند قبض بملاحظة «تصحيح»).${why.length?' • '+why.slice(0,6).join(' • '):''}`,goCustomer(n));
   }
   // 3) مخزون بالسالب
   for(const p of db.products)if((+p.stock||0)<0)add('danger',`«${p.name}»${p.sku?` (كود ${p.sku})`:''} رصيده في المخزون بالسالب (${p.stock})`,'اتباع منه أكتر من الموجود. راجع الكمية أو آخر فاتورة.',goSearch('products',null,'#productSearch',p.sku||p.name));
@@ -8814,7 +8863,17 @@ let daftarUpdateInfo=null; // {manifest,error,checkedAt}
 let daftarUpdateBase=null;  // للاختبارات بس (سيرفر محلي بدل Supabase)
 const updateBase=()=>daftarUpdateBase||SUPABASE_URL;
 const okManifest=m=>!!m&&/^\d+\.\d+\.\d+$/.test(String(m.version||''))&&Array.isArray(m.parts)&&m.parts.length>0&&+m.size>0;
-function updateAvailable(){const m=daftarUpdateInfo?.manifest;return m&&compareVersions(m.version,DAFTAR_APP_VERSION)>0?m:null;}
+// (2.20.0) التحديث المتاح للجهاز ده: «⚡ خفيف» (ملفات البرنامج بس — لو أساس الجهاز = أساس الكود المنشور ومتعلّمش بايظ عليه)،
+// وإلا «كامل» (ملف التسطيب — لو أحدث من اللي على الجهاز). ← {kind,version,size,publishedAt} أو null
+const publishedVersion=m=>m?(m.code&&compareVersions(m.code.version,m.version)>0?m.code.version:m.version):'';
+function updateAvailable(){
+  const info=daftarUpdateInfo,m=info?.manifest;if(!m)return null;
+  const L=info.local||{},c=info.codeOk?m.code:null;
+  if(c&&L.base&&c.base===L.base&&compareVersions(c.version,DAFTAR_APP_VERSION)>0&&!(L.bad||[]).includes(c.version))return {kind:'light',version:c.version,size:c.size,publishedAt:m.publishedAt};
+  if(compareVersions(m.version,DAFTAR_APP_VERSION)>0)return {kind:'full',version:m.version,size:m.size,publishedAt:m.publishedAt};
+  return null;
+}
+const sizeText=b=>b>=1048576?`${Math.max(1,Math.round(b/1048576))} ميجا`:`${Math.max(1,Math.round(b/1024))} كيلو`;
 async function checkForUpdate(manual){
   if(!window.daftarElectron?.update)return null;
   if(!supabaseCurrentUser||daftarOfflineFallback||!navigator.onLine){if(manual){daftarUpdateInfo={...(daftarUpdateInfo||{}),error:'OFFLINE',checkedAt:Date.now()};renderUpdatePanel();}return null;}
@@ -8825,12 +8884,16 @@ async function checkForUpdate(manual){
     // الدخول منتهي في نظر السيرفر: نجيب دخول جديد ونجرّب مرة كمان
     if(!r.ok&&isAuthExpiredText(t)){token=await refreshedAccessToken();if(token){r=await get(token);t=r.ok?'':await r.text();}}
     if(r.ok){
-      const m=await r.json().catch(()=>null);let manifest=okManifest(m)?m:null,unsigned=null;
+      const m=await r.json().catch(()=>null);let manifest=okManifest(m)?m:null,unsigned=null,codeOk=false;
       // نسخة أحدث بس مش موقّعة بمفتاح الجهاز الأساسي: منعرضهاش كتحديث (الجهاز كده كده مش هيسطّبها)
-      if(manifest&&compareVersions(manifest.version,DAFTAR_APP_VERSION)>0&&window.daftarElectron.update.verify&&!(await window.daftarElectron.update.verify(manifest))?.ok){
-        unsigned=manifest.version;manifest=null;daftarLogError('update-signature',`النسخة ${unsigned} المنشورة مش موقّعة من الجهاز الأساسي`);
+      if(manifest&&window.daftarElectron.update.verify){
+        const v=await window.daftarElectron.update.verify(manifest);
+        if(!v?.ok){if(compareVersions(publishedVersion(manifest),DAFTAR_APP_VERSION)>0){unsigned=publishedVersion(manifest);manifest=null;daftarLogError('update-signature',`النسخة ${unsigned} المنشورة مش موقّعة من الجهاز الأساسي`);}}
+        else codeOk=!!v.code;
       }
-      daftarUpdateInfo={manifest,unsigned,checkedAt:Date.now()};
+      // (2.20.0) الجهاز ده: الأساس والنسخ الخفيفة اللي فشلت عليه (عشان «خفيف» ولا «كامل»)
+      let local=null;try{local=await window.daftarElectron.update.local?.();}catch(e){}
+      daftarUpdateInfo={manifest,unsigned,codeOk,local,checkedAt:Date.now()};
     }
     else{
       let msg='';try{msg=JSON.parse(t).message||''}catch(e){msg=t.slice(0,120)}
@@ -8854,8 +8917,11 @@ function renderUpdatePanel(){
   else if(info.error==='OFFLINE')html+='<br>لازم تكون مسجّل دخول ومتصل بالنت عشان يدوّر على تحديث.';
   else if(info.error)html+=`<br>تعذر الوصول للسحابة دلوقتي (${esc(info.error)}) — هيحاول تاني لوحده.${info.authProblem||daftarClockSkew?`<br>⏰ السبب غالبًا إن ساعة الجهاز ده مش مظبوطة${daftarClockSkew?` (${clockSkewText(daftarClockSkew)})`:''}، فالسحابة شايفة تسجيل الدخول منتهي. ظبط الساعة والتاريخ وجرّب تاني.`:''}`;
   else if(info.unsigned)html+=`<br>⚠️ فيه نسخة ${esc(info.unsigned)} منشورة، بس مش موقّعة من الجهاز الأساسي، فالجهاز ده مش هيسطّبها (حماية من ملفات مزوّرة). لو انت اللي نشرتها: انشرها تاني من الجهاز الأساسي.`;
-  else if(avail)html+=`<br>⬆️ فيه نسخة جديدة: <strong>${esc(avail.version)}</strong>${avail.publishedAt?` (اتنشرت ${esc(fmt(avail.publishedAt))})`:''} — حجمها ${Math.round(avail.size/1048576)} ميجا.`;
-  else html+=`<br>✅ الجهاز ده على آخر نسخة${m?` (آخر نسخة منشورة ${esc(m.version)})`:''}.`;
+  else if(avail)html+=`<br>⬆️ فيه نسخة جديدة: <strong>${esc(avail.version)}</strong>${avail.publishedAt?` (اتنشرت ${esc(fmt(avail.publishedAt))})`:''} — ${avail.kind==='light'?`⚡ تحديث خفيف ${sizeText(avail.size)} (ملفات البرنامج بس)`:`تسطيب كامل ${sizeText(avail.size)}`}.`;
+  else html+=`<br>✅ الجهاز ده على آخر نسخة${m?` (آخر نسخة منشورة ${esc(publishedVersion(m))})`:''}.`;
+  // (2.20.0) نسخة خفيفة اتجرّبت هنا ومشتغلتش فرجعت لوحدها
+  const lf=info?.local?.lastFail;
+  if(lf&&lf.version&&compareVersions(lf.version,DAFTAR_APP_VERSION)>0)html+=`<br><span style="color:var(--danger,#b91c1c)">⚠️ النسخة ${esc(lf.version)} اتجرّبت على الجهاز ده ومشتغلتش، فرجع لوحده لـ ${esc(lf.back||DAFTAR_APP_VERSION)} (${esc(lf.reason||'')}). بلّغ عشان تتصلّح في النسخة الجاية.</span>`;
   if(info?.checkedAt)html+=`<br><small>آخر مرة دوّر: ${esc(fmt(info.checkedAt))}</small>`;
   document.querySelector('#updateStatus').innerHTML=html;
   document.querySelector('#updateInstallBtn').classList.toggle('hidden',!avail);
@@ -8877,13 +8943,23 @@ async function saveBeforeUpdate(){
 }
 // skipConfirm: لما الموافقة جاية من رسالة «فيه نسخة جديدة» اللي بتطلع أول ما البرنامج يفتح
 async function downloadAndInstallUpdate(skipConfirm){
-  const api=window.daftarElectron?.update,m=updateAvailable();
+  const api=window.daftarElectron?.update,m=updateAvailable(),manifest=daftarUpdateInfo?.manifest;
   if(!api||!m)return daftarAlert('مفيش تحديث جديد دلوقتي.');
-  if(!skipConfirm&&!await daftarConfirm(`تنزيل وتسطيب النسخة ${m.version}؟\nالتنزيل حوالي ${Math.round(m.size/1048576)} ميجا. بعد ما يخلص، البرنامج هيتقفل ويتسطب التحديث ويفتح تاني لوحده (حوالي دقيقة). بياناتك مش بتتأثر.`))return;
+  const light=m.kind==='light';
+  if(!skipConfirm&&!await daftarConfirm(light?`تحديث للنسخة ${m.version}؟\n⚡ تحديث خفيف ${sizeText(m.size)} (ملفات البرنامج بس). البرنامج هيقفل ويفتح تاني لوحده في ثواني. بياناتك مش بتتأثر — ولو النسخة الجديدة فيها مشكلة بيرجع للي قبلها لوحده.`
+    :`تنزيل وتسطيب النسخة ${m.version}؟\nالتنزيل حوالي ${sizeText(m.size)}. بعد ما يخلص، البرنامج هيتقفل ويتسطب التحديث ويفتح تاني لوحده (حوالي دقيقة). بياناتك مش بتتأثر.`))return;
   // دخول جديد من السيرفر قبل التنزيل (التنزيل بياخد دقايق، والدخول المحفوظ ممكن يكون قرّب يخلص)
   const token=await refreshedAccessToken().catch(()=>null);if(!token)return daftarAlert('لازم تكون مسجّل دخول ومتصل بالنت.');
   const ui=showUpdateProgress(`تنزيل النسخة ${m.version}`);
-  let res;try{res=await api.download({base:updateBase(),apikey:SUPABASE_KEY,token,bucket:UPDATE_BUCKET,manifest:m});}catch(err){res={ok:false,error:String(err?.message||err)};}
+  if(light){
+    let r;try{r=await api.code({base:updateBase(),apikey:SUPABASE_KEY,token,bucket:UPDATE_BUCKET,manifest});}catch(err){r={ok:false,error:String(err?.message||err)};}
+    if(!r?.ok){ui.close();return daftarAlert('التحديث ما اتنزلش: '+(r?.error||''));}
+    ui.text('✓ اتنزل واتأكدنا إنه سليم — جاري حفظ شغلك وفتح البرنامج على النسخة الجديدة…');
+    await saveBeforeUpdate();
+    await api.restart();
+    return;
+  }
+  let res;try{res=await api.download({base:updateBase(),apikey:SUPABASE_KEY,token,bucket:UPDATE_BUCKET,manifest});}catch(err){res={ok:false,error:String(err?.message||err)};}
   if(!res?.ok){ui.close();return daftarAlert('التحديث ما اتنزلش: '+(res?.error||''));}
   ui.text('✓ اتنزل واتأكدنا إنه سليم — جاري حفظ شغلك وتسطيب التحديث…');
   await saveBeforeUpdate();
@@ -8894,15 +8970,25 @@ async function publishUpdate(){
   const api=window.daftarElectron?.update;if(!api)return;
   if(!supabaseCurrentUser||daftarOfflineFallback||!navigator.onLine)return daftarAlert('لازم تكون مسجّل دخول ومتصل بالنت عشان تنشر.');
   const pick=await api.pick();if(pick?.canceled)return;if(!pick?.ok)return daftarAlert(pick?.error||'تعذر قراءة الملف.');
+  // (2.20.0) نتأكد من المنشور دلوقتي الأول (هو اللي بيحدد «خفيف» ولا «كامل»)
+  await checkForUpdate(true);
   const pub=daftarUpdateInfo?.manifest;
-  if(pub&&compareVersions(pick.version,pub.version)<=0&&!await daftarConfirm(`النسخة ${pick.version} مش أحدث من النسخة المنشورة (${pub.version}).\nتنشرها برضو؟`))return;
-  if(!await daftarConfirm(`نشر النسخة ${pick.version} (${Math.round(pick.size/1048576)} ميجا) على حسابك؟\nالأجهزة التانية هتلاقيها وتتحدّث منها.`))return;
+  if(pub&&compareVersions(pick.version,publishedVersion(pub))<=0&&!await daftarConfirm(`النسخة ${pick.version} مش أحدث من النسخة المنشورة (${publishedVersion(pub)}).\nتنشرها برضو؟`))return;
+  const lightPub=!!(pub&&daftarUpdateInfo.codeOk&&pick.code&&pub.code.fullBase===pick.code.base&&compareVersions(pick.version,pub.version)>0);
+  if(!await daftarConfirm(lightPub?`نشر النسخة ${pick.version} على حسابك؟\n⚡ تحديث خفيف ${sizeText(pick.code.size)} — الأجهزة بتاخد ملفات البرنامج بس (ملف التسطيب المنشور ${pub.version} بيفضل زي ما هو).`
+    :`نشر النسخة ${pick.version} على حسابك؟\n📦 تسطيب كامل (${sizeText(pick.size)})${pub?' — الأساس اتغيّر أو مفيش نسخة خفيفة منشورة قبل كده':''}، ومعاه التحديث الخفيف (${sizeText(pick.code?.size||0)}).\nالأجهزة القديمة بتاخد التسطيب مرة، وبعدها التحديثات بتبقى خفيفة.`))return;
   const token=await refreshedAccessToken().catch(()=>null);if(!token)return daftarAlert('لازم تكون مسجّل دخول.');
   const ui=showUpdateProgress(`نشر النسخة ${pick.version}`);
-  let res;try{res=await api.publish({base:updateBase(),apikey:SUPABASE_KEY,token,bucket:UPDATE_BUCKET,file:pick.path,version:pick.version,sha256:pick.sha256,size:pick.size});}catch(err){res={ok:false,error:String(err?.message||err)};}
+  let res;try{res=await api.publish({base:updateBase(),apikey:SUPABASE_KEY,token,bucket:UPDATE_BUCKET,file:pick.path,version:pick.version,sha256:pick.sha256,size:pick.size,current:pub||null});}catch(err){res={ok:false,error:String(err?.message||err)};}
   ui.close();
   if(!res?.ok)return daftarAlert(/Bucket not found/i.test(res?.error||'')?'مكان التحديثات في Supabase لسه مش متعمل — شغّل كود SQL بتاع التحديث التلقائي مرة واحدة.':'النشر ما كملش: '+(res?.error||''));
-  daftarUpdateInfo={manifest:res.manifest,checkedAt:Date.now()};renderUpdatePanel();renderDaftarNotices();
+  await checkForUpdate(true);
+  if(res.light){
+    const a=updateAvailable();
+    if(a){const c=await daftarChoice(`تم نشر النسخة ${pick.version} ✓ (⚡ تحديث خفيف)\nالأجهزة التانية هتلاقيها لوحدها.\nتحدّث الجهاز ده كمان دلوقتي؟`,[{label:'حدّث دلوقتي',value:'now'},{label:'بعدين',value:null,cls:'secondary-btn'}],'تم النشر');if(c==='now')downloadAndInstallUpdate(true);}
+    else daftarAlert(`تم نشر النسخة ${pick.version} ✓ (⚡ تحديث خفيف)`);
+    return;
+  }
   if(compareVersions(pick.version,DAFTAR_APP_VERSION)>0){
     const c=await daftarChoice(`تم نشر النسخة ${pick.version} ✓\nالأجهزة التانية هتلاقيها لوحدها.\nتسطّبها على الجهاز ده كمان دلوقتي؟`,[{label:'سطّبها دلوقتي',value:'now'},{label:'بعدين',value:null,cls:'secondary-btn'}],'تم النشر');
     if(c==='now'){await saveBeforeUpdate();const r=await api.install(pick.path);if(!r?.ok)daftarAlert('التسطيب ما بدأش: '+(r?.error||''));}
@@ -8933,7 +9019,7 @@ async function promptForUpdate(){
   if(!m||daftarUpdatePrompted.has(m.version)||!daftarUnlocked)return;
   if(document.querySelector('#daftarPinOverlay')?.classList.contains('show')||document.getElementById('daftarUpdateModal'))return;
   daftarUpdatePrompted.add(m.version);
-  const c=await daftarChoice(`⬆️ فيه نسخة جديدة من البرنامج: ${m.version}\nالنسخة اللي على الجهاز ده: ${DAFTAR_APP_VERSION}\n\nالتحديث بيتنزل (حوالي ${Math.round(m.size/1048576)} ميجا)، وبعدين البرنامج يتقفل ويتسطب ويفتح تاني لوحده في حوالي دقيقة. بياناتك مش بتتأثر.\nتحدّث دلوقتي؟`,[{label:'⬇️ حدّث دلوقتي',value:'now'},{label:'بعدين',value:null,cls:'secondary-btn'}],'تحديث البرنامج');
+  const c=await daftarChoice(`⬆️ فيه نسخة جديدة من البرنامج: ${m.version}\nالنسخة اللي على الجهاز ده: ${DAFTAR_APP_VERSION}\n\n${m.kind==='light'?`⚡ تحديث خفيف (${sizeText(m.size)}) — البرنامج بيقفل ويفتح تاني لوحده في ثواني.`:`التحديث بيتنزل (حوالي ${sizeText(m.size)})، وبعدين البرنامج يتقفل ويتسطب ويفتح تاني لوحده في حوالي دقيقة.`} بياناتك مش بتتأثر.\nتحدّث دلوقتي؟`,[{label:'⬇️ حدّث دلوقتي',value:'now'},{label:'بعدين',value:null,cls:'secondary-btn'}],'تحديث البرنامج');
   if(c==='now')downloadAndInstallUpdate(true);
 }
 // أول ما البرنامج يفتح: بنستنى لحد ما تكتب الكود والحساب يجهز (بحد أقصى 3 دقايق) وبعدين ندوّر على طول،
@@ -10232,6 +10318,10 @@ document.querySelector('#jobSearch')?.addEventListener('input',()=>scheduleRende
 document.querySelector('#jobStatusFilter')?.addEventListener('change',()=>scheduleRender());
 // فتح التبويب من الشريط = القايمة
 document.querySelector('#nav [data-page="jobs"]')?.addEventListener('click',()=>{jobOpenId=null;});
+// (2.20.0) آخر ملف: لو وصلنا هنا يبقى كل ملفات البرنامج اشتغلت. بنقول للبرنامج (main.js) إن الشاشة اتحمّلت ومعاها أي غلطة
+// حصلت وهي بتتحمّل (اتجمعت فوق في index.template.html) — «التحديث الخفيف» اللي بيتجرّب بيتعلّم شغال، أو بيرجع للنسخة اللي قبله لو فيه أخطاء.
+// لو ملف من التانيين وقع في نصه، الكود ده مش هيوصل أصلًا، والبرنامج بيرجع لوحده بعد دقيقتين.
+(()=>{const errs=(window.__daftarBootErrors||[]).slice(0,5);window.__daftarBootErrors=null;try{window.daftarElectron?.appReady?.(errs);}catch(e){}})();
 </script>
 <style>
 #daftarA2hs{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:9000;display:flex;gap:10px;align-items:center;background:var(--surface,#fff);color:var(--ink,#111);border:1px solid var(--line,#ddd);border-radius:14px;padding:12px 14px;box-shadow:0 8px 28px rgba(0,0,0,.18);direction:rtl;max-width:560px;margin:0 auto}
