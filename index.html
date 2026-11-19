@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.21.0";</script><meta charset="utf-8">
+<!doctype html><html lang="ar" dir="rtl"><head><script>window.DAFTAR_WEB_VERSION="2.22.0";</script><meta charset="utf-8">
 <!-- سياسة الأمان (CSP): البرنامج مبيشغّلش أي كود غير ملفاته هو، ومبيكلمش أي سيرفر غير السحابة بتاعته (Supabase).
      لو حد قدر يدخّل نص خبيث في البيانات، المتصفح هيمنعه يحمّل كود من برا أو يبعت البيانات لمكان تاني. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'">
@@ -188,7 +188,7 @@ html,body{background:#fff!important}
     <div id="invoiceProductResults" class="factory-product-results hidden"></div>
     <div id="invoiceProductSelected" class="notice factory-product-selected">لم يتم اختيار صنف بعد.</div>
   </div>
-</label><label>الكمية<input name="quantity" type="number" min="1" step="1" value="1"></label><label>سعر الوحدة (قابل للتعديل)<input name="liveUnitPrice" type="number" min="0" step="0.01" value="0"></label><label>قيمة الصنف<input name="liveLineTotal" type="text" value="0.00 ج.م" readonly></label><button type="button" class="primary" id="addInvoiceItem">إضافة صنف للفاتورة</button><div id="invoiceCart" class="span-all"></div></div><div class="form-step pay-step"><div class="form-step-title"><b>3</b> الدفع والحفظ<button type="button" class="secondary-btn discount-toggle" data-discount-toggle>🏷️ خصم</button></div><label>مصروفات النقل (على العميل)<input name="transport" type="number" min="0" step="0.01" value="0" placeholder="0 لو مفيش نقل"></label><label class="hidden" data-discount-field>الخصم (بالجنيه)<input name="discount" type="number" min="0" step="0.01" value="0" placeholder="مبلغ الخصم"></label><label>قيمة الفاتورة<input name="invoiceTotal" type="text" value="0.00 ج.م" readonly></label><label>المسدَّد<input name="paidAmount" type="number" min="0" step="0.01" value="0" placeholder="المبلغ المدفوع الآن"></label><label data-treasury-method>طريقة الدفع<select name="paymentMethod"><option>كاش</option><option>محفظة</option><option>تحويل بنكي</option></select></label><label class="treasury-pick hidden">الحساب<select name="accountId" data-treasury="in"></select></label><label>التاريخ<input required name="date" type="date"></label><div id="invoiceCreditBox" class="notice span-all" style="display:none"></div><div class="form-actions span-all"><button type="button" class="primary" id="saveInvoicePrint">حفظ وطباعة</button><button type="button" class="secondary-btn" id="saveInvoiceOnly">حفظ بس</button></div></div></form><div id="invoicesJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">آخر الفواتير</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="invoiceSearch" type="search" placeholder="🔎 ابحث برقم الفاتورة أو اسم العميل..." autocomplete="off" style="width:100%"></div></div><div id="invoicesTable" style="margin-top:16px"></div></article></section>
+</label><label>الكمية<input name="quantity" type="number" min="1" step="1" value="1"></label><label>سعر الوحدة (قابل للتعديل)<input name="liveUnitPrice" type="number" min="0" step="0.01" value="0"></label><label>قيمة الصنف<input name="liveLineTotal" type="text" value="0.00 ج.م" readonly></label><button type="button" class="primary" id="addInvoiceItem">إضافة صنف للفاتورة</button><div id="invoiceCart" class="span-all"></div></div><div class="form-step pay-step"><div class="form-step-title"><b>3</b> الدفع والحفظ<button type="button" class="secondary-btn discount-toggle" data-discount-toggle>🏷️ خصم</button></div><label>مصروفات النقل (على العميل)<input name="transport" type="number" min="0" step="0.01" value="0" placeholder="0 لو مفيش نقل"></label><label class="hidden" data-discount-field>الخصم (بالجنيه)<input name="discount" type="number" min="0" step="0.01" value="0" placeholder="مبلغ الخصم"></label><label>قيمة الفاتورة<input name="invoiceTotal" type="text" value="0.00 ج.م" readonly></label><label>المسدَّد<input name="paidAmount" type="number" min="0" step="0.01" value="0" placeholder="المبلغ المدفوع الآن"></label><label data-treasury-method>طريقة الدفع<select name="paymentMethod"><option>كاش</option><option>محفظة</option><option>تحويل بنكي</option></select></label><label class="treasury-pick hidden">الحساب<select name="accountId" data-treasury="in"></select></label><label>التاريخ<input required name="date" type="date"></label><div id="invoiceCreditBox" class="notice span-all" style="display:none"></div><div class="form-actions span-all"><button type="button" class="primary" id="saveInvoicePrint">حفظ وطباعة</button><button type="button" class="secondary-btn" id="saveInvoiceOnly">حفظ بس</button></div></div></form><div id="invoicesJustSaved" class="just-saved"></div></article><article class="panel" data-view="list"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">آخر الفواتير</h2><div style="min-width:280px;flex:1;max-width:430px"><input id="invoiceSearch" type="search" placeholder="🔎 ابحث برقم الفاتورة أو اسم العميل..." autocomplete="off" style="width:100%"></div><button type="button" class="secondary-btn" id="cancelledInvoicesBtn" onclick="openCancelledInvoices()">🗑️ الملغاة</button></div><div id="invoicesTable" style="margin-top:16px"></div></article></section>
 <section id="quotes" class="page hidden"><div class="page-views" data-page-views="quotes"><button type="button" data-view="new">➕ عرض سعر جديد</button><button type="button" data-view="list">📄 العروض السابقة</button></div><article class="panel" data-view="new"><h2>إنشاء عرض أسعار</h2><form id="quoteForm" class="form"><div id="quoteEditBanner" class="notice tone-danger span-all hidden" style="grid-column:1/-1"></div><div class="form-step"><div class="form-step-title"><b>1</b> العميل</div><label class="span-2">العميل<input required name="customer" list="customerNamesList" autocomplete="off"></label><div class="customer-phone-hint span-2" id="quotePhoneHint"></div></div><div class="form-step"><div class="form-step-title"><b>2</b> الأصناف</div><label class="span-2">بحث واختيار الصنف
   <div class="factory-order-picker" id="quoteProductPicker">
     <input name="productSearch" id="quoteProductSearch" type="search" autocomplete="off" placeholder="ابحث بالاسم أو الكود...">
@@ -339,13 +339,13 @@ html,body{background:#fff!important}
       </article></div></div><div data-view="factory"><article class="panel" id="factoryLinkPanel"></article></div></section>
 </main>
 <!-- مكتبة توليد الباركود (QR) لروابط الواتساب والفيسبوك في الطباعة — متضمنة جوه البرنامج عشان تشتغل من غير نت. -->
-<!-- (2.20.0) أي غلطة وملفات البرنامج بتتحمّل بتتجمع هنا — 52-boot-ready.js بيبعتها (التحديث الخفيف اللي بيتجرّب بيرجع لو فيه أخطاء) -->
+<!-- (2.20.0) أي غلطة وملفات البرنامج بتتحمّل بتتجمع هنا — 99-boot-ready.js بيبعتها (التحديث الخفيف اللي بيتجرّب بيرجع لو فيه أخطاء) -->
 <script>window.__daftarBootErrors=[];window.addEventListener('error',function(e){var b=window.__daftarBootErrors;if(b)b.push(String((e&&e.message)||'خطأ'));});</script>
 <script src="qrcode.js"></script>
 <script>
 // رقم نسخة البرنامج: على الكمبيوتر من البرنامج نفسه، وعلى الموبايل بيتكتب في الصفحة وقت تجهيز نسخة الموقع.
 const DAFTAR_APP_VERSION=window.daftarElectron?.appVersion||window.DAFTAR_WEB_VERSION||'';
-const initial={products:[],factoryItems:[],invoices:[],quotes:[],orders:[],customerBalances:{},customerPayments:[],ledgerEntries:[],extraPurchases:[],customerReturns:[],deletedIds:{},customerPhones:{},customerReps:{},repRates:{},repPayments:[],factoryLedger:[],factoryOpeningBalance:0,customerDataUpdatedAt:{},printSettings:{},colorCodes:[],deviceInfo:{},treasuryAccounts:[],treasuryTransfers:[],treasuryEntries:[],stockAdjustments:[],debtFollowups:[],jobs:[]};
+const initial={products:[],factoryItems:[],invoices:[],quotes:[],orders:[],customerBalances:{},customerPayments:[],ledgerEntries:[],extraPurchases:[],customerReturns:[],deletedIds:{},customerPhones:{},customerReps:{},repRates:{},repPayments:[],factoryLedger:[],factoryOpeningBalance:0,customerDataUpdatedAt:{},printSettings:{},colorCodes:[],deviceInfo:{},treasuryAccounts:[],treasuryTransfers:[],treasuryEntries:[],stockAdjustments:[],debtFollowups:[],jobs:[],cancelledInvoices:[]};
 let db=JSON.parse(localStorage.getItem('daftar-v1')||JSON.stringify(initial));
 // ===== الحفظ في ملف حقيقي على الجهاز (داخل برنامج الديسكتوب) =====
 // البيانات بقت بتتحفظ في ملف daftar-data.json في فولدر بيختاره المستخدم (الافتراضي
@@ -483,7 +483,7 @@ for(const o of db.orders){o.received??=false;o.customer??='';o.factoryPrice??=o.
 for(const o of db.orders){if(o.invoiceId)o.invoiced=true;o.invoicedDate??=o.invoiceId?o.date:undefined;o.remaining??=(+o.total||0)-(+o.deposit||0)-(+o.depositUsed||0);if(o.invoiced)o.remaining=0;}
 for(const p of db.customerPayments){p.appliedToBalance??=p.amount||0;}
 for(const r of db.customerReturns){r.paid??=false;r.creditUsed??=0;r.appliedToDebt??=0;r.refundAmount??=r.paid?(+r.netAmount||0):0;r.creditAmount??=r.paid?0:Math.max(0,(+r.netAmount||0)-(+r.appliedToDebt||0));}
-db.repPayments??=[];db.customerReps??={};db.repRates??={};
+db.repPayments??=[];db.customerReps??={};db.repRates??={};db.cancelledInvoices??=[];
 for(const o of db.orders){o.whatsapp??='';}
 for(const q of db.quotes){q.whatsapp??='';}
 let daftarDataRevision=0;
@@ -799,6 +799,8 @@ function openInvoiceMenu(id,btn){
   openRowMenu(btn,[
     {label:'🖨️ طباعة',run:()=>printInvoice(x.id)},
     {label:'💬 إرسال على واتساب',run:()=>sendInvoiceWhatsApp(x.id)},
+    {label:'✏️ تعديل',run:()=>openInvoiceEdit(x.id)},                                  // (2.22.0)
+    ...((x.history||[]).length?[{label:`📝 سجل التعديلات (${x.history.length})`,run:()=>openInvoiceHistory(x.id)}]:[]),
     {label:'🗑️ إلغاء الفاتورة',danger:true,run:()=>cancelInvoice(x.id)}]);
 }
 function openFactoryMenu(id,btn){
@@ -1101,7 +1103,8 @@ function buildDisplayNoMap(collection){
   // المديونيات اليدوية (kind:'debt') متسجلة جوه الفواتير بس مش فواتير بيع، فليها ترقيم لوحدها
   // ومش بتزوّد أرقام الفواتير.
   const isDebt=x=>collection==='invoices'&&x?.kind==='debt';
-  const sorted=[...arr].sort((a,b)=>(+a.id)-(+b.id));
+  // (2.22.0) الفاتورة الملغاة بتفضل في الترقيم (db.cancelledInvoices) — فإلغاء فاتورة مبيغيّرش رقم أي فاتورة بعدها
+  const sorted=[...arr,...(collection==='invoices'?(db.cancelledInvoices||[]):[])].sort((a,b)=>(+a.id)-(+b.id));
   let n=0,d=0;
   for(const x of sorted)map.set(String(x.id),isDebt(x)?++d:++n);
   return map;
@@ -1117,7 +1120,7 @@ function displayNo(collection,id){
   const arr=db[collection];
   if(!Array.isArray(arr)||!arr.length)return id;
   const last=arr[arr.length-1];
-  const key=arr.length+'|'+(last&&last.id);
+  const key=arr.length+'|'+(last&&last.id)+(collection==='invoices'?'|'+(db.cancelledInvoices||[]).length:'');
   let entry=daftarDisplayNoCache[collection];
   if(!entry||entry.key!==key){
     entry={key,map:buildDisplayNoMap(collection)};
@@ -3284,6 +3287,28 @@ function runDaftarTests(){
     db.invoices=[{id:95,customer:'ص',date:'2026-06-01',total:500,deposit:0,cashDeposit:0,remaining:100,items:[{productName:'أ',quantity:1,unitPrice:500}]}];
     daftarAssertEqual([customerBalance('ص'),legacyCustomerBalance('ص'),invoiceDue(db.invoices[0]).remaining,customerStatementData('ص').balance],[500,100,500,500],'(2.21.0) الرصيد من الحركات مش من «الباقي» المتخزن',results);
 
+    // 30) (2.22.0) تعديل عرض السعر: الفرق بس على المخزون والخزنة، والرصيد من الفاتورة الجديدة، والقديم في السجل
+    db=structuredClone(initial);
+    db.treasuryAccounts=[{id:1,kind:'cash',name:'الخزنة',opening:0,active:true},{id:2,kind:'wallet',name:'محفظة',opening:0,active:true}];
+    db.products=[{id:201,name:'أ',stock:5,price:100,customerName:'المخزون العام',cost:60},{id:202,name:'ب',stock:4,price:50,customerName:'المخزون العام',cost:30}];
+    db.invoices=[{id:300,customer:'ث',date:'2026-07-01',total:200,deposit:150,cashDeposit:150,orderDepositUsed:0,remaining:50,accountId:'1',items:[{productId:201,productName:'أ',quantity:2,unitPrice:100,total:200,factoryPrice:60},{productId:203,productName:'ج',quantity:1,unitPrice:0.01,total:0.01}]}];
+    db.invoices[0].items[1]={productId:203,productName:'ج',quantity:1,unitPrice:40,total:40,factoryPrice:20};db.invoices[0].total=240;db.invoices[0].remaining=90;   // (ج خلص من المخزون)
+    const r30=invoiceEditApply(db.invoices[0],{items:[{...db.invoices[0].items[0],quantity:3,unitPrice:110},{productId:202,productName:'ب',quantity:1,unitPrice:50}],transport:10,discount:20,cash:300,acc:'2',reason:'العميل زوّد'});
+    const i30=db.invoices[0],tb30=treasuryBalances();
+    daftarAssertEqual([r30.err||'',i30.total,db.products.find(p=>p.id===201)?.stock,db.products.find(p=>p.id===202)?.stock,db.products.find(p=>p.name==='ج')?.stock,customerBalance('ث'),tb30.get('1'),tb30.get('2'),i30.history.length,i30.history[0].before.total,displayNo('invoices',300)],
+      ['',370,4,3,1,70,0,300,1,240,1],'(2.22.0) تعديل: أ 2→3 وب جديد وج اتشال (رجع للمخزون)، والمسدَّد 150 من الخزنة ← 300 في المحفظة، والرصيد 370−300',results);
+    // 31) (2.22.0) ممنوع التعديل لو عليها مرتجع، والزيادة أكبر من المخزون بتترفض من غير ما حاجة تتغيّر
+    db.customerReturns=[{id:310,customer:'ث',invoiceId:300,itemIndex:0,netAmount:110,paid:false,appliedToDebt:70,creditAmount:40,creditUsed:0}];
+    const blocked=!!invoiceEditBlocker(db.invoices[0]);db.customerReturns=[];
+    const r31=invoiceEditApply(db.invoices[0],{items:[{...db.invoices[0].items[0],quantity:50}],cash:300,acc:'2',reason:'غلط'});
+    daftarAssertEqual([blocked,/أكبر من المتاح/.test(r31.err||''),db.invoices[0].total,db.products.find(p=>p.id===201)?.stock],[true,true,370,4],'(2.22.0) التعديل ممنوع مع المرتجع، والزيادة الكبيرة بتترفض من غير تغيير',results);
+    // 32) (2.22.0) إلغاء فاتورة مبيغيّرش أرقام الفواتير اللي بعدها (الملغاة بتفضل في الترقيم)
+    db=structuredClone(initial);
+    db.invoices=[{id:401,customer:'ذ',total:10,items:[]},{id:402,customer:'ذ',total:20,items:[]},{id:403,customer:'ذ',total:30,items:[]}];
+    const before32=displayNo('invoices',403);
+    db.cancelledInvoices.push({...db.invoices[1],cancelledDate:'2026-07-02'});db.invoices=db.invoices.filter(x=>x.id!==402);
+    daftarAssertEqual([before32,displayNo('invoices',403),displayNo('invoices',402),customerBalance('ذ')],[3,3,2,40],'(2.22.0) الملغاة بتفضل في الترقيم ومن غير أثر على الحساب',results);
+
     // 25) الخزنة: الرصيد = أول المدة + الداخل − الخارج ± التحويلات، من السجلات اللي عليها حساب بس،
     //     والحساب مينفعش يصرف أكتر من اللي فيه
     db=structuredClone(initial);
@@ -3376,7 +3401,7 @@ function customerHistoryTable(name){
     invoiceNo++;
     totalDue+=due;totalPaid+=paid;totalRemaining+=remaining;
     const localNo=invoiceNo;
-    return `<tr><td class="history-row-number">فاتورة ${localNo}</td><td class="statement">${historyItemsText(x,entry.kind==='invoice')}</td><td>${money(due)}</td><td>${money(paid)}</td><td class="${remaining>0?'history-balance-open':'history-balance-zero'}">${money(remaining)}</td><td>${entry.date}</td><td>${paid>0?`<button class="primary" onclick="printReceipt('${entry.kind}','${x.id}')">طباعة</button> <button type="button" class="secondary-btn" onclick="sendReceiptWhatsApp('${entry.kind}','${x.id}')">واتساب</button>`:''}${entry.kind==='invoice'?` <button type="button" class="danger" onclick="cancelInvoice('${x.id}')">إلغاء</button>`:(paid>0?'':'—')}</td></tr>`;
+    return `<tr><td class="history-row-number">فاتورة ${localNo}</td><td class="statement">${historyItemsText(x,entry.kind==='invoice')}</td><td>${money(due)}</td><td>${money(paid)}</td><td class="${remaining>0?'history-balance-open':'history-balance-zero'}">${money(remaining)}</td><td>${entry.date}</td><td>${paid>0?`<button class="primary" onclick="printReceipt('${entry.kind}','${x.id}')">طباعة</button> <button type="button" class="secondary-btn" onclick="sendReceiptWhatsApp('${entry.kind}','${x.id}')">واتساب</button>`:''}${entry.kind==='invoice'?` <button type="button" class="secondary-btn" onclick="openInvoiceEdit('${x.id}')">✏️ تعديل</button> <button type="button" class="danger" onclick="cancelInvoice('${x.id}')">إلغاء</button>`:(paid>0?'':'—')}</td></tr>`;
   }).join('');
   const unallocated=Math.max(0,allocation.unallocated), opening=Math.max(0,+db.customerBalances[name]||0), rawBalance=customerBalance(name), current=Math.max(0,rawBalance);
   // رصيد سالب = العميل ليه فلوس (دفع أكتر من المستحق أو رصيده دائن مرتجعات) وهتتخصم من أي شغل جديد.
@@ -3605,7 +3630,7 @@ async function cancelInvoice(id){
   const rets=db.customerReturns.filter(r=>String(r.invoiceId)===String(inv.id));
   if(rets.length)return daftarAlert(`الفاتورة #${no} عليها ${rets.length} مرتجع.\nاحذف المرتجعات دي الأول من كشف حساب العميل، وبعدين ألغِ الفاتورة.`);
   const itemsText=(inv.items||[]).map(i=>`${i.productName} × ${i.quantity}`).join('، ');
-  const ok=await daftarConfirm(`إلغاء الفاتورة #${no} للعميل «${inv.customer}» بقيمة ${money(inv.total)}؟\n\n- الأصناف هترجع للمخزون: ${itemsText}${docTransport(inv)>0?`\n- مصروفات النقل (${money(docTransport(inv))}) هتتشال من حسابه معاها`:''}\n- الفاتورة هتتشال من حساب العميل ومن المبيعات والتقارير.`);
+  const ok=await daftarConfirm(`إلغاء الفاتورة #${no} للعميل «${inv.customer}» بقيمة ${money(inv.total)}؟\n\n- الأصناف هترجع للمخزون: ${itemsText}${docTransport(inv)>0?`\n- مصروفات النقل (${money(docTransport(inv))}) هتتشال من حسابه معاها`:''}\n- الفاتورة هتتشال من حساب العميل ومن المبيعات والتقارير، وتفضل محفوظة في «🗑️ الملغاة» برقمها (أرقام الفواتير التانية مش هتتغيّر).`);
   if(!ok)return;
   const cash=inv.cashDeposit!=null?Math.max(0,+inv.cashDeposit||0):Math.max(0,(+inv.deposit||0)-(+inv.orderDepositUsed||0));
   let keepAsCredit=false;
@@ -3649,6 +3674,8 @@ async function cancelInvoice(id){
   if(keepAsCredit)db.customerPayments.push({id:daftarNextId(),customer:inv.customer,amount:cash,date:today(),note:`مبلغ مدفوع من فاتورة ملغاة #${no}`,paymentMethod:inv.paymentMethod||'كاش',appliedToBalance:cash,fromCancelledInvoice:inv.id,...(inv.accountId?{accountId:inv.accountId}:{})});
   if(refundAcc)treasuryAddEntry(refundAcc,-cash,today(),`رد مدفوع فاتورة ملغاة #${no} لـ«${inv.customer}»`);
   for(const q of db.quotes||[])if(q.convertedTo?.type==='invoice'&&String(q.convertedTo.id)===String(inv.id))delete q.convertedTo;
+  // (2.22.0) الفاتورة الملغاة بتفضل محفوظة («🗑️ الملغاة» في الفواتير) ومحتفظة برقمها — من غير أي أثر على الحساب أو المخزون
+  (db.cancelledInvoices??=[]).push({...structuredClone(inv),cancelledAt:new Date().toISOString(),cancelledDate:today(),cancelCash:cash>0?(keepAsCredit?'credit':'refund'):''});
   markDeleted('invoices',inv.id);
   db.invoices=db.invoices.filter(x=>String(x.id)!==String(inv.id));
   save();scheduleRender();refreshOpenCustomerProfile(inv.customer);
@@ -4242,7 +4269,7 @@ function salesDocContactHtml(){
 function salesDocInnerHtml(kind,x){
   const isInvoice=kind==='invoice';
   const s=printSettings();
-  const meta=[`رقم العرض: #${displayNo(isInvoice?'invoices':'quotes',x.id)}`,`التاريخ: ${esc(x.date||today())}`,`العميل: <strong>${esc(x.customer)||'—'}</strong>`];
+  const meta=[`رقم العرض: #${displayNo(isInvoice?'invoices':'quotes',x.id)}${isInvoice&&x.editedDate?` <small>(معدّلة ${esc(x.editedDate)})</small>`:''}`,`التاريخ: ${esc(x.date||today())}`,`العميل: <strong>${esc(x.customer)||'—'}</strong>`];
   const items=x.items||[];
   // عروض قديمة اتعملت بخيار «بالطن» للعرض كله (نسخة 2.1.4/2.1.5): السعر متسجّل بالعبوة وبيتطبع
   // محسوب بالطن (سعر العبوة ÷ وزنها × 1000). العروض الجديدة بتختار الوحدة لكل صنف (i.unit) تحت.
@@ -7663,6 +7690,13 @@ details.panel-collapse[open]>summary{margin-bottom:14px}
 #daftarPinBox button.primary{background:var(--blue);color:#fff;border:0;width:100%}
 #daftarPinBox button:disabled,#daftarPinBox input:disabled{opacity:.5;cursor:not-allowed}
 #daftarPinError{color:var(--danger);background:#fef2f2;border-radius:9px;padding:9px;font-size:13px;display:none;margin-bottom:10px}
+/* (2.22.0) تعديل عرض السعر */
+.invoice-edit-card{max-height:calc(100vh - 40px);overflow:auto}
+.ie-add{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}.ie-add select{flex:1;min-width:200px}.ie-add input{width:100px}
+.ie-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:10px 0}
+.invoice-edit-card label{display:block}.invoice-edit-card #ieReason{width:100%;box-sizing:border-box}
+.ie-grid input,.ie-grid select{display:block;width:100%;box-sizing:border-box;margin-top:4px}
+#invoiceEditModal table input{box-sizing:border-box}
 </style>
 <div id="daftarAuthOverlay">
   <div id="daftarAuthBox">
@@ -7752,7 +7786,7 @@ function normalizeDb(data){if(!data||typeof data!=='object')return structuredClo
 // أسماء كل القوائم اللي كل عنصر فيها له id ثابت — بيتم دمجها بمقارنة الـ id
 // بدل استبدال قاعدة البيانات كلها، عشان أي بيانات اتضافت على جهاز معين ومتزامنتش
 // لسه ميحصلهاش فقدان لو جهاز تاني كتب فوقها.
-const DAFTAR_LIST_KEYS=['products','factoryItems','invoices','quotes','orders','customerPayments','ledgerEntries','extraPurchases','customerReturns','factoryLedger','repPayments','colorCodes','treasuryAccounts','treasuryTransfers','treasuryEntries','stockAdjustments','debtFollowups','jobs'];
+const DAFTAR_LIST_KEYS=['products','factoryItems','invoices','quotes','orders','customerPayments','ledgerEntries','extraPurchases','customerReturns','factoryLedger','repPayments','colorCodes','treasuryAccounts','treasuryTransfers','treasuryEntries','stockAdjustments','debtFollowups','jobs','cancelledInvoices'];
 
 // كل عنصر بياخد "بصمة" من محتواه (من غير وقت التعديل نفسه). لما نحفظ، بنقارن
 // البصمة الجديدة بالقديمة: لو اتغيّرت فعلاً نحط على العنصر وقت تعديل (updatedAt) جديد.
@@ -10318,6 +10352,206 @@ document.querySelector('#jobSearch')?.addEventListener('input',()=>scheduleRende
 document.querySelector('#jobStatusFilter')?.addEventListener('change',()=>scheduleRender());
 // فتح التبويب من الشريط = القايمة
 document.querySelector('#nav [data-page="jobs"]')?.addEventListener('click',()=>{jobOpenId=null;});
+// ===== (2.22.0) «✏️ تعديل» عرض السعر (الفاتورة) بجد =====
+// الأصناف (الكمية والسعر، شيل صنف، أو صنف جديد من المخزون) والنقل والخصم والمسدَّد معاه وحسابه — والسبب لازم.
+// بيتطبّق الفرق بس:
+//   - المخزون: لكل صنف (الفرق بين الكمية الجديدة والقديمة) — بيرجع أو بيتسحب. الصنف اللي كان خلص من المخزون بيرجع لو الكمية قلت.
+//   - الخزنة: الفلوس اللي اتدفعت مع الفاتورة على حسابها (لو اتغيّرت أو اتغيّر الحساب، الأرصدة بتتحسب من جديد لوحدها)؛
+//     فاتورة قديمة من قبل الحسابات: الفرق بس بيتسجل حركة على الحساب اللي تختاره.
+//   - رصيد العميل بيتحسب لوحده من الفاتورة (17-customer-ledger.js).
+// نفس الرقم، ومكتوب عليها «معدّلة» في الطباعة، والنسخة القديمة في inv.history («📝 سجل التعديلات»).
+// ممنوع: المديونية، والفاتورة اللي عليها مرتجع (المرتجع مربوط بسطورها)، وأصناف اتخصمت من طلبية محجوزة للعميل.
+const IE_GEN='المخزون العام';
+function invoiceEditBlocker(inv){
+  if(!inv)return 'لم يتم العثور على الفاتورة.';
+  if(isDebtRecord(inv))return inv.jobId?'دي مديونية شغلانة — بتتعدّل من صفحة الشغلانة.':'دي مديونية مش عرض سعر — امسحها وسجّلها تاني من ملف العميل.';
+  const rets=db.customerReturns.filter(r=>String(r.invoiceId)===String(inv.id));
+  if(rets.length)return `عرض السعر ده عليه ${rets.length} مرتجع، والمرتجع مربوط بسطوره — التعديل هيلخبطه.\nلو محتاج تغيّر حاجة: سجّل مرتجع تاني، أو مديونية / سند قبض بالفرق.`;
+  if((inv.items||[]).some(i=>i.fromOrderId))return 'فيه أصناف في عرض السعر ده اتخصمت من طلبية العميل المحجوزة — التعديل مش متاح عليه.\nلو لازم: ألغيه واعمله تاني.';
+  return '';
+}
+// اللي اتدفع مع الفاتورة نفسها (كاش) والدفعة المقدمة من طلبيتها (ثابتة — مبتتغيّرش من التعديل)
+function invoiceEditMoney(inv){const cash=invoiceOwnCash(inv),odu=cR2(Math.max(0,invoiceOwnPaid(inv)-cash));return {cash,odu};}
+// صاحب الأصناف لو رجعت للمخزون: عميل الطلبية اللي الفاتورة اتعملت منها (محجوز ليه)، وإلا المخزون العام
+function invoiceEditOwner(inv){const o=db.orders.find(x=>String(x.invoiceId)===String(inv.id));return o?(o.customer||IE_GEN):IE_GEN;}
+// الأصناف اللي ينفع تتضاف: المخزون العام + المحجوز لنفس العميل
+function invoiceEditPickable(inv){return db.products.filter(p=>(+p.stock||0)>0&&[IE_GEN,'',undefined,null].includes(p.customerName)||((+p.stock||0)>0&&String(p.customerName||'').trim()===String(inv.customer||'').trim()));}
+// المتاح من صنف للتعديل = اللي في المخزون دلوقتي + اللي كان في الفاتورة نفسها
+function invoiceEditQtyMap(items){const m=new Map();for(const i of items||[])m.set(String(i.productId),(m.get(String(i.productId))||0)+(+i.quantity||0));return m;}
+// draft: {items:[{productId,productName,quantity,unitPrice,...}], transport, discount, cash, acc, reason}
+// ← {err} أو الخطة: {total, itemsValue, stock:[{pid,name,delta}], cash, odu, treasury:{deltas, legacyDiff}, ...}
+function invoiceEditPlan(inv,draft){
+  const block=invoiceEditBlocker(inv);if(block)return {err:block};
+  const items=(draft.items||[]).filter(i=>i&&i.productId!=null);
+  if(!items.length)return {err:'لازم يفضل صنف واحد على الأقل — لو العميل لغى كله: «🗑️ إلغاء الفاتورة».'};
+  for(const i of items){
+    const q=+i.quantity,u=+i.unitPrice;
+    if(!(q>=1)||!Number.isInteger(q))return {err:`كمية «${i.productName}» لازم تكون رقم صحيح 1 أو أكتر.`};
+    if(!(u>0))return {err:`سعر «${i.productName}» لازم يكون أكبر من صفر.`};
+  }
+  const reason=String(draft.reason||'').trim();
+  if(reason.length<3)return {err:'اكتب سبب التعديل (هيتسجل مع النسخة القديمة).'};
+  const oldQ=invoiceEditQtyMap(inv.items),newQ=invoiceEditQtyMap(items),stock=[];
+  for(const pid of new Set([...oldQ.keys(),...newQ.keys()])){
+    const delta=(newQ.get(pid)||0)-(oldQ.get(pid)||0);if(!delta)continue;
+    const p=db.products.find(x=>String(x.id)===pid),name=(items.find(i=>String(i.productId)===pid)||(inv.items||[]).find(i=>String(i.productId)===pid)||{}).productName||p?.name||'';
+    if(delta>0){
+      const avail=+p?.stock||0;
+      if(!p||avail<delta)return {err:`«${name}»: الزيادة ${delta} أكبر من المتاح في المخزون (${avail}).`};
+      const owner=String(p.customerName||IE_GEN).trim();
+      if(owner!==IE_GEN&&owner!==String(inv.customer||'').trim())return {err:`«${name}» محجوز لعميل تاني («${owner}»).`};
+    }
+    stock.push({pid,name,delta});
+  }
+  const itemsValue=cR2(items.reduce((s,i)=>s+(+i.quantity)*(+i.unitPrice),0));
+  const transport=docTransport({transport:draft.transport}),discount=docDiscount({discount:draft.discount});
+  const dp=discountProblem(itemsValue,discount);if(dp)return {err:dp};
+  const total=cR2(itemsValue+transport-discount);
+  if(!(total>0))return {err:'الإجمالي لازم يكون أكبر من صفر.'};
+  const {cash:oldCash,odu}=invoiceEditMoney(inv);
+  const cash=cR2(Math.max(0,+draft.cash||0));
+  if(odu>total+0.004)return {err:`الدفعة المقدمة من الطلبية (${money(odu)}) أكبر من الإجمالي الجديد (${money(total)}) — مينفعش الإجمالي يقل عنها.`};
+  if(cash+odu>total+0.004)return {err:`المسدَّد مع الفاتورة (${money(cash)}${odu?` + الدفعة المقدمة ${money(odu)}`:''}) أكبر من الإجمالي الجديد (${money(total)}) — قلّل المسدَّد (اللي زيادة يتسجل «سند قبض» من ملف العميل).`};
+  // الخزنة
+  const deltas=[];let acc=String(draft.acc||''),legacyDiff=0;
+  if(treasuryOn()){
+    if(inv.accountId){
+      if(cash>0.004&&!treasuryAccount(acc))return {err:'اختار الحساب اللي الفلوس دخلت فيه.'};
+      deltas.push({acc:String(inv.accountId),amt:-oldCash});
+      if(cash>0.004)deltas.push({acc,amt:cash});
+    }else if(Math.abs(cash-oldCash)>0.004){
+      if(!treasuryAccount(acc))return {err:'اختار الحساب اللي الفرق دخل فيه / اترد منه.'};
+      legacyDiff=cR2(cash-oldCash);deltas.push({acc,amt:legacyDiff});
+    }
+    const err=treasuryShortfall(deltas,'مينفعش تقلّل المسدَّد من الحساب ده:');if(err)return {err};
+  }else acc='';
+  return {items,itemsValue,transport,discount,total,oldTotal:cR2(+inv.total||0),cash,oldCash,odu,acc,legacyDiff,stock,reason};
+}
+// بيطبّق الخطة على الفاتورة والمخزون والخزنة (من غير save — اللي بينادي بيعمل save)
+function invoiceEditApply(inv,draft){
+  const plan=invoiceEditPlan(inv,draft);if(plan.err)return plan;
+  const no=displayNo('invoices',inv.id),owner=invoiceEditOwner(inv),touched=new Set();
+  // المخزون: الفرق بس
+  for(const s of plan.stock){
+    const p=db.products.find(x=>String(x.id)===s.pid);
+    if(s.delta>0){p.stock=cR2((+p.stock||0)-s.delta);touched.add(p);}
+    else{
+      if(p){p.stock=cR2((+p.stock||0)-s.delta);}
+      else{const it=(inv.items||[]).find(i=>String(i.productId)===s.pid);if(it)restoreInvoiceItemStock(it,-s.delta,owner);}
+    }
+  }
+  for(const p of touched)if((+p.stock||0)<=0)markDeleted('products',p.id);
+  db.products=db.products.filter(x=>!touched.has(x)||(+x.stock||0)>0);
+  // النسخة القديمة
+  const before={date:inv.date,items:structuredClone(inv.items||[]),total:inv.total,transport:inv.transport||0,discount:inv.discount||0,cashDeposit:plan.oldCash,accountId:inv.accountId||''};
+  (inv.history??=[]).push({at:new Date().toISOString(),date:today(),reason:plan.reason,before,stock:plan.stock.map(s=>({name:s.name,delta:s.delta})),totalAfter:plan.total});
+  // الفاتورة الجديدة
+  inv.items=plan.items.map(i=>({...i,quantity:+i.quantity,unitPrice:+i.unitPrice,total:cR2((+i.quantity)*(+i.unitPrice))}));
+  inv.total=plan.total;
+  if(plan.transport>0)inv.transport=plan.transport;else delete inv.transport;
+  if(plan.discount>0)inv.discount=plan.discount;else delete inv.discount;
+  if(inv.accountId){if(plan.cash>0.004){inv.accountId=plan.acc;const a=treasuryAccount(plan.acc);if(a)inv.paymentMethod=treasuryKind(a).method;}else delete inv.accountId;}
+  else if(plan.legacyDiff)treasuryAddEntry(plan.acc,plan.legacyDiff,today(),`${plan.legacyDiff>0?'زيادة':'رد'} المسدَّد في تعديل عرض سعر #${no} — «${inv.customer}»`);
+  inv.cashDeposit=plan.cash;inv.orderDepositUsed=plan.odu;
+  inv.deposit=cR2(plan.cash+plan.odu);inv.remaining=cR2(Math.max(0,plan.total-inv.deposit));   // (للنسخ القديمة بس — مبيتقريش)
+  if(+inv.creditApplied>0)inv.creditApplied=Math.min(+inv.creditApplied,inv.remaining);
+  inv.editedAt=new Date().toISOString();inv.editedDate=today();
+  return plan;
+}
+
+// ---------- النافذة
+let ieDraft=null;
+function openInvoiceEdit(id){
+  const inv=db.invoices.find(x=>String(x.id)===String(id));
+  const block=invoiceEditBlocker(inv);if(block)return daftarAlert(block);
+  const no=displayNo('invoices',inv.id),{cash,odu}=invoiceEditMoney(inv);
+  ieDraft={id:String(inv.id),items:structuredClone(inv.items||[]),transport:docTransport(inv),discount:docDiscount(inv),cash,acc:String(inv.accountId||treasuryDefaultId()),reason:''};
+  let box=document.getElementById('invoiceEditModal');if(box)box.remove();
+  box=document.createElement('div');box.id='invoiceEditModal';
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card invoice-edit-card" style="max-width:860px"><div class="settlement-title"><div><small>تعديل — نفس الرقم، والقديم بيتحفظ</small><h3>✏️ عرض سعر #${no} — ${esc(inv.customer)}</h3></div><button type="button" class="settlement-close" data-ie-close>×</button></div>
+    <div id="ieLines"></div>
+    <div class="ie-add"><select id="ieAddProduct"></select><input id="ieAddQty" type="number" min="1" step="1" value="1" aria-label="الكمية" placeholder="الكمية" title="الكمية"><input id="ieAddPrice" type="number" min="0" step="0.01" aria-label="السعر" placeholder="السعر" title="السعر"><button type="button" class="secondary-btn" id="ieAddBtn">+ إضافة صنف</button></div>
+    <div class="ie-grid"><label>مصروفات النقل<input id="ieTransport" type="number" min="0" step="0.01" value="${ieDraft.transport||0}"></label><label>الخصم<input id="ieDiscount" type="number" min="0" step="0.01" value="${ieDraft.discount||0}"></label>
+      <label>المسدَّد مع عرض السعر<input id="ieCash" type="number" min="0" step="0.01" value="${cash||0}"></label>
+      ${treasuryOn()?`<label>الحساب<select id="ieAcc">${treasuryOptionsHtml(ieDraft.acc)}</select></label>`:''}</div>
+    ${odu>0?`<div class="notice">الدفعة المقدمة من الطلبية (${money(odu)}) محسوبة في المسدَّد ومبتتغيّرش من هنا.</div>`:''}
+    <label>سبب التعديل (لازم)<input id="ieReason" maxlength="200" placeholder="مثلًا: العميل زوّد شكارتين / السعر اتكتب غلط"></label>
+    <div id="ieSummary"></div>
+    <div class="settlement-actions"><button type="button" class="primary" id="ieSave">💾 حفظ التعديل</button><button type="button" class="secondary-btn" data-ie-close>رجوع</button></div></div>`;
+  document.body.appendChild(box);
+  const $=s=>box.querySelector(s);
+  const fillPick=()=>{
+    const old=invoiceEditQtyMap(inv.items);
+    const list=invoiceEditPickable(inv);
+    $('#ieAddProduct').innerHTML='<option value="">اختار صنف من المخزون…</option>'+list.map(p=>`<option value="${esc(String(p.id))}">${esc(p.name)}${p.sku?' — '+esc(p.sku):''}${p.batchNo?' — باتش '+esc(p.batchNo):''} (متاح ${(+p.stock||0)+(old.get(String(p.id))||0)}${p.customerName&&p.customerName!==IE_GEN?' — محجوز له':''})</option>`).join('');
+  };
+  const paint=()=>{
+    ieDraft.transport=+$('#ieTransport').value||0;ieDraft.discount=+$('#ieDiscount').value||0;ieDraft.cash=+$('#ieCash').value||0;ieDraft.acc=$('#ieAcc')?.value||'';ieDraft.reason=$('#ieReason').value;
+    $('#ieLines').innerHTML=table(['الصنف','الكمية','السعر','الإجمالي',''],ieDraft.items.map((x,i)=>`<tr><td>${esc(x.productName)}${x.sku?` <small>(${esc(x.sku)})</small>`:''}</td><td><input type="number" min="1" step="1" value="${+x.quantity||0}" data-ie-q="${i}" style="width:80px"></td><td><input type="number" min="0" step="0.01" value="${+x.unitPrice||0}" data-ie-p="${i}" style="width:100px"></td><td>${money((+x.quantity||0)*(+x.unitPrice||0))}</td><td><button type="button" class="danger" data-ie-del="${i}">إزالة</button></td></tr>`));
+    const plan=invoiceEditPlan(inv,{...ieDraft,reason:ieDraft.reason||'...'});
+    if(plan.err){$('#ieSummary').innerHTML=`<div class="notice tone-danger">${esc(plan.err).replace(/\n/g,'<br>')}</div>`;return;}
+    const diff=cR2(plan.total-plan.oldTotal),balDiff=cR2(diff-(plan.cash-plan.oldCash));
+    const st=plan.stock.map(s=>s.delta<0?`↩️ يرجع للمخزون: ${esc(s.name)} × ${-s.delta}`:`📦 يتسحب من المخزون: ${esc(s.name)} × ${s.delta}`);
+    $('#ieSummary').innerHTML=`<div class="notice"><div>الإجمالي: ${money(plan.oldTotal)} ← <strong>${money(plan.total)}</strong>${diff?` (${diff>0?'+':'−'}${money(Math.abs(diff))})`:''}</div>
+      ${plan.cash!==plan.oldCash?`<div>المسدَّد معاه: ${money(plan.oldCash)} ← <strong>${money(plan.cash)}</strong></div>`:''}
+      <div>رصيد العميل: ${balDiff?`${balDiff>0?'هيزيد عليه':'هيقل عليه'} ${money(Math.abs(balDiff))}`:'مش هيتغيّر'}</div>
+      ${st.length?`<div>${st.join('<br>')}</div>`:'<div>المخزون مش هيتغيّر.</div>'}</div>`;
+  };
+  fillPick();paint();
+  const close=()=>{box.remove();ieDraft=null;};
+  box.addEventListener('click',e=>{
+    if(e.target.closest('[data-ie-close]'))return close();
+    const d=e.target.closest('[data-ie-del]');if(d){ieDraft.items.splice(+d.dataset.ieDel,1);return paint();}
+    if(e.target.closest('#ieAddBtn')){
+      const p=db.products.find(x=>String(x.id)===$('#ieAddProduct').value);if(!p)return daftarAlert('اختار الصنف.');
+      const q=+$('#ieAddQty').value,u=+$('#ieAddPrice').value||inventoryDefaultSalePrice(p);
+      ieDraft.items.push({productId:p.id,productName:p.name,sku:p.sku||'',quantity:q,unitPrice:u,total:q*u,packageWeight:p.packageWeight||0,packageType:p.packageType||'',batchNo:p.batchNo||'',factoryPrice:p.factoryPrice||p.cost||0,...invoiceItemSourceFields(p)});
+      $('#ieAddProduct').value='';$('#ieAddQty').value=1;$('#ieAddPrice').value='';return paint();
+    }
+    if(e.target.closest('#ieSave'))return saveInvoiceEdit(inv,close);
+  });
+  box.addEventListener('change',e=>{
+    const q=e.target.closest('[data-ie-q]'),p=e.target.closest('[data-ie-p]');
+    if(q)ieDraft.items[+q.dataset.ieQ].quantity=+q.value;
+    if(p)ieDraft.items[+p.dataset.ieP].unitPrice=+p.value;
+    if(e.target.id==='ieAddProduct'){const pr=db.products.find(x=>String(x.id)===e.target.value);if(pr)$('#ieAddPrice').value=inventoryDefaultSalePrice(pr);return;}
+    paint();
+  });
+  box.addEventListener('input',e=>{if(['ieTransport','ieDiscount','ieCash','ieReason'].includes(e.target.id)&&e.target.id!=='ieReason')paint();else if(e.target.id==='ieReason')ieDraft.reason=e.target.value;});
+}
+async function saveInvoiceEdit(inv,close){
+  ieDraft.reason=document.querySelector('#ieReason')?.value||'';
+  const plan=invoiceEditPlan(inv,ieDraft);if(plan.err)return daftarAlert(plan.err);
+  const no=displayNo('invoices',inv.id);
+  if(!await daftarConfirm(`حفظ تعديل عرض سعر #${no} لـ«${inv.customer}»؟\nالإجمالي: ${money(plan.oldTotal)} ← ${money(plan.total)}${plan.stock.length?'\n'+plan.stock.map(s=>s.delta<0?`يرجع للمخزون: ${s.name} × ${-s.delta}`:`يتسحب من المخزون: ${s.name} × ${s.delta}`).join('\n'):''}\nالنسخة القديمة هتتحفظ في «سجل التعديلات».`))return;
+  const r=invoiceEditApply(inv,ieDraft);if(r.err)return daftarAlert(r.err);
+  save();scheduleRender();refreshOpenCustomerProfile(inv.customer);close();
+  daftarToast(`✏️ اتعدّل عرض سعر #${no} — الإجمالي ${money(inv.total)}`);
+}
+// «📝 سجل التعديلات»
+function openInvoiceHistory(id){
+  const inv=db.invoices.find(x=>String(x.id)===String(id));if(!inv)return;
+  const no=displayNo('invoices',inv.id),h=(inv.history||[]).slice().reverse();
+  const itemsTxt=items=>(items||[]).map(i=>`${esc(i.productName)} × ${i.quantity} × ${money(i.unitPrice)}`).join('<br>');
+  let box=document.getElementById('invoiceHistoryModal');if(box)box.remove();
+  box=document.createElement('div');box.id='invoiceHistoryModal';
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:860px"><div class="settlement-title"><div><small>سجل التعديلات</small><h3>📝 عرض سعر #${no} — ${esc(inv.customer)}</h3></div><button type="button" class="settlement-close" data-close>×</button></div>
+    ${h.length?table(['التاريخ','السبب','قبل التعديل','الإجمالي','المخزون'],h.map(x=>`<tr><td>${esc(x.date||'')}</td><td>${esc(x.reason||'')}</td><td>${itemsTxt(x.before?.items)}</td><td>${money(x.before?.total||0)} ← ${money(x.totalAfter??0)}</td><td>${(x.stock||[]).map(s=>`${s.delta<0?'↩️ رجع':'📦 اتسحب'} ${esc(s.name)} × ${Math.abs(s.delta)}`).join('<br>')||'—'}</td></tr>`)):'<div class="notice">مفيش تعديلات.</div>'}
+    <div class="settlement-actions"><button type="button" class="secondary-btn" data-close>إغلاق</button></div></div>`;
+  document.body.appendChild(box);
+  box.addEventListener('click',e=>{if(e.target.closest('[data-close]'))box.remove();});
+}
+// «🗑️ الملغاة»: الفواتير اللي اتلغت (بأرقامها) — للمراجعة بس
+function openCancelledInvoices(){
+  const list=(db.cancelledInvoices||[]).slice().sort((a,b)=>String(b.cancelledAt||'').localeCompare(String(a.cancelledAt||'')));
+  let box=document.getElementById('cancelledInvoicesModal');if(box)box.remove();
+  box=document.createElement('div');box.id='cancelledInvoicesModal';
+  box.innerHTML=`<div class="settlement-backdrop"></div><div class="settlement-card" style="max-width:900px"><div class="settlement-title"><div><small>للمراجعة — ملهاش أي أثر على الحساب أو المخزون</small><h3>🗑️ الفواتير الملغاة (${list.length})</h3></div><button type="button" class="settlement-close" data-close>×</button></div>
+    ${list.length?table(['رقم','التاريخ','العميل','الأصناف','الإجمالي','اتلغت','المدفوع فيها'],list.map(x=>`<tr><td>#${displayNo('invoices',x.id)}</td><td>${esc(x.date||'')}</td><td>${esc(x.customer||'')}</td><td>${(x.items||[]).map(i=>esc(i.productName)+' × '+i.quantity).join('، ')}</td><td>${money(x.total||0)}</td><td>${esc(x.cancelledDate||'')}</td><td>${x.cancelCash==='credit'?'بقى رصيد للعميل':x.cancelCash==='refund'?'اترد للعميل':'—'}</td></tr>`)):'<div class="notice">مفيش فواتير ملغاة (من 2.22.0 — اللي اتلغى قبل كده اتمسح).</div>'}
+    <div class="settlement-actions"><button type="button" class="secondary-btn" data-close>إغلاق</button></div></div>`;
+  document.body.appendChild(box);
+  box.addEventListener('click',e=>{if(e.target.closest('[data-close]'))box.remove();});
+}
 // (2.20.0) آخر ملف: لو وصلنا هنا يبقى كل ملفات البرنامج اشتغلت. بنقول للبرنامج (main.js) إن الشاشة اتحمّلت ومعاها أي غلطة
 // حصلت وهي بتتحمّل (اتجمعت فوق في index.template.html) — «التحديث الخفيف» اللي بيتجرّب بيتعلّم شغال، أو بيرجع للنسخة اللي قبله لو فيه أخطاء.
 // لو ملف من التانيين وقع في نصه، الكود ده مش هيوصل أصلًا، والبرنامج بيرجع لوحده بعد دقيقتين.
